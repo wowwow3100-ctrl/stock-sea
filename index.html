@@ -827,6 +827,41 @@ td.nm b{font-family:var(--f-mono);color:var(--gold);margin-right:8px;font-varian
 footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
 @media (prefers-reduced-motion:reduce){.screen-body,.toast{transition:none}}
 </style>
+<style>
+/* ================= v2 look: a quiet HUD, the sea gets the screen ================= */
+@media (min-width:761px){
+  /* island nameplate: one line that floats over the island instead of a card that hides it */
+  .hero.skyscr .screen.sail{width:auto;max-width:min(420px,44vw);padding:7px 14px 8px;border-radius:999px;border-color:rgba(255,210,63,.55);background:rgba(8,20,18,.72);backdrop-filter:blur(6px);box-shadow:0 6px 22px rgba(0,0,0,.35)}
+  .hero.skyscr .screen.sail .scr-prev{flex-direction:row;align-items:center;gap:10px;flex-wrap:nowrap;white-space:nowrap}
+  .hero.skyscr .screen.sail .pv-l,.hero.skyscr .screen.sail .pv-go,.hero.skyscr .screen.sail .pv-s,.hero.skyscr .screen.sail .sail-k{display:none}
+  .hero.skyscr .screen.sail .pv-n{font-size:17px}
+  .hero.skyscr .screen.sail .stamp-row{margin:0;gap:3px;flex-wrap:nowrap}
+  .hero.skyscr .screen.sail .stamp-row>*{font-size:10.5px;padding:0 5px}
+  .hero.skyscr .screen.sail .pv-m{font-size:11.5px;color:#d8e4d2;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+  .hero.skyscr .screen.sail.pin{border-radius:14px}
+  .hero.skyscr .screen.sail::after{display:none}
+  /* helm: speed pill only; island chips fade until you reach for them */
+  .readout{display:none}
+  .helm{gap:6px}
+  .chips{opacity:.5;transform:scale(.86);transform-origin:50% 100%;transition:opacity .2s,transform .2s}
+  .helm:hover .chips,.chips:focus-within{opacity:1;transform:none}
+  .gauge{grid-template-columns:auto 170px auto auto;padding:5px 12px;background:rgba(8,20,18,.55);backdrop-filter:blur(6px)}
+  .quest{background:rgba(8,20,18,.55);backdrop-filter:blur(6px)}
+  .topbar .tb{background:rgba(8,20,18,.5);backdrop-filter:blur(6px)}
+  .mapbox{opacity:.92}
+}
+/* drift-bottle card */
+.botcard{position:absolute;z-index:6;left:50%;bottom:calc(150px + env(safe-area-inset-bottom,0px));width:min(430px,calc(100% - 32px));transform:translate(-50%,16px) rotate(-1deg);opacity:0;padding:14px 18px 14px;border-radius:6px;background:linear-gradient(180deg,#f6ecd2,#e9d9b2);color:#2a1d0c;box-shadow:0 14px 40px rgba(0,0,0,.45),inset 0 0 0 1px rgba(90,58,30,.35);display:grid;grid-template-columns:1fr auto;gap:4px 10px;transition:opacity .28s ease,transform .32s cubic-bezier(.3,1.4,.5,1)}
+.botcard.on{opacity:1;transform:translate(-50%,0) rotate(-1deg)}
+.bc-n{font:600 11.5px var(--f-mono);letter-spacing:.12em;color:#1c6b58}
+.bc-x{border:0;background:none;font-size:20px;line-height:1;color:#5a3a1e;cursor:pointer;padding:0 4px}
+.botcard b{grid-column:1/-1;font:700 24px var(--f-display);color:#7a2a12}
+.botcard p{grid-column:1/-1;margin:0;font-size:15px;line-height:1.6}
+.bc-g{grid-column:1/-1;justify-self:start;margin-top:6px;border:1px solid #5a3a1e;background:none;border-radius:999px;padding:4px 14px;font-size:13px;font-weight:700;color:#5a3a1e;cursor:pointer}
+.bc-g:hover{background:#5a3a1e;color:#f6ecd2}
+@media (max-width:760px){.botcard{bottom:calc(190px + env(safe-area-inset-bottom,0px))}.botcard b{font-size:20px}.botcard p{font-size:14px}}
+@media (max-width:760px){.screen.sail .pv-go{display:none}.screen.sail{padding:8px 12px 9px}}
+</style>
 
 <header class="hero" id="hero">
   <div class="ld" id="ld" role="status" aria-live="polite">
@@ -874,6 +909,11 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
   </div>
   <div class="coach" id="coach" hidden><p id="coachTxt"></p><button type="button" id="coachSkip">跳過教學</button></div>
 
+  <div class="botcard" id="botCard" role="status" hidden>
+    <span class="bc-n" id="bcN"></span><button type="button" class="bc-x" id="bcX" aria-label="關閉">×</button>
+    <b id="bcT"></b><p id="bcD"></p>
+    <button type="button" class="bc-g" id="bcG">收進詞彙本，打開看全部</button>
+  </div>
   <div class="toast" id="toast" role="status"></div>
   <div class="ach" id="ach" role="status"><i class="ach-m" id="achM">★</i><span class="ach-k">成就解鎖</span><b id="achT"></b><span id="achD"></span><em class="ach-h" id="achH"></em></div>
   <div class="stp" id="stp" aria-hidden="true"><div class="stp-in"><span class="stp-n" id="stpN"></span><b id="stpT"></b><span class="stp-c" id="stpC"></span></div></div>
@@ -939,7 +979,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
           <button type="button" id="zoomIn" aria-label="拉近">拉近</button>
         </div>
       </div>
-      <div class="set-row"><label for="sunR">太陽高度</label><input type="range" id="sunR" min="-4" max="60" step="1" value="9"><output id="sunV" for="sunR">9°</output>
+      <div class="set-row"><label for="sunR">太陽高度</label><input type="range" id="sunR" min="-4" max="60" step="1" value="24"><output id="sunV" for="sunR">24°</output>
         <div class="seg" role="group" aria-label="時段">
           <button type="button" data-sun="4">清晨</button><button type="button" data-sun="38">正午</button><button type="button" data-sun="9">黃昏</button><button type="button" data-sun="-3">夜航</button>
         </div>
@@ -1432,8 +1472,8 @@ const DEMO = [
     '<p class="dm-n">示範題目 · 工具介紹，並非投資建議</p>'
 ];
 const POS = [[0,0],[198,-79],[370,26],[343,224],[158,317],[-40,277],[-211,172],[-251,-26],[-132,-211],[79,-264]];
-const RAD = [60,48,44,54,50,44,46,40,52,50];
-const HGT = [30,24,30,26,28,22,24,22,28,26];
+const RAD = [70,58,54,64,58,54,58,50,62,60];
+const HGT = [34,40,34,26,38,28,22,34,34,30];
 const SS = RAD.map(r => r / 0.97), AA = HGT.map(h => h / 39);
 const N = ISL.length;
 const CENTER = [59,26], WORLD_R = 900, DOCK_IN = 58, DOCK_OUT = 80, VMAX = 15, VAUTO = 20;
@@ -1460,13 +1500,31 @@ const OFF = 16384;
 function ihash(x, y){ let h = (Math.imul(x, 374761393) + Math.imul(y, 668265263)) >>> 0; h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; h = (h ^ (h >>> 16)) >>> 0; return (h & 0xffffff) / 16777215; }
 function tnoise(x, y){ x += OFF; y += OFF; const fx = Math.floor(x), fy = Math.floor(y), ix = fx | 0, iy = fy | 0, ux = x - fx, uy = y - fy, wx = ux * ux * (3 - 2 * ux), wy = uy * uy * (3 - 2 * uy); return lerp(lerp(ihash(ix, iy), ihash(ix + 1, iy), wx), lerp(ihash(ix, iy + 1), ihash(ix + 1, iy + 1), wx), wy); }
 function tfbm(x, y, oct){ let a = .5, s = 0; for (let i = 0; i < oct; i++){ s += a * tnoise(x, y); const nx = 1.6 * x - 1.2 * y, ny = 1.2 * x + 1.6 * y; x = nx; y = ny; a *= .5; } return s; }
+/* each island has its own silhouette. u points from the island centre to its pier, v is 90 degrees to the left of that;
+   both are in island radii. The GLSL twin in c_world.js (GL_ISL) must stay line-for-line the same. */
+const ISL_TH = POS.map((p, k) => k === 3 ? -2.2 : Math.atan2(CENTER[1] - p[1], CENTER[0] - p[0]));
+const ISL_DIR = ISL_TH.map(t => [Math.cos(t), Math.sin(t)]);
+const gs2 = (u, v, cu, cv, w) => Math.exp(-((u - cu) * (u - cu) + (v - cv) * (v - cv)) / w);
+function islShape(k, rr, u, v){
+  const r2 = rr * rr;
+  if (k === 1){ return 66 * Math.exp(-3.4 * r2) - 30 * Math.exp(-r2 / .011) + 6 * Math.exp(-1.2 * r2); }                       /* volcano with a crater */
+  if (k === 2){ return 15 * Math.exp(-1.5 * r2) + 27 * (1 - sstep(.34, .47, rr)); }                                        /* mesa */
+  if (k === 3){ return 24 * Math.exp(-1.3 * r2) + 12 * gs2(u, v, -.3, -.32, .05); }                                       /* low golden savanna */
+  if (k === 4){ return 44 * Math.exp(-2 * r2) * (1 + .6 * clamp(-u * 2.4, -1, 1)) * (1 - .92 * sstep(.36, .46, -u)); }      /* wedge that ends in a cliff */
+  if (k === 5){ return 46 * Math.exp(-2 * r2) - 40 * gs2(u, v, .05, -.6, .07); }                                           /* crescent with a bay */
+  if (k === 6){ return 7 + 11 * (1 - sstep(.45, .92, rr)) + 5 * Math.exp(-7 * r2); }                                         /* flat white atoll */
+  if (k === 7){ return 42 * gs2(u, v, 0, .3, .08) + 36 * gs2(u, v, -.08, -.34, .07) + 12 * Math.exp(-1.5 * r2); }             /* twin peaks */
+  if (k === 8){ const st = 46 * Math.exp(-2 * r2) / 9, fl = Math.floor(st); return (fl + sstep(.72, 1, st - fl)) * 9 + 3 * Math.exp(-1.5 * r2); } /* terraces */
+  if (k === 9){ return 34 * Math.exp(-((rr - .46) * (rr - .46)) / .035) * sstep(-.95, .15, -u / (rr + .001)) + 15 * Math.exp(-3 * r2); } /* amphitheatre */
+  return 46 * Math.exp(-2 * r2) + 15 * gs2(u, v, -.42, .36, .06);                                                             /* home island */
+}
 function islandH(k, px, pz, oct){
   const qx = (px - POS[k][0]) * 95 / SS[k], qz = (pz - POS[k][1]) * 95 / SS[k];
   if (qx * qx + qz * qz > 40000) return -40;
   const sx = k * 31.7, sz = k * 17.3;
   const wx = qx + (tnoise(qx * .01 + sx, qz * .01 + sz) - .5) * 60, wz = qz + (tnoise(qx * .01 + sx + 7.3, qz * .01 + sz + 2.1) - .5) * 60;
-  const rr = Math.hypot(wx, wz) / 95;
-  let h = 46 * Math.exp(-rr * rr * 2) - 7 - 30 * sstep(1, 1.8, rr);
+  const rr = Math.hypot(wx, wz) / 95, d = ISL_DIR[k];
+  let h = islShape(k, rr, (wx * d[0] + wz * d[1]) / 95, (wz * d[0] - wx * d[1]) / 95) - 7 - 30 * sstep(1, 1.8, rr);
   const n = tfbm(qx * .035 + sx, qz * .035 + sz, oct);
   h += (n - .5) * 18 * sstep(-5, 15, h);
   return h * AA[k];
@@ -2250,8 +2308,8 @@ float vnoise(vec2 p){ vec2 i = floor(p); vec2 f = fract(p); vec2 w = f * f * (3.
 float fbm(vec2 p){ float a = 0.5; float s = 0.0; for (int i = 0; i < 5; i++){ s += a * vnoise(p); p = p * 2.03 + vec2(1.7, 9.2); a *= 0.5; } return s; }
 vec3 skyCol(vec3 rd, bool disk){
   vec3 S = uSun; float day = uDay; float dusk = uDusk;
-  vec3 zen = mix(vec3(0.01, 0.015, 0.045), mix(vec3(0.07, 0.1, 0.22), vec3(0.1, 0.3, 0.65), day), dusk);
-  vec3 hor = mix(vec3(0.12, 0.1, 0.16), mix(vec3(0.95, 0.5, 0.28), vec3(0.72, 0.82, 0.92), day), dusk);
+  vec3 zen = mix(vec3(0.01, 0.015, 0.045), mix(vec3(0.07, 0.1, 0.22), vec3(0.045, 0.2, 0.62), day), dusk);
+  vec3 hor = mix(vec3(0.12, 0.1, 0.16), mix(vec3(0.95, 0.5, 0.28), vec3(0.5, 0.72, 0.93), day), dusk);
   zen = mix(zen, vec3(dot(zen, vec3(0.333))) * 0.75, uStorm * 0.65);
   hor = mix(hor, vec3(dot(hor, vec3(0.333))) * 0.7, uStorm * 0.65);
   float y = max(rd.y, 0.0);
@@ -2300,18 +2358,33 @@ vec3 waterNormal(vec2 p, float e, int it){
 }
 `;
 const GL_ISL = `
-uniform vec4 uIsl[10]; uniform float uSink;
+uniform vec4 uIsl[10]; uniform vec2 uIslD[10]; uniform float uSink;
 float ihash(int x, int y){ uint h = uint(x) * 374761393u + uint(y) * 668265263u; h = (h ^ (h >> 13u)) * 1274126177u; h = h ^ (h >> 16u); return float(h & 0xffffffu) / 16777215.0; }
 float tnoise(vec2 p){ p += vec2(${OFF}.0); vec2 fl = floor(p); ivec2 i = ivec2(fl); vec2 f = p - fl; vec2 w = f * f * (3.0 - 2.0 * f);
   return mix(mix(ihash(i.x, i.y), ihash(i.x + 1, i.y), w.x), mix(ihash(i.x, i.y + 1), ihash(i.x + 1, i.y + 1), w.x), w.y); }
 float tfbm(vec2 p, int oct){ float a = 0.5; float s = 0.0; for (int i = 0; i < 8; i++){ if (i >= oct) break; s += a * tnoise(p); p = vec2(1.6 * p.x - 1.2 * p.y, 1.2 * p.x + 1.6 * p.y); a *= 0.5; } return s; }
+float gs2(float u, float v, float cu, float cv, float w){ return exp(-((u - cu) * (u - cu) + (v - cv) * (v - cv)) / w); }
+/* twin of islShape() in a_data.js */
+float islShape(int k, float rr, float u, float v){
+  float r2 = rr * rr;
+  if (k == 1) return 66.0 * exp(-3.4 * r2) - 30.0 * exp(-r2 / 0.011) + 6.0 * exp(-1.2 * r2);
+  if (k == 2) return 15.0 * exp(-1.5 * r2) + 27.0 * (1.0 - smoothstep(0.34, 0.47, rr));
+  if (k == 3) return 24.0 * exp(-1.3 * r2) + 12.0 * gs2(u, v, -0.3, -0.32, 0.05);
+  if (k == 4) return 44.0 * exp(-2.0 * r2) * (1.0 + 0.6 * clamp(-u * 2.4, -1.0, 1.0)) * (1.0 - 0.92 * smoothstep(0.36, 0.46, -u));
+  if (k == 5) return 46.0 * exp(-2.0 * r2) - 40.0 * gs2(u, v, 0.05, -0.6, 0.07);
+  if (k == 6) return 7.0 + 11.0 * (1.0 - smoothstep(0.45, 0.92, rr)) + 5.0 * exp(-7.0 * r2);
+  if (k == 7) return 42.0 * gs2(u, v, 0.0, 0.3, 0.08) + 36.0 * gs2(u, v, -0.08, -0.34, 0.07) + 12.0 * exp(-1.5 * r2);
+  if (k == 8){ float st = 46.0 * exp(-2.0 * r2) / 9.0; float fl = floor(st); return (fl + smoothstep(0.72, 1.0, st - fl)) * 9.0 + 3.0 * exp(-1.5 * r2); }
+  if (k == 9) return 34.0 * exp(-((rr - 0.46) * (rr - 0.46)) / 0.035) * smoothstep(-0.95, 0.15, -u / (rr + 0.001)) + 15.0 * exp(-3.0 * r2);
+  return 46.0 * exp(-2.0 * r2) + 15.0 * gs2(u, v, -0.42, 0.36, 0.06);
+}
 float islandH(int k, vec2 p, int oct){
   vec4 I = uIsl[k]; vec2 q = (p - I.xy) * (95.0 / I.z);
   if (dot(q, q) > 40000.0) return -40.0;
   vec2 sd = vec2(float(k) * 31.7, float(k) * 17.3);
   vec2 wq = q + (vec2(tnoise(q * 0.01 + sd), tnoise(q * 0.01 + sd + vec2(7.3, 2.1))) - 0.5) * 60.0;
-  float rr = length(wq) / 95.0;
-  float h = 46.0 * exp(-rr * rr * 2.0) - 7.0 - 30.0 * smoothstep(1.0, 1.8, rr);
+  float rr = length(wq) / 95.0; vec2 d = uIslD[k];
+  float h = islShape(k, rr, dot(wq, d) / 95.0, (wq.y * d.x - wq.x * d.y) / 95.0) - 7.0 - 30.0 * smoothstep(1.0, 1.8, rr);
   float n = tfbm(q * 0.035 + sd, oct);
   h += (n - 0.5) * 18.0 * smoothstep(-5.0, 15.0, h);
   return h * I.w - (k == 0 ? uSink : 0.0);
@@ -2324,7 +2397,7 @@ const U = {
   uDay: {value: 0}, uDusk: {value: 1}, uStorm: {value: 0}, uFlash: {value: 0}
 };
 const WU = {uWH: {value: WH}, uWL: {value: WL}, uWT: {value: 0}, uSwell: {value: SWA}};
-const IU = {uIsl: {value: POS.map((p, k) => new THREE.Vector4(p[0], p[1], SS[k], AA[k]))}, uSink: {value: 0}};
+const IU = {uIsl: {value: POS.map((p, k) => new THREE.Vector4(p[0], p[1], SS[k], AA[k]))}, uIslD: {value: ISL_DIR.map(d => new THREE.Vector2(d[0], d[1]))}, uSink: {value: 0}};
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(52, 1, .5, 7000);
@@ -2422,8 +2495,8 @@ void main(){
   float rs = max(dot(R, S), 0.0);
   vec3 spec = sc * (pow(rs, 1200.0) * 50.0 + pow(rs, 120.0) * 0.7 + pow(rs, 12.0) * 0.04) * (1.0 - uStorm * 0.8);
   float hraw = clamp(vH / (2.0 * uWH) + 0.5, 0.0, 1.0);
-  vec3 water = vec3(0.004, 0.018, 0.03) + amb * 0.025;
-  vec3 sss = vec3(0.03, 0.24, 0.21) * pow(hraw, 2.5) * (0.2 + 1.3 * pow(max(dot(rd, S), 0.0), 3.0));
+  vec3 water = vec3(0.002, 0.03, 0.055) + amb * 0.03;
+  vec3 sss = vec3(0.02, 0.3, 0.27) * pow(hraw, 2.2) * (0.2 + 1.3 * pow(max(dot(rd, S), 0.0), 3.0));
   vec2 fd = vec2(0.83, 0.56), fq = vec2(dot(hp.xz, fd), dot(hp.xz, vec2(-fd.y, fd.x)));
   vec2 fp = vec2(fq.x * 0.55, fq.y * 1.7) + vec2(uWT * 0.25, 0.0);
   float fn = vnoise(fp) * 0.62 + vnoise(fp * 2.3 + 1.7) * 0.38;
@@ -2434,7 +2507,7 @@ void main(){
   for (int k = 0; k < 10; k++){ float d = length(hp.xz - uIsl[k].xy) - uIsl[k].z * 2.1; if (d < kd){ kd = d; ki = k; } }
   if (kd < 0.0){
     float depth = hp.y - islandH(ki, hp.xz, 4);
-    if (depth < 10.0){
+    if (depth < 22.0){
       float dd = max(depth, 0.0);
       vec2 bu = hp.xz + N.xz * (0.6 + dd * 0.25);
       vec3 sandA = vec3(0.75, 0.66, 0.48);
@@ -2447,7 +2520,7 @@ void main(){
         cs = min(c1, c2) * uTexOn * smoothstep(0.0, 0.5, dd) * exp(-dd * 0.3) * (1.0 - uStorm * 0.7);
       }
       vec3 sand = sandA * (sc * max(S.y, 0.0) * (1.0 + cs * 3.5) + amb * 0.8);
-      water = mix(water, mix(vec3(0.02, 0.2, 0.18) * (sc * 0.4 + amb), sand * 0.55, exp(-max(depth, 0.0) * 0.7)), exp(-max(depth, 0.0) * 0.3));
+      water = mix(water, mix(vec3(0.01, 0.34, 0.32) * (sc * 0.42 + amb), sand * 0.6, exp(-max(depth, 0.0) * 0.55)), exp(-max(depth, 0.0) * 0.16) * (1.0 - smoothstep(14.0, 22.0, depth)));
       float surf = smoothstep(0.55, 1.0, sin(depth * 4.0 - uTime * 1.8 + vnoise(hp.xz * 0.3) * 4.0)) * exp(-max(depth, 0.0) * 0.9);
       foam = max(foam, max(surf, 1.0 - smoothstep(0.0, 0.5, depth)) * (0.4 + 0.6 * vnoise(hp.xz * 2.0 + uTime)));
     }
@@ -2585,7 +2658,7 @@ vec3 dec(vec3 c){ return pow(c, vec3(2.2)); }`)
     vec3 cG = dec(mix(gA, gB, 0.3 + 0.45 * tFar)) * vec3(1.5, 2.6, 1.6) * vTg;
     float gl = dot(gA, vec3(0.3, 0.59, 0.11));
     wv = clamp((vW4.x - 0.5) * 1.6 + 0.5 + (0.42 - gl) * 0.9 * vW4.x, 0.0, 1.0) * step(0.004, vW4.x);
-    vec3 alb = mix(mix(cD, cS, sandW), cG, wv);
+    vec3 alb = mix(mix(cD * mix(vec3(1.0), vTr, 0.85), cS, sandW), cG, wv);
     if (tRk > 0.002){
       vec3 cR = dec(texture2D(tRockC, tP.zy * 0.1).rgb) * bw.x + dec(texture2D(tRockC, tP.xz * 0.1).rgb) * bw.y + dec(texture2D(tRockC, tP.xy * 0.1).rgb) * bw.z;
       alb = mix(alb, cR * vec3(1.5, 1.8, 2.6) * vTr, tRk);
@@ -2631,9 +2704,8 @@ let nightF = 0;
 function coastR(k, th){ for (let r = 4; r < SS[k] * 2.1; r += 2){ if (islandH(k, POS[k][0] + Math.cos(th) * r, POS[k][1] + Math.sin(th) * r, 4) < 0) return r; } return SS[k] * 2; }
 /* berths: a short pier on the side of each island that faces the middle of the archipelago.
    The boat moors 4.6 m beside the pier axis, 5 m past the 3 m depth line, bow pointing at the island. */
-const BERTH_TH = [null, null, null, -2.2, null, null, null, null, null, null];
 const BERTH = POS.map((p, k) => {
-  const th = BERTH_TH[k] != null ? BERTH_TH[k] : Math.atan2(CENTER[1] - p[1], CENTER[0] - p[0]);
+  const th = ISL_TH[k];
   const c = Math.cos(th), s = Math.sin(th), H = r => islandH(k, p[0] + c * r, p[1] + s * r, 4);
   let rc = 4; while (rc < SS[k] * 2.1 && H(rc) >= 0) rc += 1;
   let rd = rc; while (rd < rc + 60 && H(rd) > -3.2) rd += 1;
@@ -3165,7 +3237,8 @@ void main(){
     col = mix(col, skyCol(normalize(vec3(rd.x, 0.0, rd.z)), false), f);
   }
   col *= 1.0 + dm * 0.12;
-  col = aces(col); col = pow(col, vec3(1.0 / 2.2));
+  col = aces(col * 1.06); col = pow(col, vec3(1.0 / 2.2));
+  float lum = dot(col, vec3(0.299, 0.587, 0.114)); col = clamp(mix(vec3(lum), col, 1.0 + 0.22 * uDay), 0.0, 1.0);
   vec2 v = vUv * 2.0 - 1.0; col *= 1.0 - 0.18 * dot(v * 0.75, v * 0.75);
   col += (hash2(gl_FragCoord.xy + fract(uTime) * 61.0) - 0.5) / 255.0;
   gl_FragColor = vec4(col, 1.0);
@@ -3316,7 +3389,7 @@ let mode = 'free', nav = null, pendNav = null, undock = null, cruise = false, br
 const keys = {f: 0, b: 0, l: 0, r: 0, brk: 0};
 const joy = {x: 0, y: 0, on: false, id: null};
 let camMode = 'chase', zoom = 30, zoomB = 430, uYaw = 0, uPitch = 0, freeYaw = 0, lastDrag = -99, camYaw = Math.PI, snapCam = true, baseFov = 50, shake = 0;
-let revWait = 0, edgeWarn = false, bumpToastT = 0, edgeF = 0, lvlS = 2.6, storm = 0, flash = 0, sunDeg = 9, active = false, docked = false, dockIdx = -1, nearIdx = 0, boundT = 0, bumpT = 0, started = false;
+let revWait = 0, edgeWarn = false, bumpToastT = 0, edgeF = 0, lvlS = 2.6, storm = 0, flash = 0, sunDeg = 24, active = false, docked = false, dockIdx = -1, nearIdx = 0, boundT = 0, bumpT = 0, started = false;
 const nearB = {i: -1, d: 1e9};
 const autoArm = Array(N).fill(true);
 questHooks.docked = () => mode === 'docked' ? dockIdx : -1;
@@ -3670,6 +3743,7 @@ function drawMap(){
     mctx.beginPath(); mctx.arc(f.X(x), f.Z(z), r, 0, 6.283); mctx.fillStyle = hi ? '#ffd23f' : st ? 'rgba(159,199,154,.95)' : 'rgba(159,199,154,.55)'; mctx.fill();
     mctx.font = '700 ' + Math.round(8 * d) + 'px ' + FONT_M; mctx.fillStyle = '#07120c'; mctx.fillText(ISL[i].n, f.X(x), f.Z(z) + .5 * d);
   });
+  if (typeof botMapDots === 'function') botMapDots(mctx, f, d);
   mpMapDots(mctx, f, d);
   const bx = f.X(boat.x), bz = f.Z(boat.z), s = 6 * d;
   mctx.save(); mctx.translate(bx, bz); mctx.rotate(boat.h);
@@ -3986,7 +4060,7 @@ function env(dt){
   sunL.position.set(boat.x + sunDir.x * 600, Math.max(30, sunDir.y * 600), boat.z + sunDir.z * 600); sunL.target.position.set(boat.x, 0, boat.z); sunL.target.updateMatrixWorld();
   hemi.color.setRGB(amb[0] * .85 + flash * .4, amb[1] * .85 + flash * .42, amb[2] * .85 + flash * .5); hemi.groundColor.setRGB(.01, .02, .02);
   bounce.color.setRGB(.012, .03, .03);
-  PU.uFogK.value = (lerp(.0009, .0024, storm)) * (camMode === 'bird' ? .45 : 1);
+  PU.uFogK.value = (lerp(lerp(.0009, .00042, sstep(.1, .35, y)), .0024, storm)) * (camMode === 'bird' ? .45 : 1);
   PU.uWet.value = camMode === 'bird' ? 0 : storm * .55;
   const n = Math.floor(RN * storm);
   for (let i = 0; i < n; i++){
@@ -4931,7 +5005,7 @@ function stampPop(i){
 }
 /* ================= loading screen: shown by plain HTML before three.js arrives, closed when the sea is ready ================= */
 const LD_TIPS = ['海平面就是生命線：島露出水面多少，一眼就看得到。', '每座島：靠岸、讀課程、過挑戰，就能蓋一枚印章。', '右上角「章」是獎章牆，按 J 也打得開。',
-  'WASD 或方向鍵開船，靠近碼頭按 E 靠岸。', '按 M 切到鳥瞰，點海面船會自己開過去。', '十座島各有一個地標，猜猜看它在講哪一課？', '同一片海上的其他船，也是正在複習的船長。'];
+  'WASD 或方向鍵開船，靠近碼頭按 E 靠岸。', '按 M 切到鳥瞰，點海面船會自己開過去。', '十座島各有一個地標，猜猜看它在講哪一課？', '同一片海上的其他船，也是正在複習的船長。', '海上的綠色光柱是漂流瓶，開過去撞一下，就撿到一個詞彙。'];
 const LD = {t0: performance.now(), tip: 0, done: false, shown: 0};
 function ldClose(){
   if (LD.done) return; LD.done = true;
@@ -4949,6 +5023,65 @@ function ldTick(){
 }
 $('ldGo').addEventListener('click', ldClose);
 setInterval(() => { if (LD.done) return; LD.tip = (LD.tip + 1) % LD_TIPS.length; const t = $('ldTip'); t.classList.remove('in'); void t.offsetWidth; t.textContent = LD_TIPS[LD.tip]; t.classList.add('in'); }, 3200);
+/* ================= drift bottles: one glossary term each, scattered over the open sea ================= */
+if (!Array.isArray(PG.bot)) PG.bot = [];
+const BOT = (() => {
+  const list = [], rnd = (() => { let s = 20261110; return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; })();
+  const G = LEARN.glossary || [];
+  let guard = 0;
+  while (list.length < G.length && guard++ < 6000){
+    const a = rnd() * 6.2832, r = 60 + Math.sqrt(rnd()) * 400, x = CENTER[0] + Math.cos(a) * r, z = CENTER[1] + Math.sin(a) * r;
+    if (POS.some((p, k) => Math.hypot(p[0] - x, p[1] - z) < SS[k] * 1.25 + 34)) continue;
+    if (BERTH.some(b => Math.hypot(b.x - x, b.z - z) < 46)) continue;
+    if (list.some(o => Math.hypot(o.x - x, o.z - z) < 58)) continue;
+    list.push({x, z, i: list.length, ph: rnd() * 6.28, g: null});
+  }
+  return list;
+})();
+const botGlass = new THREE.MeshStandardMaterial({color: L(.2, .6, .42), transparent: true, opacity: .7, roughness: .08, metalness: .1});
+const botPaper = M(L(.92, .86, .68)), botCork = M(L(.45, .3, .16));
+function botMesh(){
+  const g = new THREE.Group(), b = new THREE.Group(); g.add(b); b.rotation.z = .55;
+  b.add(new THREE.Mesh(new THREE.CylinderGeometry(.55, .55, 1.7, 14), botGlass));
+  const nk = new THREE.Mesh(new THREE.CylinderGeometry(.2, .36, .7, 12), botGlass); nk.position.y = 1.2; b.add(nk);
+  const ck = new THREE.Mesh(new THREE.CylinderGeometry(.22, .22, .3, 10), botCork); ck.position.y = 1.65; b.add(ck);
+  b.add(new THREE.Mesh(new THREE.CylinderGeometry(.28, .28, 1.1, 10), botPaper));
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(.5, 1.5, 22, 16, 1, true), beamMat(L(.5, 1.5, 1.2), .2)); beam.position.y = 11; g.add(beam);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(1.8, 2.5, 40), ringMat(L(.5, 1.5, 1.2), .6, 1.8, 2.5)); ring.rotation.x = -Math.PI / 2; ring.position.y = .15; g.add(ring);
+  g.userData = {b, ring}; g.scale.setScalar(1.5);
+  return g;
+}
+BOT.forEach(o => { if (PG.bot.indexOf(o.i) >= 0) return; o.g = botMesh(); o.g.position.set(o.x, 0, o.z); scene.add(o.g); });
+ACH.push(['bot1', '第一個漂流瓶', '在海上撿到一個漂流瓶'], ['bot12', '拾瓶人', '撿到 12 個漂流瓶'], ['botall', '海流都認得你', '漂流瓶全部撿齊']);
+Object.assign(ACH_META, {bot1: {c: 'sea', r: 0}, bot12: {c: 'coll', r: 1, p: () => [PG.bot.length, 12]}, botall: {c: 'coll', r: 3, p: () => [PG.bot.length, BOT.length]}});
+let botCardT = 0;
+function botPick(o){
+  PG.bot.push(o.i); savePG(); scene.remove(o.g); o.g = null;
+  const t = LEARN.glossary[o.i];
+  $('bcN').textContent = '漂流瓶 ' + PG.bot.length + ' / ' + BOT.length; $('bcT').textContent = t.term; $('bcD').textContent = t.def;
+  const el = $('botCard'); el.hidden = false; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+  clearTimeout(botCardT); botCardT = setTimeout(botClose, 9000);
+  snd.ok(); unlock('bot1'); if (PG.bot.length >= 12) unlock('bot12'); if (PG.bot.length >= BOT.length) unlock('botall'); onProgress();
+}
+function botClose(){ const el = $('botCard'); el.classList.remove('on'); clearTimeout(botCardT); botCardT = setTimeout(() => { el.hidden = true; }, 300); }
+$('bcX').addEventListener('click', botClose);
+$('bcG').addEventListener('click', () => { botClose(); logTab = 'glos'; if ($('logPanel').hidden) togglePanel('logPanel', true); else renderLog(); });
+frameHooks.push(dt => {
+  for (const o of BOT){
+    if (!o.g) continue;
+    const dx = o.x - boat.x, dz = o.z - boat.z, d2 = dx * dx + dz * dz;
+    if (d2 > 640000){ o.g.visible = false; continue; }
+    o.g.visible = true;
+    o.g.position.y = waterH(o.x, o.z) - .25;
+    o.g.userData.b.rotation.y = T * .5 + o.ph; o.g.userData.b.rotation.z = .55 + Math.sin(T * 1.3 + o.ph) * .18;
+    o.g.userData.ring.scale.setScalar(1 + .25 * Math.sin(T * 2.2 + o.ph));
+    if (d2 < 64 && mode !== 'docked') botPick(o);
+  }
+});
+function botMapDots(ctx, f, d){
+  ctx.fillStyle = 'rgba(120,255,220,.9)';
+  for (const o of BOT){ if (!o.g) continue; ctx.beginPath(); ctx.arc(f.X(o.x), f.Z(o.z), 1.5 * d, 0, 6.283); ctx.fill(); }
+}
 /* ================= shared sea: everyone who has the game open sees each other's boats ================= */
 /* presence only (nothing is stored): position, heading, hull, paint, sail, flag, wake and ship level */
 const MP = {room: null, user: null, list: [], ghosts: new Map(), names: {}, sent: '', sendT: 0, chip: null, conn: false};
