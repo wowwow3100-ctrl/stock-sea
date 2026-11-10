@@ -861,20 +861,84 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
 .bc-g:hover{background:#5a3a1e;color:#f6ecd2}
 @media (max-width:760px){.botcard{bottom:calc(190px + env(safe-area-inset-bottom,0px))}.botcard b{font-size:20px}.botcard p{font-size:14px}}
 @media (max-width:760px){.screen.sail .pv-go{display:none}.screen.sail{padding:8px 12px 9px}}
+/* opening screen: intro, ranks, name */
+.ld{overflow-y:auto}
+.ld-mid{gap:8px;width:min(520px,100%);padding:18px 16px 8px}
+.ld-t{font-size:clamp(38px,9vw,60px)}
+.ld-boat{width:84px;height:63px;margin-top:0}
+.ld-sea{margin-top:-18px}
+.ld-in{margin:6px 0 0;font-size:15px;line-height:1.65;color:#fff8e6;text-shadow:0 1px 6px rgba(0,0,0,.45);text-wrap:pretty}
+.ld-lv{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:5px 8px;width:100%}
+.ld-lv li{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 10px;border-radius:8px;background:rgba(8,22,30,.5);border:1px solid rgba(255,210,63,.28);text-align:left}
+.ld-lv li:last-child{border-color:#ffd23f;background:rgba(60,40,0,.55)}
+.ld-lv b{font:700 13.5px var(--f-display);color:#ffd23f}
+.ld-lv span{font-size:12px;color:#e6efe6}
+.ld-form{display:flex;gap:8px;width:100%;margin-top:10px}
+.ld-name{flex:1;min-width:0;padding:11px 14px;border-radius:999px;border:2px solid rgba(255,210,63,.6);background:rgba(8,22,30,.7);color:#fff8e6;font:600 16px var(--f-body,inherit)}
+.ld-name::placeholder{color:rgba(255,248,230,.55);font-weight:400}
+.ld-name:focus{outline:none;border-color:#ffd23f;box-shadow:0 0 0 3px rgba(255,210,63,.25)}
+.ld-name.shake{animation:ldShake .35s}
+@keyframes ldShake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.ld-form .ld-go{margin:0;padding:11px 26px;background:#ffd23f;color:#1a1206;border-color:#ffd23f;font-size:16px}
+.ld-form .ld-go:hover{background:#fff2b0}
+.ld-bar{margin-top:10px}
+.ld-tip{min-height:2.6em;font-size:13.5px;opacity:.9}
+.ld.rdy .ld-bar i{background:linear-gradient(90deg,#7fe0a8,#d6ffe6)}
+@media (max-height:700px){.ld-boat,.ld-sea{display:none}.ld-tip{display:none}}
+/* ship ranks and scoreboard in the logbook */
+.sl{list-style:none;margin:10px 0;padding:0;display:grid;gap:8px}
+.sl li{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:10px 14px;border-radius:10px;border:1px solid rgba(159,199,154,.25);background:rgba(255,255,255,.03)}
+.sl li.on{border-color:#ffd23f;background:rgba(255,210,63,.09)}
+.sl li.lock{opacity:.62}
+.sl-n{font:700 15px var(--f-mono);color:#ffd23f;align-self:start;padding-top:2px}
+.sl b{font:700 18px var(--f-display);color:var(--cream)}
+.sl-need{margin-left:8px;font-size:12px;color:#9fc79a}
+.sl p{margin:3px 0 0;font-size:14.5px}
+.sl p.sl-look{font-size:12.5px;color:rgba(244,239,226,.6)}
+.rk-me{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,210,63,.45);background:rgba(255,210,63,.07);margin:8px 0 12px}
+.rk-me>div{display:grid;justify-items:start}
+.rk-me b{font:700 40px/1 var(--f-display);color:#ffd23f}
+.rk-me ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font:500 12.5px var(--f-mono);color:#cfe0cc}
+.rk{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:4px}
+.rk li{display:grid;grid-template-columns:36px 1fr auto auto;gap:10px;align-items:center;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.035)}
+.rk li.top .rk-i{color:#ffd23f}
+.rk li.me{outline:2px solid #ffd23f;background:rgba(255,210,63,.1)}
+.rk-i{font:700 16px var(--f-mono);color:#9fc79a;text-align:center}
+.rk b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk-s{font-size:12px;color:rgba(244,239,226,.62);white-space:nowrap}
+.rk-p{font:700 17px var(--f-mono);color:#ffd23f}
+@media (max-width:560px){.rk li{grid-template-columns:28px 1fr auto}.rk-s{display:none}}
+.botcard.gold{background:linear-gradient(180deg,#fff0b8,#f0cf6a);box-shadow:0 14px 40px rgba(0,0,0,.45),0 0 40px rgba(255,210,63,.5),inset 0 0 0 2px #b8860b}
+.botcard.gold .bc-n{color:#8a5a08}
+@media (max-width:760px){#bRank .tb-t{display:none}}
+.ld-mid{box-sizing:border-box}
+.ld-in{padding:10px 14px;border-radius:10px;background:rgba(8,22,30,.55);text-shadow:none}
 </style>
 
 <header class="hero" id="hero">
-  <div class="ld" id="ld" role="status" aria-live="polite">
+  <div class="ld" id="ld" role="dialog" aria-label="旺來群島：出航前">
     <div class="ld-sky"><i class="ld-sun"></i></div>
     <div class="ld-mid">
-      <p class="ld-k">台股生命線・航海課</p>
+      <p class="ld-k">旺來策略・回顧小島</p>
       <h1 class="ld-t">旺來群島</h1>
       <svg class="ld-boat" viewBox="0 0 120 90" aria-hidden="true"><path d="M60 6 L60 62 L22 62 Z" fill="#f4efe2"/><path d="M64 14 L64 62 L94 62 Z" fill="#ffd23f"/><rect x="58.5" y="4" width="3" height="62" fill="#5a3a1e"/><path d="M14 64 H106 L94 80 H26 Z" fill="#c0392b"/><path d="M20 70 H100" stroke="#ffd23f" stroke-width="2"/></svg>
       <div class="ld-sea"><i></i><i></i><i></i></div>
+      <p class="ld-in">這是用來回顧旺來策略的小島。十座島，一座島複習一個觀念：開船靠岸、讀課程卡、過挑戰，就蓋一枚印章。印章越多，船越大、越快，能去的海越遠。</p>
+      <ol class="ld-lv">
+        <li><b>Lv1 小舢舨</b><span>一開始 · 群島內海</span></li>
+        <li><b>Lv2 水手艇</b><span>2 章 · 船速 +10%</span></li>
+        <li><b>Lv3 舵手號</b><span>4 章 · 闖進風浪帶</span></li>
+        <li><b>Lv4 大副號</b><span>6 章 · 風浪不掉速</span></li>
+        <li><b>Lv5 船長號</b><span>8 章 · 穿到外海</span></li>
+        <li><b>Lv6 旺來戰艦</b><span>10 章 · 三桅金帆</span></li>
+      </ol>
+      <form class="ld-form" id="ldForm" autocomplete="off">
+        <input id="ldName" class="ld-name" maxlength="12" placeholder="船長名字（會上排行榜）" aria-label="船長名字，會出現在排行榜">
+        <button type="submit" class="ld-go" id="ldGo">出航</button>
+      </form>
       <div class="ld-bar"><i id="ldBar"></i></div>
       <p class="ld-s" id="ldS">升帆中…</p>
       <p class="ld-tip" id="ldTip">海平面就是生命線：島露出水面多少，一眼就看得到。</p>
-      <button type="button" class="ld-go" id="ldGo" hidden>先開船，邊開邊載</button>
     </div>
     <p class="ld-f">工具介紹，並非投資建議</p>
   </div>
@@ -887,6 +951,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
     <canvas class="cmp" id="cmp" aria-hidden="true"></canvas>
     <div class="top-btns">
       <button type="button" class="tb tb-ach" id="bAch" aria-haspopup="dialog"><span class="tb-i">章</span><span class="tb-t">獎章 <b id="achN">0</b></span><span class="tb-k">J</span><i class="tb-dot" id="achDot" hidden></i></button>
+      <button type="button" class="tb" id="bRank" aria-haspopup="dialog"><span class="tb-i">榜</span><span class="tb-t">排行榜</span></button>
       <button type="button" class="tb" id="bLog" aria-haspopup="dialog"><span class="tb-i">冊</span><span class="tb-t">航海日誌</span><span class="tb-k">L</span></button>
       <button type="button" class="tb" id="bSnd" aria-pressed="false"><span class="tb-i" id="sndIcon">靜</span><span class="tb-t">音效</span></button>
       <button type="button" class="tb" id="bSet" aria-haspopup="dialog"><span class="tb-i">設</span><span class="tb-t">設定</span><span class="tb-k">Esc</span></button>
@@ -1476,6 +1541,7 @@ const RAD = [70,58,54,64,58,54,58,50,62,60];
 const HGT = [34,40,34,26,38,28,22,34,34,30];
 const SS = RAD.map(r => r / 0.97), AA = HGT.map(h => h / 39);
 const N = ISL.length;
+const BELT0 = 470, BELT1 = 650;
 const CENTER = [59,26], WORLD_R = 900, DOCK_IN = 58, DOCK_OUT = 80, VMAX = 15, VAUTO = 20;
 
 const $ = id => document.getElementById(id);
@@ -2122,7 +2188,7 @@ function showResult(root){
 }
 
 /* ---------- 航海日誌 (logbook) ---------- */
-const LOG_TABS = [['voy', '航程'], ['rev', '複習'], ['book', '課本'], ['drill', '題庫'], ['glos', '詞彙'], ['check', '檢查表'], ['diary', '對帳'], ['ach', '獎章牆'], ['ward', '獎勵櫃'], ['room', '船長室'], ['faq', '問答']];
+const LOG_TABS = [['voy', '航程'], ['rev', '複習'], ['book', '課本'], ['drill', '題庫'], ['glos', '詞彙'], ['check', '檢查表'], ['diary', '對帳'], ['ach', '獎章牆'], ['ward', '獎勵櫃'], ['ship', '船階'], ['rank', '排行榜'], ['room', '船長室'], ['faq', '問答']];
 let logTab = 'voy', glosQ = '';
 const logHooks = {go: null};
 function renderLog(){
@@ -2176,6 +2242,10 @@ function renderLog(){
     h += achWallHTML();
   } else if (logTab === 'ward'){
     h += wardHTML();
+  } else if (logTab === 'ship'){
+    h += shipHTML();
+  } else if (logTab === 'rank'){
+    h += rankHTML();
   } else if (logTab === 'room'){
     h += roomHTML();
   } else if (logTab === 'rev'){
@@ -3389,7 +3459,7 @@ let mode = 'free', nav = null, pendNav = null, undock = null, cruise = false, br
 const keys = {f: 0, b: 0, l: 0, r: 0, brk: 0};
 const joy = {x: 0, y: 0, on: false, id: null};
 let camMode = 'chase', zoom = 30, zoomB = 430, uYaw = 0, uPitch = 0, freeYaw = 0, lastDrag = -99, camYaw = Math.PI, snapCam = true, baseFov = 50, shake = 0;
-let revWait = 0, edgeWarn = false, bumpToastT = 0, edgeF = 0, lvlS = 2.6, storm = 0, flash = 0, sunDeg = 24, active = false, docked = false, dockIdx = -1, nearIdx = 0, boundT = 0, bumpT = 0, started = false;
+let revWait = 0, edgeWarn = false, bumpToastT = 0, edgeF = 0, beltF = 0, lvlS = 2.6, storm = 0, flash = 0, sunDeg = 24, active = false, docked = false, dockIdx = -1, nearIdx = 0, boundT = 0, bumpT = 0, started = false;
 const nearB = {i: -1, d: 1e9};
 const autoArm = Array(N).fill(true);
 questHooks.docked = () => mode === 'docked' ? dockIdx : -1;
@@ -3495,7 +3565,7 @@ function goIsland(i, quiet){
 }
 function sailTo(x, z){
   const cx = x - CENTER[0], cz = z - CENTER[1], cd = Math.hypot(cx, cz);
-  if (cd > WORLD_R - 80){ x = CENTER[0] + cx / cd * (WORLD_R - 80); z = CENTER[1] + cz / cd * (WORLD_R - 80); }
+  { const R = seaLim(); if (cd > R - 80){ x = CENTER[0] + cx / cd * (R - 80); z = CENTER[1] + cz / cd * (R - 80); } }
   if (landAt(x, z) > -.8){
     let bi = 0, bd = 1e9; POS.forEach((p, k) => { const d = Math.hypot(p[0] - x, p[1] - z) - SS[k]; if (d < bd){ bd = d; bi = k; } });
     if (!(mode === 'docked' && dockIdx === bi)){ goIsland(bi); return; }
@@ -3838,8 +3908,11 @@ function weather(dt, instant){
   let ws = 1 / Math.pow(220 * 220, 1.5), ls = 2.2 * ws;
   for (let i = 0; i < N; i++){ const d2 = (boat.x - POS[i][0]) ** 2 + (boat.z - POS[i][1]) ** 2 + 1600; const w = 1 / Math.pow(d2, 1.5); ws += w; ls += w * ISL[i].sea; }
   /* the outer sea turns into a gale near the edge of the chart, whatever the chosen sea state */
-  const edge = edgeF = sstep(WORLD_R - 170, WORLD_R - 15, Math.hypot(boat.x - CENTER[0], boat.z - CENTER[1]));
-  const tgt = Math.max(wcfg.link ? ls / ws : SEA_LV[wcfg.lvl], 4.8 * edge);
+  const cr = Math.hypot(boat.x - CENTER[0], boat.z - CENTER[1]);
+  const edge = edgeF = sstep(WORLD_R - 170, WORLD_R - 15, cr);
+  /* a ring of gale between the islands and the outer sea: small boats are turned back, bigger ones push through */
+  const belt = beltF = sstep(BELT0, BELT0 + 50, cr) * (1 - sstep(BELT1 - 50, BELT1, cr));
+  const tgt = Math.max(wcfg.link ? ls / ws : SEA_LV[wcfg.lvl], 4.8 * Math.max(edge, belt));
   lvlS = instant ? tgt : lvlS + (tgt - lvlS) * (1 - Math.exp(-dt * .8));
   const p = seaParams(lvlS); storm = p.storm;
   WH = p.WH; WL = p.WL; SWA = p.SWA;
@@ -3906,7 +3979,7 @@ function updBoat(dt){
     else if (!cruise){ boat.thr += (0 - boat.thr) * (1 - Math.exp(-dt * 2.6)); if (Math.abs(boat.thr) < .01) boat.thr = 0; }
     if (!back) revWait = 0;
     if (braking){ boat.thr = 0; cruise = false; }
-    const vMax = VMAX * (1 - storm * .2);
+    const vMax = VMAX * shipSpd() * (1 - storm * (shipLv() >= 3 ? 0 : .3));
     vt = boat.thr >= 0 ? boat.thr * vMax : boat.thr * VREV;
     /* manual mooring: slow down close to a berth and the boat finishes the job */
     /* (a boat the player has just stopped on purpose — brake held or anchored — stays where it is) */
@@ -3989,12 +4062,13 @@ function updBoat(dt){
   boat.x += dx; boat.z += dz;
   const cx = boat.x - CENTER[0], cz = boat.z - CENTER[1], cd = Math.hypot(cx, cz);
   /* past the last islands the swell pushes the boat back, softly at first, then as a wall */
-  if (cd > WORLD_R - 70){
-    const k = Math.min(1, (cd - (WORLD_R - 70)) / 70);
+  const SR = seaLim();
+  if (cd > SR - 70){
+    const k = Math.min(1, (cd - (SR - 70)) / 70);
     boat.x -= cx / cd * k * 8 * dt; boat.z -= cz / cd * k * 8 * dt; if (boat.v > 0 && (fx * cx + fz * cz) > 0) boat.v *= Math.exp(-dt * k * 1.4);
-    if (!edgeWarn){ edgeWarn = true; toast('外海起大浪了，浪把船推回群島'); unlock('h_edge'); }
-  } else if (cd < WORLD_R - 140) edgeWarn = false;
-  if (cd > WORLD_R){ boat.x = CENTER[0] + cx / cd * WORLD_R; boat.z = CENTER[1] + cz / cd * WORLD_R; boat.v *= .97; }
+    if (!edgeWarn){ edgeWarn = true; toast(seaLimMsg(), 5200); if (SR >= WORLD_R) unlock('h_edge'); }
+  } else if (cd < SR - 140) edgeWarn = false;
+  if (cd > SR){ boat.x = CENTER[0] + cx / cd * SR; boat.z = CENTER[1] + cz / cd * SR; boat.v *= .97; }
   const rx = Math.cos(boat.h), rz = Math.sin(boat.h);
   const hc = waterH(boat.x, boat.z), hb = waterH(boat.x + fx * 3.8, boat.z + fz * 3.8), hs = waterH(boat.x - fx * 3.8, boat.z - fz * 3.8);
   const hr = waterH(boat.x + rx * 1.4, boat.z + rz * 1.4), hl = waterH(boat.x - rx * 1.4, boat.z - rz * 1.4);
@@ -4356,7 +4430,8 @@ const WARD = {
     {id: 'cat', n: '雙體船「順風」', d: '兩條船身一張大帆，最穩', need: () => PG.stamps.length >= 3, why: '集滿 3 枚印章'},
     {id: 'junk', n: '戎克船「起漲點」', d: '方頭高尾、竹骨紅帆', need: () => PG.stamps.length >= 6, why: '集滿 6 枚印章'},
     {id: 'ice', n: '冰晶破浪艇', d: '沒有帆，船身是一整塊冰', need: () => hasA('evt5'), why: '成就「臨危不亂」'},
-    {id: 'dutch', n: '荷蘭帆船「寶藏號」', d: '三桅大帆船的縮小版，寶藏島主專用', need: () => PG.stamps.length >= 10, why: '集滿 10 枚印章'}
+    {id: 'dutch', n: '荷蘭帆船「寶藏號」', d: '三桅大帆船的縮小版', need: () => PG.stamps.length >= 8, why: '集滿 8 枚印章'},
+    {id: 'war', n: '旺來戰艦', d: '三桅金帆、兩排砲門，最終船階專用', need: () => PG.stamps.length >= 10, why: '集滿 10 枚印章'}
   ],
   paint: [
     {id: 'none', n: '原色', d: '紅白黑三段漆'},
@@ -4488,7 +4563,7 @@ function bDutch(){
   }).catch(() => {});
   return k;
 }
-const BUILD = {cat: bCat, junk: bJunk, ice: bIce, dutch: bDutch};
+const BUILD = {cat: bCat, junk: bJunk, ice: bIce, dutch: bDutch, war: () => bWar()};
 function kindOf(id){
   if (!BK[id] && BUILD[id]){ const k = BUILD[id](); shade(k.g, true, true); k.g.visible = false; boatIn.add(k.g); BK[id] = k; }
   return BK[id] || BK.dinghy;
@@ -4916,7 +4991,12 @@ $('logBody').addEventListener('click', e => { const t = e.target.closest('button
 scrBody.addEventListener('click', e => { const t = e.target.closest('button'); if (!t) return; if (t.dataset.rv === 'bt'){ togglePanel('logPanel', true); logTab = 'bt'; renderLog(); return; } });
 
 /* ---------- the boat grows with the voyage: bigger and dressed up at every rank ---------- */
-const SHIP_LV = [[0, '小舢舨', '剛出航的小船'], [2, '水手艇', '船頭船尾掛上銅燈籠'], [4, '舵手號', '桅杆拉起一串彩旗'], [6, '大副號', '船身鑲上金邊和盾牌'], [8, '船長號', '船頭金星、桅頂長旗'], [10, '寶藏島主號', '金光繚繞，全身發亮']];
+/* [stamps needed, name, look, what it can do, speed factor] */
+const SHIP_LV = [[0, '小舢舨', '剛出航的小船', '只能在群島內海活動', 1], [2, '水手艇', '船頭船尾掛上銅燈籠', '船速 +10%', 1.1], [4, '舵手號', '桅杆拉起一串彩旗', '船速 +20%，能闖風浪帶（裡面有 6 個金瓶）', 1.2],
+  [6, '大副號', '船身鑲上金邊和盾牌', '船速 +30%，風浪裡不再掉速', 1.3], [8, '船長號', '船頭金星、桅頂長旗', '船速 +40%，穿得過風浪帶到外海（鳳梨礁和 5 個金瓶）', 1.4], [10, '旺來戰艦', '換成三桅金帆戰艦', '船速 +60%，整片海都是你的', 1.6]];
+const shipSpd = () => SHIP_LV[shipLv()][4];
+const seaLim = () => { const lv = shipLv(); return lv >= 4 ? WORLD_R : lv >= 2 ? 700 : 540; };
+const seaLimMsg = () => { const lv = shipLv(); return lv >= 4 ? '外海起大浪了，浪把船推回群島' : lv >= 2 ? '風浪帶外面的浪更大，船被推回來了。集滿 8 枚印章升到「船長號」才穿得過去' : '風浪帶太猛，小船闖不過。集滿 4 枚印章升到「舵手號」再來闖'; };
 const shipLv = () => SHIP_LV.reduce((a, [n], i) => PG.stamps.length >= n ? i : a, 0);
 const ORN = new THREE.Group(); boatIn.add(ORN);
 (() => {
@@ -4950,7 +5030,7 @@ function applyLevel(anim){
   const lv = shipLv();
   ORN.children.forEach(g => { g.visible = g.userData.lv <= lv; });
   /* the junk and the iceboat carry the flags lower; the Dutch ship is already dressed */
-  const kind = wardCur('boat').id; ORN.visible = kind !== 'dutch'; ORN.children[1].visible = ORN.children[1].visible && kind !== 'ice';
+  const kind = wardCur('boat').id; ORN.visible = kind !== 'dutch' && kind !== 'war'; ORN.children[1].visible = ORN.children[1].visible && kind !== 'ice';
   lvGrow = anim ? 0 : 1; lvShown = lv;
 }
 frameHooks.push(dt => {
@@ -4958,7 +5038,8 @@ frameHooks.push(dt => {
   if (lvShown < 0) applyLevel(false);
   else if (lv !== lvShown){
     const up = lv > lvShown; applyLevel(up);
-    if (up && started){ const L5 = SHIP_LV[lv]; snd.fanfare(); toast('船升級！Lv' + (lv + 1) + ' ' + L5[1] + '：' + L5[2] + '，船身也變大了', 4200); }
+    if (up && lv === 5 && (PG.ward.boat || 'dinghy') !== 'war'){ PG.ward.boat = 'war'; savePG(); lookDirty = 1; applyLevel(up); }
+    if (up && started){ const L5 = SHIP_LV[lv]; snd.fanfare(); toast('船升級！Lv' + (lv + 1) + ' ' + L5[1] + '：' + L5[3], 6000); }
   }
   /* size: +7% a rank, with a little bounce when it levels up */
   lvGrow = Math.min(1, lvGrow + dt * .8);
@@ -5003,10 +5084,11 @@ function stampPop(i){
   const el = $('stp'); el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
   clearTimeout(stpT); stpT = setTimeout(() => el.classList.remove('on'), 3200);
 }
-/* ================= loading screen: shown by plain HTML before three.js arrives, closed when the sea is ready ================= */
+/* ================= opening screen: what this is, what ranks do, your name; closed when you press 出航 ================= */
 const LD_TIPS = ['海平面就是生命線：島露出水面多少，一眼就看得到。', '每座島：靠岸、讀課程、過挑戰，就能蓋一枚印章。', '右上角「章」是獎章牆，按 J 也打得開。',
-  'WASD 或方向鍵開船，靠近碼頭按 E 靠岸。', '按 M 切到鳥瞰，點海面船會自己開過去。', '十座島各有一個地標，猜猜看它在講哪一課？', '同一片海上的其他船，也是正在複習的船長。', '海上的綠色光柱是漂流瓶，開過去撞一下，就撿到一個詞彙。'];
-const LD = {t0: performance.now(), tip: 0, done: false, shown: 0};
+  'WASD 或方向鍵開船，靠近碼頭按 E 靠岸。', '按 M 切到鳥瞰，點海面船會自己開過去。', '十座島各有一個地標，猜猜看它在講哪一課？', '同一片海上的其他船，也是正在複習的船長。', '海上的綠色光柱是漂流瓶，開過去撞一下，就撿到一個詞彙。',
+  '金色光柱是金瓶，在風浪帶和外海，船階夠高才拿得到。', '右上角「榜」看排行：印章、成就、瓶子都算分。'];
+const LD = {t0: performance.now(), tip: 0, done: false, shown: 0, ready: false, auto: !!(PG.capName || '').trim()};
 function ldClose(){
   if (LD.done) return; LD.done = true;
   const el = $('ld'); el.classList.add('out'); setTimeout(() => { el.hidden = true; }, 900);
@@ -5016,12 +5098,23 @@ function ldTick(){
   const n = texReady + (kFull ? 1 : 0), all = TERR_N + 1, f = .25 + .75 * n / all, el = performance.now() - LD.t0;
   LD.shown = Math.max(LD.shown, Math.min(f, .25 + el / 14000));
   $('ldBar').style.width = (LD.shown * 100).toFixed(0) + '%';
-  $('ldS').textContent = n >= all ? '準備好了，出航！' : '鋪海面、種椰子樹… ' + n + ' / ' + all;
-  if (el > 3500) $('ldGo').hidden = false;
-  if (n >= all) setTimeout(ldClose, 500);
-  else if (el > 16000) ldClose();
+  LD.ready = n >= all || el > 16000;
+  $('ldS').textContent = LD.ready ? '海面準備好了' : '鋪海面、種椰子樹… ' + n + ' / ' + all;
+  /* the test build never waits for a name */
+  if (LD.ready && window.__wl && !LD.hold) setTimeout(ldClose, 300);
+  if (LD.ready && !$('ld').classList.contains('rdy')) $('ld').classList.add('rdy');
 }
-$('ldGo').addEventListener('click', ldClose);
+$('ldName').value = (PG.capName || '').slice(0, 12);
+$('ldForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('ldName').value.trim().slice(0, 12);
+  if (!v){ $('ldName').focus(); $('ldName').classList.remove('shake'); void $('ldName').offsetWidth; $('ldName').classList.add('shake'); return; }
+  PG.capName = v; savePG(); const ni = $('nickIn'); if (ni) ni.value = v;
+  if (typeof lbPush === 'function') lbPush();
+  ldClose();
+});
+/* typing a name must not steer the boat */
+['keydown', 'keyup', 'keypress'].forEach(t => $('ldName').addEventListener(t, e => e.stopPropagation()));
 setInterval(() => { if (LD.done) return; LD.tip = (LD.tip + 1) % LD_TIPS.length; const t = $('ldTip'); t.classList.remove('in'); void t.offsetWidth; t.textContent = LD_TIPS[LD.tip]; t.classList.add('in'); }, 3200);
 /* ================= drift bottles: one glossary term each, scattered over the open sea ================= */
 if (!Array.isArray(PG.bot)) PG.bot = [];
@@ -5038,17 +5131,19 @@ const BOT = (() => {
   }
   return list;
 })();
-const botGlass = new THREE.MeshStandardMaterial({color: L(.2, .6, .42), transparent: true, opacity: .7, roughness: .08, metalness: .1});
+const botGlass0 = new THREE.MeshStandardMaterial({color: L(.2, .6, .42), transparent: true, opacity: .7, roughness: .08, metalness: .1});
 const botPaper = M(L(.92, .86, .68)), botCork = M(L(.45, .3, .16));
-function botMesh(){
+const botGold = new THREE.MeshStandardMaterial({color: L(1, .72, .15), transparent: true, opacity: .85, roughness: .15, metalness: .6, emissive: L(.25, .15, 0)});
+function botMesh(gold){
+  const botGlass = gold ? botGold : botGlass0, bc = gold ? L(1.8, 1.3, .3) : L(.5, 1.5, 1.2);
   const g = new THREE.Group(), b = new THREE.Group(); g.add(b); b.rotation.z = .55;
   b.add(new THREE.Mesh(new THREE.CylinderGeometry(.55, .55, 1.7, 14), botGlass));
   const nk = new THREE.Mesh(new THREE.CylinderGeometry(.2, .36, .7, 12), botGlass); nk.position.y = 1.2; b.add(nk);
   const ck = new THREE.Mesh(new THREE.CylinderGeometry(.22, .22, .3, 10), botCork); ck.position.y = 1.65; b.add(ck);
   b.add(new THREE.Mesh(new THREE.CylinderGeometry(.28, .28, 1.1, 10), botPaper));
-  const beam = new THREE.Mesh(new THREE.CylinderGeometry(.5, 1.5, 22, 16, 1, true), beamMat(L(.5, 1.5, 1.2), .2)); beam.position.y = 11; g.add(beam);
-  const ring = new THREE.Mesh(new THREE.RingGeometry(1.8, 2.5, 40), ringMat(L(.5, 1.5, 1.2), .6, 1.8, 2.5)); ring.rotation.x = -Math.PI / 2; ring.position.y = .15; g.add(ring);
-  g.userData = {b, ring}; g.scale.setScalar(1.5);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(.5, 1.5, 22, 16, 1, true), beamMat(bc, gold ? .3 : .2)); beam.position.y = 11; g.add(beam);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(1.8, 2.5, 40), ringMat(bc, .6, 1.8, 2.5)); ring.rotation.x = -Math.PI / 2; ring.position.y = .15; g.add(ring);
+  g.userData = {b, ring}; g.scale.setScalar(gold ? 2 : 1.5);
   return g;
 }
 BOT.forEach(o => { if (PG.bot.indexOf(o.i) >= 0) return; o.g = botMesh(); o.g.position.set(o.x, 0, o.z); scene.add(o.g); });
@@ -5082,6 +5177,173 @@ function botMapDots(ctx, f, d){
   ctx.fillStyle = 'rgba(120,255,220,.9)';
   for (const o of BOT){ if (!o.g) continue; ctx.beginPath(); ctx.arc(f.X(o.x), f.Z(o.z), 1.5 * d, 0, 6.283); ctx.fill(); }
 }
+/* ================= the voyage has a ladder: ranks that change what the boat can do, a storm belt, the outer sea, a scoreboard ================= */
+if (!Array.isArray(PG.gbot)) PG.gbot = [];
+
+/* ---------- the last rank: a three-masted warship ---------- */
+function bWar(){
+  const g = new THREE.Group(), hullM = M(L(.035, .03, .03), {roughness: .5}), sailM = M(L(1, .8, .36), {side: THREE.DoubleSide, roughness: .75, emissive: L(.1, .06, .01)}), sp = M(L(.2, .13, .07)), deckM = M(L(.5, .34, .18), {roughness: .8});
+  const gold = M(L(1, .72, .2), {metalness: .85, roughness: .25}), red = M(L(.6, .06, .05), {roughness: .6}), iron = M(L(.12, .12, .13), {metalness: .7, roughness: .4}), glow = new THREE.MeshBasicMaterial({color: L(2.4, 1.7, .6)});
+  texTo('hull_d.jpg', true, deckM, 'map', m => { m.color.multiplyScalar(1.5); });
+  /* hull: a tall side profile, pinched toward the keel */
+  const s = new THREE.Shape(); s.moveTo(-2.5, 1.5); s.lineTo(-2.35, .1); s.quadraticCurveTo(-2, -.5, -1.3, -.55); s.lineTo(1.5, -.55); s.quadraticCurveTo(2.3, -.4, 2.85, .75); s.lineTo(1.9, .62); s.lineTo(-1.2, .62); s.lineTo(-1.3, 1.2); s.lineTo(-2.5, 1.5);
+  const hg = new THREE.ExtrudeGeometry(s, {depth: 1.5, bevelEnabled: true, bevelThickness: .08, bevelSize: .06, bevelSegments: 2, curveSegments: 12}); hg.translate(0, 0, -.75);
+  const p = hg.attributes.position; for (let k = 0; k < p.count; k++){ const y = p.getY(k), x = p.getX(k), f = clamp((.6 - y) / 1.15, 0, 1), bow = clamp((x - 1.3) / 1.5, 0, 1); p.setZ(k, p.getZ(k) * (1 - .5 * f) * (1 - .78 * bow * bow)); }
+  hg.computeVertexNormals(); g.add(new THREE.Mesh(hg, hullM));
+  /* red below the waterline, two gold strakes, gun ports with brass muzzles */
+  const keel = new THREE.Mesh(new THREE.BoxGeometry(3.6, .22, .92), red); keel.position.set(-.1, -.47, 0); g.add(keel);
+  [.18, .5].forEach((y, r) => [-1, 1].forEach(sd => {
+    const st = new THREE.Mesh(new THREE.BoxGeometry(4.3, .045, .02), gold); st.position.set(-.2, y + .17, sd * (.8 - (r ? 0 : .06))); g.add(st);
+    for (let k = 0; k < 6; k++){ const x = -1.75 + k * .62 + r * .3; const port = new THREE.Mesh(new THREE.BoxGeometry(.2, .17, .03), red); port.position.set(x, y, sd * (.78 - (r ? 0 : .07))); g.add(port);
+      const gun = new THREE.Mesh(new THREE.CylinderGeometry(.045, .055, .3, 8), iron); gun.rotation.x = Math.PI / 2; gun.position.set(x, y, sd * (.9 - (r ? 0 : .07))); g.add(gun); }
+  }));
+  [-1, 1].forEach(sd => { const rl = new THREE.Mesh(new THREE.BoxGeometry(3.3, .16, .05), hullM); rl.position.set(.35, .74, sd * .74); g.add(rl); const gr = new THREE.Mesh(new THREE.BoxGeometry(3.3, .035, .07), gold); gr.position.set(.35, .83, sd * .74); g.add(gr); });
+  const deck = new THREE.Mesh(uvScale(new THREE.BoxGeometry(3.2, .05, 1.36), 3, 1.3), deckM); deck.position.set(.35, .64, 0); g.add(deck);
+  /* stern castle with lit windows and lanterns */
+  const cas = new THREE.Mesh(new THREE.BoxGeometry(1.15, .62, 1.42), hullM); cas.position.set(-1.9, 1.05, 0); g.add(cas);
+  const casTop = new THREE.Mesh(uvScale(new THREE.BoxGeometry(1.25, .05, 1.5), 1.2, 1.3), deckM); casTop.position.set(-1.9, 1.38, 0); g.add(casTop);
+  for (let k = 0; k < 4; k++){ const w = new THREE.Mesh(new THREE.PlaneGeometry(.2, .26), glow); w.position.set(-2.49, 1.08, -.5 + k * .33); w.rotation.y = -Math.PI / 2; g.add(w); }
+  [-1, 1].forEach(sd => { for (let k = 0; k < 3; k++){ const w = new THREE.Mesh(new THREE.PlaneGeometry(.2, .2), glow); w.position.set(-2.25 + k * .34, 1.1, sd * .715); w.rotation.y = sd > 0 ? 0 : Math.PI; g.add(w); }
+    const lan = new THREE.Mesh(new THREE.SphereGeometry(.1, 10, 8), glow); lan.position.set(-2.5, 1.62, sd * .6); g.add(lan); const lp = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, .28, 5), gold); lp.position.set(-2.5, 1.48, sd * .6); g.add(lp); });
+  [1.4, .78].forEach(y => { const trim = new THREE.Mesh(new THREE.BoxGeometry(1.2, .05, 1.5), gold); trim.position.set(-1.9, y, 0); g.add(trim); });
+  /* gilded figurehead and bowsprit */
+  const bsp = new THREE.Mesh(new THREE.CylinderGeometry(.03, .05, 1.7, 8), sp); bsp.rotation.z = -Math.PI / 2 + .32; bsp.position.set(3.25, 1.05, 0); g.add(bsp);
+  const fig = new THREE.Mesh(new THREE.ConeGeometry(.16, .5, 8), gold); fig.rotation.z = -Math.PI / 2 - .3; fig.position.set(2.8, .62, 0); g.add(fig);
+  /* three masts, square sails; the main course carries the pineapple */
+  const emb = canvasTex(256, 256, (c, W, H) => {
+    c.fillStyle = '#f3e3b0'; c.fillRect(0, 0, W, H);
+    c.fillStyle = '#2f7a3a'; for (let k = -2; k <= 2; k++){ c.beginPath(); c.moveTo(128, 96); c.lineTo(128 + k * 26 - 10, 30 + Math.abs(k) * 14); c.lineTo(128 + k * 26 + 12, 34 + Math.abs(k) * 14); c.fill(); }
+    c.fillStyle = '#e0a21c'; c.beginPath(); c.ellipse(128, 156, 52, 68, 0, 0, 7); c.fill();
+    c.strokeStyle = '#8a5a08'; c.lineWidth = 4; c.save(); c.beginPath(); c.ellipse(128, 156, 52, 68, 0, 0, 7); c.clip(); for (let k = -6; k < 8; k++){ c.beginPath(); c.moveTo(k * 26, 80); c.lineTo(k * 26 + 150, 240); c.stroke(); c.beginPath(); c.moveTo(k * 26 + 150, 80); c.lineTo(k * 26, 240); c.stroke(); } c.restore();
+  });
+  const embM = new THREE.MeshStandardMaterial({map: emb, side: THREE.DoubleSide, roughness: .8});
+  const sq = (w, h, m) => { const ge = new THREE.PlaneGeometry(w, h, 8, 4), q = ge.attributes.position; for (let k = 0; k < q.count; k++){ const u = q.getX(k) / w, v = q.getY(k) / h; q.setZ(k, (.25 - u * u) * 1.5 * w * .32 * (1 - Math.abs(v) * .5)); } ge.computeVertexNormals(); const me = new THREE.Mesh(ge, m); me.rotation.y = Math.PI / 2; return me; };
+  [[1.75, 3.9, .85], [.35, 5.0, 1], [-1.05, 4.1, .8]].forEach(([x, hgt, sc], mi) => {
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(.04, .07, hgt, 8), sp); mast.position.set(x, .62 + hgt / 2, 0); g.add(mast);
+    [[.3, 2.5, 1.5], [.61, 2.0, 1.15], [.86, 1.4, .85]].forEach(([f, w, h], si) => {
+      const y = .62 + hgt * f, yard = new THREE.Mesh(new THREE.CylinderGeometry(.025, .025, w * sc * 1.08, 6), sp); yard.rotation.x = Math.PI / 2; yard.position.set(x, y + h * sc / 2, 0); g.add(yard);
+      const sl = sq(w * sc, h * sc, mi === 1 && si === 0 ? embM : sailM); sl.position.set(x + .06, y, 0); g.add(sl);
+    });
+    const nest = new THREE.Mesh(new THREE.CylinderGeometry(.16, .12, .12, 10), sp); nest.position.set(x, .62 + hgt * .74, 0); g.add(nest);
+    const pen = new THREE.Mesh(new THREE.PlaneGeometry(.7, .1), red); pen.material = M(L(.75, .08, .06), {side: THREE.DoubleSide}); pen.position.set(x - .35, .62 + hgt + .02, 0); g.add(pen);
+  });
+  const flagM = M(L(.95, .66, .12), {side: THREE.DoubleSide}); const fl = new THREE.Mesh(new THREE.PlaneGeometry(.95, .55), flagM); fl.position.set(-3.0, 2.0, 0); g.add(fl);
+  const fp = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, .9, 5), sp); fp.position.set(-2.52, 1.8, 0); g.add(fp);
+  g.scale.setScalar(.9); g.position.y = .12;
+  return {g, hull: [], sails: [sailM], flag: flagM, flagMesh: fl};
+}
+
+/* ---------- gold bottles: six in the storm belt, five in the outer sea ---------- */
+const GBOT = (() => {
+  const out = [];
+  LEARN.faq.slice(0, 6).forEach((f, k) => { const a = .5 + k * 1.047, r = 560 + (k % 2) * 40; out.push({i: k, x: CENTER[0] + Math.cos(a) * r, z: CENTER[1] + Math.sin(a) * r, t: f.q, d: f.a, ph: k, g: null}); });
+  LEARN.summary.slice(0, 5).forEach((s, k) => { const a = 1.1 + k * 1.2566, r = 745 + (k % 2) * 45; out.push({i: 6 + k, x: CENTER[0] + Math.cos(a) * r, z: CENTER[1] + Math.sin(a) * r, t: '這一站：' + s.station, d: s.line, ph: k * 2, g: null}); });
+  return out;
+})();
+GBOT.forEach(o => { if (PG.gbot.indexOf(o.i) >= 0) return; o.g = botMesh(true); o.g.position.set(o.x, 0, o.z); scene.add(o.g); });
+
+/* ---------- the pineapple reef: the one place only a captain's ship can reach ---------- */
+const REEF = {x: CENTER[0] + Math.cos(3.75) * 790, z: CENTER[1] + Math.sin(3.75) * 790, g: new THREE.Group(), pine: null};
+(() => {
+  const g = REEF.g; g.position.set(REEF.x, 0, REEF.z); scene.add(g);
+  for (let k = 0; k < 11; k++){ const a = k * .571 + .2, r = k < 4 ? 5 : 11 + (k % 3) * 2.5, b = new THREE.Mesh(boulder(k < 4 ? 6 : 3.2 + (k % 3), 40 + k), rockM); b.position.set(Math.cos(a) * r, k < 4 ? .5 : -.6, Math.sin(a) * r); b.scale.y = k < 4 ? .9 : .7; g.add(b); }
+  const plinth = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 5.2, 3, 8), stoneM); plinth.position.y = 5.5; g.add(plinth);
+  const tex = canvasTex(256, 256, (c, W, H) => { c.fillStyle = '#e2a41e'; c.fillRect(0, 0, W, H); c.strokeStyle = '#8a5a08'; c.lineWidth = 5; for (let k = -8; k < 16; k++){ c.beginPath(); c.moveTo(k * 32, 0); c.lineTo(k * 32 + 256, 256); c.stroke(); c.beginPath(); c.moveTo(k * 32 + 256, 0); c.lineTo(k * 32, 256); c.stroke(); } });
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(2, 1);
+  const pine = new THREE.Group(); pine.position.y = 7;
+  const body = new THREE.Mesh(new THREE.SphereGeometry(4, 28, 20), new THREE.MeshStandardMaterial({map: tex, metalness: .25, roughness: .4, emissive: L(.06, .035, 0)})); body.scale.set(1, 1.35, 1); body.position.y = 5.4; pine.add(body);
+  const leafM = M(L(.12, .5, .2), {roughness: .6, side: THREE.DoubleSide});
+  for (let k = 0; k < 9; k++){ const lf = new THREE.Mesh(new THREE.ConeGeometry(1.3, 7.5 - (k % 3) * 1.2, 4), leafM); const a = k * .698, t = k < 3 ? .12 : .5; lf.position.set(Math.cos(a) * t * 2.6, 13.4 - (k < 3 ? 0 : .9), Math.sin(a) * t * 2.6); lf.rotation.z = -Math.cos(a) * t; lf.rotation.x = Math.sin(a) * t; pine.add(lf); }
+  g.add(pine); REEF.pine = pine;
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(2, 5, 90, 20, 1, true), beamMat(L(2, 1.4, .4), .22)); beam.position.y = 52; g.add(beam);
+  shade(g, true, true); beam.castShadow = false;
+})();
+ACH.push(['gbot1', '風浪裡的金瓶', '闖進風浪帶，撿到第一個金瓶'], ['gball', '金瓶收藏家', '11 個金瓶全部撿齊'], ['reef', '鳳梨礁', '穿過風浪帶，找到外海的黃金鳳梨'], ['warship', '旺來戰艦', '集滿 10 枚印章，升到最終船階']);
+Object.assign(ACH_META, {gbot1: {c: 'sea', r: 1}, gball: {c: 'coll', r: 3, p: () => [PG.gbot.length, GBOT.length]}, reef: {c: 'sea', r: 3}, warship: {c: 'isl', r: 3, p: () => [PG.stamps.length, 10]}});
+function gbotPick(o){
+  PG.gbot.push(o.i); savePG(); scene.remove(o.g); o.g = null;
+  $('bcN').textContent = '金瓶 ' + PG.gbot.length + ' / ' + GBOT.length; $('bcT').textContent = o.t; $('bcD').textContent = o.d;
+  const el = $('botCard'); el.hidden = false; el.classList.add('gold'); el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+  clearTimeout(botCardT); botCardT = setTimeout(botClose, 14000);
+  snd.fanfare(); unlock('gbot1'); if (PG.gbot.length >= GBOT.length) unlock('gball'); onProgress();
+}
+let reefT = 0;
+frameHooks.push(dt => {
+  for (const o of GBOT){
+    if (!o.g) continue;
+    const dx = o.x - boat.x, dz = o.z - boat.z, d2 = dx * dx + dz * dz;
+    o.g.visible = d2 < 1440000; if (!o.g.visible) continue;
+    o.g.position.y = waterH(o.x, o.z) - .25; o.g.userData.b.rotation.y = T * .5 + o.ph; o.g.userData.ring.scale.setScalar(1 + .25 * Math.sin(T * 2.2 + o.ph));
+    if (d2 < 100 && mode !== 'docked') gbotPick(o);
+  }
+  const rx = boat.x - REEF.x, rz = boat.z - REEF.z, rd = Math.hypot(rx, rz);
+  REEF.g.visible = rd < 1500; REEF.pine.rotation.y = T * .25;
+  if (rd < 19 && rd > .01){ boat.x = REEF.x + rx / rd * 19; boat.z = REEF.z + rz / rd * 19; boat.v *= .9; }
+  if (rd < 60 && !PG.reef){ PG.reef = 1; savePG(); unlock('reef'); snd.fanfare(); toast('找到鳳梨礁了！旺來，就是鳳梨。排行榜 +200 分', 7000); onProgress(); }
+  if (PG.stamps.length >= 10) unlock('warship');
+});
+const botMapDots0 = botMapDots;
+botMapDots = function(ctx, f, d){
+  botMapDots0(ctx, f, d);
+  ctx.fillStyle = 'rgba(255,210,63,.95)';
+  for (const o of GBOT){ if (!o.g) continue; ctx.beginPath(); ctx.arc(f.X(o.x), f.Z(o.z), 2 * d, 0, 6.283); ctx.fill(); }
+};
+$('bcX').addEventListener('click', () => $('botCard').classList.remove('gold'));
+const botPick0 = botPick; botPick = function(o){ $('botCard').classList.remove('gold'); botPick0(o); };
+
+/* ---------- 船階: what every rank changes, spelled out ---------- */
+function shipHTML(){
+  const lv = shipLv(), n = PG.stamps.length;
+  let h = '<p class="dm-n">印章換船階。船階越高，船越大、越快，能去的海越遠。</p><ol class="sl">';
+  SHIP_LV.forEach(([need, nm, look, can], i) => {
+    h += '<li class="' + (i === lv ? 'on' : i < lv ? 'done' : 'lock') + '"><span class="sl-n">Lv' + (i + 1) + '</span><div><b>' + nm + '</b><span class="sl-need">' + (need ? need + ' 枚印章' : '一開始') + (i === lv ? ' · 現在' : i < lv ? ' · 已達成' : ' · 還差 ' + (need - n) + ' 枚') + '</span><p>' + can + '</p><p class="sl-look">外觀：' + look + '</p></div></li>';
+  });
+  h += '</ol><h3 class="pn-sub">海域</h3><dl class="faq"><div><dt>內海</dt><dd>十座島和 36 個綠色漂流瓶都在這裡，任何船都能逛。</dd></div><div><dt>風浪帶</dt><dd>群島外面一圈大浪，Lv3 舵手號起才闖得了，裡面漂著 6 個金瓶（常見問題）。</dd></div><div><dt>外海</dt><dd>穿過風浪帶之後的平靜海面，Lv5 船長號起才到得了。鳳梨礁和 5 個金瓶（五站總結）在這裡。</dd></div></dl>';
+  return h;
+}
+
+/* ---------- 排行榜 ---------- */
+const LB = {db: null, uid: null, ok: false, rows: [], last: '', t: 0, err: ''};
+const lbParts = () => [['印章', PG.stamps.length, 100], ['成就', PG.ach.length, 20], ['漂流瓶', PG.bot.length, 15], ['金瓶', PG.gbot.length, 40], ['鳳梨礁', PG.reef ? 1 : 0, 200]];
+const lbScore = () => lbParts().reduce((a, p) => a + p[1] * p[2], 0);
+function lbPush(){
+  if (!LB.ok) return;
+  const n = (PG.capName || '').trim().slice(0, 12); if (!n) return;
+  const row = {n, s: lbScore(), st: PG.stamps.length, lv: shipLv(), b: PG.bot.length + PG.gbot.length}, key = JSON.stringify(row);
+  if (key === LB.last) return;
+  clearTimeout(LB.t); LB.t = setTimeout(() => { LB.last = key; row.t = Date.now(); LB.db.collection('lb').doc(LB.uid).set(row).catch(e => { LB.err = (e && e.code) || 'err'; LB.last = ''; }); }, 3000);
+}
+(async () => {
+  try {
+    if (!window.claude || typeof window.claude.use !== 'function') return;
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    if (!db || !user) return;
+    const id = await user.id(); if (!id) return;
+    LB.db = db; LB.uid = String(id); LB.ok = true;
+    db.collection('lb').orderBy('s', 'desc').limit(50).onSnapshot(snap => {
+      LB.rows = snap.docs.map(d => { const v = d.data() || {}; return {id: d.id, n: String(v.n || '').slice(0, 12), s: +v.s || 0, st: clamp(+v.st || 0, 0, 10), lv: clamp(Math.round(+v.lv || 0), 0, 5), b: +v.b || 0}; });
+      if (logTab === 'rank' && !$('logPanel').hidden) renderLog();
+    }, e => { LB.err = (e && e.code) || 'err'; });
+    lbPush();
+  } catch (_) {}
+})();
+progHooks.push(lbPush);
+function rankHTML(){
+  const me = lbScore();
+  let h = '<div class="rk-me"><div><span class="dm-n">' + esc((PG.capName || '').trim() || '還沒取名字') + ' · Lv' + (shipLv() + 1) + ' ' + SHIP_LV[shipLv()][1] + '</span><b>' + me + '</b><span class="dm-n">航海分數</span></div><ul>' + lbParts().map(p => '<li>' + p[0] + ' ' + p[1] + ' × ' + p[2] + '</li>').join('') + '</ul></div>';
+  if (!(PG.capName || '').trim()) h += '<p class="dm-n">到「設定」填船長名字，分數才會上榜。</p>';
+  if (!LB.ok) return h + '<p class="dm-n">這個版本沒有連上共用排行榜，只算你自己的分數。登入 claude.ai 開啟的版本才看得到大家的名次。</p>';
+  if (!LB.rows.length) return h + '<p class="dm-n">榜上還沒有人，你可以當第一個。</p>';
+  h += '<ol class="rk">';
+  LB.rows.forEach((r, i) => { h += '<li class="' + (r.id === LB.uid ? 'me' : '') + (i < 3 ? ' top' : '') + '"><span class="rk-i">' + (i + 1) + '</span><b>' + esc(r.n || '無名船長') + '</b><span class="rk-s">Lv' + (r.lv + 1) + ' ' + SHIP_LV[r.lv][1] + ' · 印章 ' + r.st + '</span><span class="rk-p">' + r.s + '</span></li>'; });
+  h += '</ol>';
+  if (!LB.rows.some(r => r.id === LB.uid) && (PG.capName || '').trim()) h += '<p class="dm-n">你目前 ' + me + ' 分，還沒進前 50。</p>';
+  return h + '<p class="dm-n">前 50 名，分數有變就更新。只能看的訪客不會上榜。</p>';
+}
+function openRank(){ logTab = 'rank'; if ($('logPanel').hidden) togglePanel('logPanel', true); else renderLog(); }
+$('bRank').addEventListener('click', openRank);
+
+if (typeof achCount === 'function') achCount();
 /* ================= shared sea: everyone who has the game open sees each other's boats ================= */
 /* presence only (nothing is stored): position, heading, hull, paint, sail, flag, wake and ship level */
 const MP = {room: null, user: null, list: [], ghosts: new Map(), names: {}, sent: '', sendT: 0, chip: null, conn: false};
@@ -5215,7 +5477,7 @@ function mpMapDots(ctx, f, d){
 
 /* the captain's name lives with the certificate name; IME-safe */
 { const ni = $('nickIn'); ni.value = PG.capName || '';
-  const upd = e => { if (e.isComposing) return; PG.capName = ni.value.trim().slice(0, 16); savePG(); };
+  const upd = e => { if (e.isComposing) return; PG.capName = ni.value.trim().slice(0, 12); savePG(); if (typeof lbPush === 'function') lbPush(); };
   ni.addEventListener('input', upd); ni.addEventListener('compositionend', upd); }
 /* ================= boot ================= */
 function bootGame(hd){
