@@ -4504,30 +4504,46 @@ function flagTex(id){
   const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; return t;
 }
 const flagTexs = {};
+/* a triangular sail with cloth in it: subdivided, bellied to leeward, UVs for the canvas weave */
+function triSail(a, b, c, belly){
+  const n = 12, pos = [], uv = [], idx = [], id = (i, j) => i * (2 * n + 3 - i) / 2 + j;
+  for (let i = 0; i <= n; i++) for (let j = 0; j <= n - i; j++){
+    const u = i / n, v = j / n, w = 1 - u - v, bz = 27 * u * v * w * belly;
+    pos.push(a[0] * w + b[0] * u + c[0] * v, a[1] * w + b[1] * u + c[1] * v, a[2] * w + b[2] * u + c[2] * v + bz); uv.push(v * 1.2, u * 1.6);
+  }
+  for (let i = 0; i < n; i++) for (let j = 0; j < n - i; j++){ idx.push(id(i, j), id(i + 1, j), id(i, j + 1)); if (j < n - i - 1) idx.push(id(i + 1, j), id(i + 1, j + 1), id(i, j + 1)); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals(); return g;
+}
 function bCat(){
   const g = new THREE.Group(), hullM = M(L(.88, .88, .86), {roughness: .45}), sailM = M(L(.95, .93, .88), {side: THREE.DoubleSide, roughness: .75}), wd = M(L(.42, .27, .14)), sp = M(L(.22, .14, .08));
-  texTo('sail_c.jpg', true, sailM, 'map', m => { m.color.setRGB(1.42, 1.38, 1.28); });
-  [-.62, .62].forEach(z => { const h = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 14), hullM); h.scale.set(2.05, .34, .25); h.position.set(.05, -.02, z); g.add(h); });
+  texTo('sail_c.jpg', true, sailM, 'map', m => { m.color.setRGB(1.55, 1.42, 1.2); }); texTo('sail_n.jpg', false, sailM, 'normalMap');
+  hullM.metalness = .05; hullM.roughness = .22;
+  const stripe = M(L(.75, .12, .08), {roughness: .35});
+  [-.62, .62].forEach(z => { const sw = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 8, 0, 6.2832, Math.PI * .5, Math.PI * .16), stripe); sw.scale.set(2.07, .35, .26); sw.position.set(.05, -.02, z); g.add(sw); const h = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 14), hullM); h.scale.set(2.05, .34, .25); h.position.set(.05, -.02, z); g.add(h); });
   const deck = new THREE.Mesh(uvScale(new THREE.BoxGeometry(2.3, .07, 1.5), 2, 1.3), wd); deck.position.set(-.15, .3, 0); g.add(deck);
-  texTo('hull_d.jpg', true, wd, 'map');
+  texTo('paint/planks.jpg', true, wd, 'map', m => { m.color.setRGB(1.5, 1.35, 1.15); }); texTo('hull_n.jpg', false, wd, 'normalMap');
   [-1.05, .85].forEach(x => { const b = new THREE.Mesh(new THREE.CylinderGeometry(.045, .045, 1.55, 8), sp); b.rotation.x = Math.PI / 2; b.position.set(x, .32, 0); g.add(b); });
   const mast = new THREE.Mesh(new THREE.CylinderGeometry(.04, .05, 4.1, 10), sp); mast.position.set(.2, 2.35, 0); g.add(mast);
   const rig = new THREE.Group(); rig.position.set(.2, 0, 0); rig.rotation.y = -.42; g.add(rig);
-  rig.add(new THREE.Mesh(tri([0, .45, 0], [0, 4.25, 0], [-1.75, .5, 0]), sailM));
-  const jib = new THREE.Mesh(tri([.04, .55, 0], [.04, 3.55, 0], [1.75, .4, 0]), sailM); jib.rotation.y = .25; g.add(jib);
+  rig.add(new THREE.Mesh(triSail([0, .45, 0], [0, 4.25, 0], [-1.75, .5, 0], .16), sailM));
+  const boom = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, 1.85, 8), sp); boom.rotation.z = Math.PI / 2; boom.position.set(-.9, .46, 0); rig.add(boom);
+  const jib = new THREE.Mesh(triSail([.04, .55, 0], [.04, 3.55, 0], [1.75, .4, 0], .12), sailM); jib.rotation.y = .25; g.add(jib);
   const flagM = M(L(.95, .66, .12), {side: THREE.DoubleSide}); const fl = new THREE.Mesh(new THREE.PlaneGeometry(.42, .17), flagM); fl.position.set(.42, 4.3, 0); g.add(fl);
   return {g, hull: [hullM], sails: [sailM], flag: flagM, flagMesh: fl};
 }
 function bJunk(){
   const g = new THREE.Group(), hullM = M(L(.5, .3, .16), {roughness: .7}), sailM = M(L(.62, .16, .08), {side: THREE.DoubleSide, roughness: .85}), sp = M(L(.2, .13, .07)), roof = M(L(.55, .1, .07));
-  texTo('sail_c.jpg', true, sailM, 'map', m => { m.color.setRGB(1.1, .3, .15); });
+  texTo('sail_c.jpg', true, sailM, 'map', m => { m.color.setRGB(1.25, .3, .14); }); texTo('sail_n.jpg', false, sailM, 'normalMap', m => { m.normalScale.set(1.3, 1.3); });
   const s = new THREE.Shape(); s.moveTo(-1.95, .78); s.lineTo(-1.8, -.05); s.quadraticCurveTo(-1.5, -.42, -1, -.45); s.lineTo(1.15, -.45); s.quadraticCurveTo(1.75, -.3, 2.05, .48); s.lineTo(1.5, .4); s.lineTo(-1.25, .45); s.lineTo(-1.95, .78);
   const hg = new THREE.ExtrudeGeometry(s, {depth: 1.25, bevelEnabled: true, bevelThickness: .08, bevelSize: .06, bevelSegments: 2, curveSegments: 10}); hg.translate(0, 0, -.625);
   /* pinch the bottom so it reads as a hull, not a block */
   const p = hg.attributes.position; for (let k = 0; k < p.count; k++){ const y = p.getY(k), f = clamp((.45 - y) / .9, 0, 1); p.setZ(k, p.getZ(k) * (1 - .45 * f)); }
   hg.computeVertexNormals(); uvScale(hg, .9, .9);
   g.add(new THREE.Mesh(hg, hullM));
-  texTo('hull_d.jpg', true, hullM, 'map', m => { m.color.multiplyScalar(1.6); });
+  texTo('paint/planks.jpg', true, hullM, 'map', m => { m.color.setRGB(1.05, .8, .6); }); texTo('hull_n.jpg', false, hullM, 'normalMap', m => { m.normalScale.set(1.2, 1.2); });
+  roof.roughness = .3; const rail = M(L(.62, .1, .07), {roughness: .35});
+  [-1, 1].forEach(sd => { const r = new THREE.Mesh(new THREE.BoxGeometry(2.9, .05, .05), rail); r.position.set(.1, .5, sd * .66); g.add(r); });
+  const eye = new THREE.MeshBasicMaterial({color: 0xf4efe2}); [-1, 1].forEach(sd => { const e = new THREE.Mesh(new THREE.CircleGeometry(.11, 16), eye); e.position.set(1.55, .12, sd * .52); e.rotation.y = sd > 0 ? .25 : Math.PI - .25; g.add(e); const pu = new THREE.Mesh(new THREE.CircleGeometry(.05, 12), new THREE.MeshBasicMaterial({color: 0x111111})); pu.position.set(1.56, .12, sd * .535); pu.rotation.y = e.rotation.y; g.add(pu); });
   const cab = new THREE.Mesh(new THREE.BoxGeometry(.75, .42, 1.05), hullM); cab.position.set(-1.35, .68, 0); g.add(cab);
   const rf = new THREE.Mesh(new THREE.BoxGeometry(.9, .07, 1.2), roof); rf.position.set(-1.35, .93, 0); g.add(rf);
   const sails = [];
@@ -4551,7 +4567,10 @@ function bIce(){
   const stripe = new THREE.Mesh(new THREE.TorusGeometry(1, .025, 6, 64), new THREE.MeshBasicMaterial({color: L(.4, 1.4, 1.8)})); stripe.scale.set(2.3, .64, 1); stripe.rotation.x = Math.PI / 2; stripe.position.y = .24; g.add(stripe);
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(.02, .02, .9, 6), M(L(.7, .75, .8), {metalness: .6, roughness: .3})); pole.position.set(-1.8, .75, 0); g.add(pole);
   const flagM = M(L(.95, .66, .12), {side: THREE.DoubleSide}); const fl = new THREE.Mesh(new THREE.PlaneGeometry(.42, .17), flagM); fl.position.set(-1.58, 1.08, 0); g.add(fl);
-  texTo('paint/ice.jpg', true, hullM, 'map', m => { m.map.repeat.set(2, 1); m.color.setRGB(1.05, 1.15, 1.2); });
+  texTo('paint/ice.jpg', true, [hullM, topM], 'map', m => { m.color.setRGB(1.05, 1.15, 1.2); });
+  texTo('paint/ice_n.jpg', false, [hullM, topM], 'normalMap', m => { m.normalScale.set(1.6, 1.6); }); texTo('paint/ice_r.jpg', false, [hullM, topM], 'roughnessMap', m => { m.roughness = .55; });
+  hullM.transparent = true; hullM.opacity = .93; topM.color.setRGB(.9, .97, 1);
+  [[.9, .5, .3], [-.2, .62, -.25], [-1.1, .5, .15]].forEach(([x, s, z], i) => { const sh = new THREE.Mesh(new THREE.OctahedronGeometry(s, 0), hullM); sh.scale.set(.55, 1.5, .55); sh.position.set(x, .55, z); sh.rotation.set(.2 * i, i, .25 - .2 * i); g.add(sh); });
   return {g, hull: [hullM], sails: [], flag: flagM, flagMesh: fl};
 }
 function bDutch(){
@@ -5030,7 +5049,7 @@ function applyLevel(anim){
   const lv = shipLv();
   ORN.children.forEach(g => { g.visible = g.userData.lv <= lv; });
   /* the junk and the iceboat carry the flags lower; the Dutch ship is already dressed */
-  const kind = wardCur('boat').id; ORN.visible = kind !== 'dutch' && kind !== 'war'; ORN.children[1].visible = ORN.children[1].visible && kind !== 'ice';
+  const kind = wardCur('boat').id; ORN.visible = kind === 'dinghy'; ORN.children[1].visible = ORN.children[1].visible && kind !== 'ice';
   lvGrow = anim ? 0 : 1; lvShown = lv;
 }
 frameHooks.push(dt => {
@@ -5180,57 +5199,42 @@ function botMapDots(ctx, f, d){
 /* ================= the voyage has a ladder: ranks that change what the boat can do, a storm belt, the outer sea, a scoreboard ================= */
 if (!Array.isArray(PG.gbot)) PG.gbot = [];
 
-/* ---------- the last rank: a three-masted warship ---------- */
+/* ---------- the last rank: the Poly Haven Dutch three-master (CC0, full PBR textures), dressed as the flagship ---------- */
 function bWar(){
-  const g = new THREE.Group(), hullM = M(L(.035, .03, .03), {roughness: .5}), sailM = M(L(1, .8, .36), {side: THREE.DoubleSide, roughness: .75, emissive: L(.1, .06, .01)}), sp = M(L(.2, .13, .07)), deckM = M(L(.5, .34, .18), {roughness: .8});
-  const gold = M(L(1, .72, .2), {metalness: .85, roughness: .25}), red = M(L(.6, .06, .05), {roughness: .6}), iron = M(L(.12, .12, .13), {metalness: .7, roughness: .4}), glow = new THREE.MeshBasicMaterial({color: L(2.4, 1.7, .6)});
-  texTo('hull_d.jpg', true, deckM, 'map', m => { m.color.multiplyScalar(1.5); });
-  /* hull: a tall side profile, pinched toward the keel */
-  const s = new THREE.Shape(); s.moveTo(-2.5, 1.5); s.lineTo(-2.35, .1); s.quadraticCurveTo(-2, -.5, -1.3, -.55); s.lineTo(1.5, -.55); s.quadraticCurveTo(2.3, -.4, 2.85, .75); s.lineTo(1.9, .62); s.lineTo(-1.2, .62); s.lineTo(-1.3, 1.2); s.lineTo(-2.5, 1.5);
-  const hg = new THREE.ExtrudeGeometry(s, {depth: 1.5, bevelEnabled: true, bevelThickness: .08, bevelSize: .06, bevelSegments: 2, curveSegments: 12}); hg.translate(0, 0, -.75);
-  const p = hg.attributes.position; for (let k = 0; k < p.count; k++){ const y = p.getY(k), x = p.getX(k), f = clamp((.6 - y) / 1.15, 0, 1), bow = clamp((x - 1.3) / 1.5, 0, 1); p.setZ(k, p.getZ(k) * (1 - .5 * f) * (1 - .78 * bow * bow)); }
-  hg.computeVertexNormals(); g.add(new THREE.Mesh(hg, hullM));
-  /* red below the waterline, two gold strakes, gun ports with brass muzzles */
-  const keel = new THREE.Mesh(new THREE.BoxGeometry(3.6, .22, .92), red); keel.position.set(-.1, -.47, 0); g.add(keel);
-  [.18, .5].forEach((y, r) => [-1, 1].forEach(sd => {
-    const st = new THREE.Mesh(new THREE.BoxGeometry(4.3, .045, .02), gold); st.position.set(-.2, y + .17, sd * (.8 - (r ? 0 : .06))); g.add(st);
-    for (let k = 0; k < 6; k++){ const x = -1.75 + k * .62 + r * .3; const port = new THREE.Mesh(new THREE.BoxGeometry(.2, .17, .03), red); port.position.set(x, y, sd * (.78 - (r ? 0 : .07))); g.add(port);
-      const gun = new THREE.Mesh(new THREE.CylinderGeometry(.045, .055, .3, 8), iron); gun.rotation.x = Math.PI / 2; gun.position.set(x, y, sd * (.9 - (r ? 0 : .07))); g.add(gun); }
-  }));
-  [-1, 1].forEach(sd => { const rl = new THREE.Mesh(new THREE.BoxGeometry(3.3, .16, .05), hullM); rl.position.set(.35, .74, sd * .74); g.add(rl); const gr = new THREE.Mesh(new THREE.BoxGeometry(3.3, .035, .07), gold); gr.position.set(.35, .83, sd * .74); g.add(gr); });
-  const deck = new THREE.Mesh(uvScale(new THREE.BoxGeometry(3.2, .05, 1.36), 3, 1.3), deckM); deck.position.set(.35, .64, 0); g.add(deck);
-  /* stern castle with lit windows and lanterns */
-  const cas = new THREE.Mesh(new THREE.BoxGeometry(1.15, .62, 1.42), hullM); cas.position.set(-1.9, 1.05, 0); g.add(cas);
-  const casTop = new THREE.Mesh(uvScale(new THREE.BoxGeometry(1.25, .05, 1.5), 1.2, 1.3), deckM); casTop.position.set(-1.9, 1.38, 0); g.add(casTop);
-  for (let k = 0; k < 4; k++){ const w = new THREE.Mesh(new THREE.PlaneGeometry(.2, .26), glow); w.position.set(-2.49, 1.08, -.5 + k * .33); w.rotation.y = -Math.PI / 2; g.add(w); }
-  [-1, 1].forEach(sd => { for (let k = 0; k < 3; k++){ const w = new THREE.Mesh(new THREE.PlaneGeometry(.2, .2), glow); w.position.set(-2.25 + k * .34, 1.1, sd * .715); w.rotation.y = sd > 0 ? 0 : Math.PI; g.add(w); }
-    const lan = new THREE.Mesh(new THREE.SphereGeometry(.1, 10, 8), glow); lan.position.set(-2.5, 1.62, sd * .6); g.add(lan); const lp = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, .28, 5), gold); lp.position.set(-2.5, 1.48, sd * .6); g.add(lp); });
-  [1.4, .78].forEach(y => { const trim = new THREE.Mesh(new THREE.BoxGeometry(1.2, .05, 1.5), gold); trim.position.set(-1.9, y, 0); g.add(trim); });
-  /* gilded figurehead and bowsprit */
-  const bsp = new THREE.Mesh(new THREE.CylinderGeometry(.03, .05, 1.7, 8), sp); bsp.rotation.z = -Math.PI / 2 + .32; bsp.position.set(3.25, 1.05, 0); g.add(bsp);
-  const fig = new THREE.Mesh(new THREE.ConeGeometry(.16, .5, 8), gold); fig.rotation.z = -Math.PI / 2 - .3; fig.position.set(2.8, .62, 0); g.add(fig);
-  /* three masts, square sails; the main course carries the pineapple */
-  const emb = canvasTex(256, 256, (c, W, H) => {
-    c.fillStyle = '#f3e3b0'; c.fillRect(0, 0, W, H);
-    c.fillStyle = '#2f7a3a'; for (let k = -2; k <= 2; k++){ c.beginPath(); c.moveTo(128, 96); c.lineTo(128 + k * 26 - 10, 30 + Math.abs(k) * 14); c.lineTo(128 + k * 26 + 12, 34 + Math.abs(k) * 14); c.fill(); }
-    c.fillStyle = '#e0a21c'; c.beginPath(); c.ellipse(128, 156, 52, 68, 0, 0, 7); c.fill();
-    c.strokeStyle = '#8a5a08'; c.lineWidth = 4; c.save(); c.beginPath(); c.ellipse(128, 156, 52, 68, 0, 0, 7); c.clip(); for (let k = -6; k < 8; k++){ c.beginPath(); c.moveTo(k * 26, 80); c.lineTo(k * 26 + 150, 240); c.stroke(); c.beginPath(); c.moveTo(k * 26 + 150, 80); c.lineTo(k * 26, 240); c.stroke(); } c.restore();
-  });
-  const embM = new THREE.MeshStandardMaterial({map: emb, side: THREE.DoubleSide, roughness: .8});
-  const sq = (w, h, m) => { const ge = new THREE.PlaneGeometry(w, h, 8, 4), q = ge.attributes.position; for (let k = 0; k < q.count; k++){ const u = q.getX(k) / w, v = q.getY(k) / h; q.setZ(k, (.25 - u * u) * 1.5 * w * .32 * (1 - Math.abs(v) * .5)); } ge.computeVertexNormals(); const me = new THREE.Mesh(ge, m); me.rotation.y = Math.PI / 2; return me; };
-  [[1.75, 3.9, .85], [.35, 5.0, 1], [-1.05, 4.1, .8]].forEach(([x, hgt, sc], mi) => {
-    const mast = new THREE.Mesh(new THREE.CylinderGeometry(.04, .07, hgt, 8), sp); mast.position.set(x, .62 + hgt / 2, 0); g.add(mast);
-    [[.3, 2.5, 1.5], [.61, 2.0, 1.15], [.86, 1.4, .85]].forEach(([f, w, h], si) => {
-      const y = .62 + hgt * f, yard = new THREE.Mesh(new THREE.CylinderGeometry(.025, .025, w * sc * 1.08, 6), sp); yard.rotation.x = Math.PI / 2; yard.position.set(x, y + h * sc / 2, 0); g.add(yard);
-      const sl = sq(w * sc, h * sc, mi === 1 && si === 0 ? embM : sailM); sl.position.set(x + .06, y, 0); g.add(sl);
+  const k = {g: new THREE.Group(), hull: [], sails: [], flag: null, flagMesh: null};
+  const flagM = M(L(.95, .66, .12), {side: THREE.DoubleSide}); k.flag = flagM;
+  loadGLTF('tex/ship/dutch_ship.json').then(gl => {
+    const m = gl.scene; m.scale.setScalar(.235); m.rotation.y = Math.PI; m.position.set(.4, -.1, 0);
+    m.traverse(o => { if (!o.isMesh) return; o.castShadow = true; o.receiveShadow = true; const mt = o.material; if (!mt) return; if (/hull/i.test(mt.name)) k.hull.push(mt); if (/sail/i.test(mt.name)) mt.color.setRGB(1.65, 1.2, .62); });
+    /* everything below is in the model's own metres: bow at +x, masts at x = 6.65 (fore) and -0.9 (main) */
+    const canvasM = new THREE.MeshStandardMaterial({color: L(1, .86, .5), side: THREE.DoubleSide, roughness: .86});
+    texTo('sail_c.jpg', true, canvasM, 'map', mt => { mt.color.setRGB(1.75, 1.22, .52); });
+    texTo('sail_n.jpg', false, canvasM, 'normalMap', mt => { mt.normalScale.set(.9, .9); });
+    const emb = canvasTex(512, 512, (c, W, H) => {
+      c.clearRect(0, 0, W, H); c.globalAlpha = .92;
+      c.fillStyle = '#2c6b33'; for (let j = -3; j <= 3; j++){ c.beginPath(); c.moveTo(256, 190); c.quadraticCurveTo(256 + j * 30, 120, 256 + j * 46, 40 + Math.abs(j) * 22); c.quadraticCurveTo(256 + j * 22, 130, 256 + (j >= 0 ? 16 : -16), 196); c.fill(); }
+      c.fillStyle = '#c98a12'; c.beginPath(); c.ellipse(256, 320, 104, 138, 0, 0, 7); c.fill();
+      c.save(); c.beginPath(); c.ellipse(256, 320, 104, 138, 0, 0, 7); c.clip(); c.strokeStyle = '#6e4405'; c.lineWidth = 7;
+      for (let j = -8; j < 12; j++){ c.beginPath(); c.moveTo(j * 48, 170); c.lineTo(j * 48 + 300, 470); c.stroke(); c.beginPath(); c.moveTo(j * 48 + 300, 170); c.lineTo(j * 48, 470); c.stroke(); }
+      c.fillStyle = 'rgba(255,225,120,.35)'; c.beginPath(); c.ellipse(222, 280, 40, 70, -.3, 0, 7); c.fill(); c.restore();
     });
-    const nest = new THREE.Mesh(new THREE.CylinderGeometry(.16, .12, .12, 10), sp); nest.position.set(x, .62 + hgt * .74, 0); g.add(nest);
-    const pen = new THREE.Mesh(new THREE.PlaneGeometry(.7, .1), red); pen.material = M(L(.75, .08, .06), {side: THREE.DoubleSide}); pen.position.set(x - .35, .62 + hgt + .02, 0); g.add(pen);
-  });
-  const flagM = M(L(.95, .66, .12), {side: THREE.DoubleSide}); const fl = new THREE.Mesh(new THREE.PlaneGeometry(.95, .55), flagM); fl.position.set(-3.0, 2.0, 0); g.add(fl);
-  const fp = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, .9, 5), sp); fp.position.set(-2.52, 1.8, 0); g.add(fp);
-  g.scale.setScalar(.9); g.position.y = .12;
-  return {g, hull: [], sails: [sailM], flag: flagM, flagMesh: fl};
+    const embM = new THREE.MeshStandardMaterial({map: emb, transparent: true, side: THREE.DoubleSide, roughness: .9, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2});
+    /* a square sail hung between two yards, bellied toward the bow */
+    const sq = (w, h, belly, mat, zoom) => { const ge = new THREE.PlaneGeometry(w, h, 14, 10), q = ge.attributes.position; if (zoom){ const uv = ge.attributes.uv; for (let j = 0; j < uv.count; j++) uv.setXY(j, (uv.getX(j) - .5) * zoom + .5, (uv.getY(j) - .5) * zoom * h / w + .5); } for (let j = 0; j < q.count; j++){ const u = q.getX(j) / w, v = q.getY(j) / h; q.setZ(j, (1 - 4 * u * u) * (1 - 2.6 * v * v * (v > 0 ? 1 : .55)) * belly); } ge.computeVertexNormals(); const me = new THREE.Mesh(ge, mat); me.rotation.y = Math.PI / 2; me.castShadow = true; return me; };
+    [[6.75, 5.6, 6.3, 11.9, 0], [-.75, 6.2, 6.9, 12.2, 1]].forEach(([x, w, h, y, main]) => {
+      const sl = sq(w, h, 1.15, canvasM); sl.position.set(x + .35, y, 0); m.add(sl);
+      [.41, .29].forEach(dx => { const e = sq(w, h, 1.15, embM, 1.12); e.position.set(x + dx, y, 0); e.castShadow = false; m.add(e); });
+    });
+    /* long red pennants at the mastheads, the gold ensign at the stern, lit lanterns */
+    const penM = M(L(.78, .08, .06), {side: THREE.DoubleSide});
+    [[6.65, 20.4], [-.9, 22.9]].forEach(([x, y]) => { const pn = new THREE.Mesh(tri([0, .32, 0], [0, -.32, 0], [-3.4, 0, 0]), penM); pn.position.set(x, y, 0); m.add(pn); });
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 1.9), flagM); fl.position.set(-12.0, 7.9, 0); m.add(fl); k.flagMesh = fl;
+    const staff = new THREE.Mesh(new THREE.CylinderGeometry(.05, .06, 4.2, 6), M(L(.2, .13, .07))); staff.position.set(-10.35, 6.9, 0); m.add(staff);
+    const glow = new THREE.MeshBasicMaterial({color: L(2.6, 1.8, .6)});
+    [[-10.25, 5.3, 1.3], [-10.25, 5.3, -1.3]].forEach(([x, y, z]) => { const ln = new THREE.Mesh(new THREE.SphereGeometry(.24, 12, 10), glow); ln.position.set(x, y, z); m.add(ln); });
+    k.g.add(m); applyLook();
+  }).catch(() => {});
+  return k;
 }
 
 /* ---------- gold bottles: six in the storm belt, five in the outer sea ---------- */
