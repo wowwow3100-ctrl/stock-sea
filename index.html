@@ -913,6 +913,30 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
 @media (max-width:760px){#bRank .tb-t{display:none}}
 .ld-mid{box-sizing:border-box}
 .ld-in{padding:10px 14px;border-radius:10px;background:rgba(8,22,30,.55);text-shadow:none}
+/* loading finished: the bar goes away and the screen is just waiting for a name */
+.ld.rdy .ld-bar{display:none}
+.ld.rdy .ld-s{font:700 15px var(--f-display);color:#ffd23f;margin-top:10px}
+.ld.rdy .ld-go{animation:ldPulse 1.6s ease-in-out infinite}
+.ld:not(.rdy) .ld-go{opacity:.75}
+@keyframes ldPulse{50%{box-shadow:0 0 0 8px rgba(255,210,63,.25)}}
+@media (prefers-reduced-motion:reduce){.ld.rdy .ld-go{animation:none}}
+/* phone: the sea gets the screen back. One-line quest, small chart, no approach card (the 靠岸 button already names the island), no island chip row (tap the chart) */
+@media (max-width:760px){
+  .screen.sail{display:none!important}
+  .hud .chips{display:none}
+  .mapbox{width:84px;height:84px}
+  .seactl{top:calc(142px + env(safe-area-inset-top,0px))}
+  .seactl #seaTxt{display:none}
+  .sea-btn{padding:5px 8px}
+  .quest{left:max(12px,env(safe-area-inset-left,0px));right:calc(108px + env(safe-area-inset-right,0px));max-width:none;width:auto;padding:5px 10px;display:flex;gap:8px;align-items:baseline;background:rgba(8,20,18,.55);backdrop-filter:blur(6px)}
+  .quest .q-k{display:none}
+  .quest .q-t{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+  .quest .q-d{font-size:11.5px;white-space:nowrap;flex:none}
+  .coach{top:calc(90px + env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));right:calc(108px + env(safe-area-inset-right,0px));width:auto;padding:7px 10px;gap:8px}
+  .coach p{font-size:12.5px;line-height:1.35}
+  .coach button{font-size:11.5px;padding:3px 8px;white-space:nowrap}
+  .mp-chip{top:calc(178px + env(safe-area-inset-top,0px))}
+}
 </style>
 
 <header class="hero" id="hero">
@@ -1609,7 +1633,16 @@ const SWD = [.83, .56], SWK = 2 * Math.PI / 85, SWW = Math.sqrt(9.81 * SWK);
 const GEO_IT = 7;
 const swellH = (x, z) => SWA * (Math.sin((SWD[0] * x + SWD[1] * z) * SWK - SWW * WT) + .35 * Math.sin((.3 * x - .95 * z) * SWK * 1.7 - SWW * 1.3 * WT + 1.3));
 const chopH = (x, z) => (waveRaw(x, z, WT, WL, GEO_IT) - .5) * 2 * WH;
-const waterH = (x, z) => chopH(x, z) + swellH(x, z);
+/* the tsunami: one ring wave spreading from an epicentre. A trough runs ahead of it, the crest is TSU.A high,
+   and the sea stays raised behind it for a while, which is what drowns the islands. GLSL twin: tsuH() in GL_WAVE. */
+const TSU = {on: false, ex: 0, ez: 0, r: 0, A: 0};
+function tsuH(x, z){
+  if (!TSU.on) return 0;
+  const d = TSU.r - Math.hypot(x - TSU.ex, z - TSU.ez), A = TSU.A;
+  if (d < 0){ const a = d / 34, b = (d + 150) / 70; return A * Math.exp(-a * a) - A * .14 * Math.exp(-b * b); }
+  const a = d / 85; return A * (.7 * Math.exp(-a * a) + .3 * Math.exp(-d / 700));
+}
+const waterH = (x, z) => chopH(x, z) + swellH(x, z) + tsuH(x, z);
 /* wave settings the viewer can tune; remembered in this browser only */
 const WDEF = {h: 1, l: 1, sw: 1, sp: 1, fo: 1, link: true, lvl: 2};
 const wcfg = Object.assign({}, WDEF);
@@ -2403,7 +2436,7 @@ vec3 skyCol(vec3 rd, bool disk){
 }
 `;
 const GL_WAVE = `
-uniform float uWH; uniform float uWL; uniform float uWT; uniform float uSwell;
+uniform float uWH; uniform float uWL; uniform float uWT; uniform float uSwell; uniform vec4 uTsu;
 float waveRaw(vec2 p0, int iters){
   vec2 p = p0 / uWL; float t = uWT / sqrt(uWL);
   float it = 0.0; float freq = 1.0; float tm = 2.0; float w = 1.0; float sv = 0.0; float sw = 0.0;
@@ -2421,7 +2454,14 @@ const float SWK = 0.073920;
 const float SWW = 0.851559;
 float swellH(vec2 p){ return uSwell * (sin(dot(vec2(0.83, 0.56), p) * SWK - SWW * uWT) + 0.35 * sin(dot(vec2(0.3, -0.95), p) * SWK * 1.7 - SWW * 1.3 * uWT + 1.3)); }
 float chopH(vec2 p, int it){ return (waveRaw(p, it) - 0.5) * 2.0 * uWH; }
-float waterH(vec2 p, int it){ return chopH(p, it) + swellH(p); }
+float tsuD(vec2 p){ return uTsu.z - length(p - uTsu.xy); }
+float tsuH(vec2 p){
+  if (uTsu.w <= 0.0) return 0.0;
+  float d = tsuD(p); float A = uTsu.w;
+  if (d < 0.0){ float a = d / 34.0; float b = (d + 150.0) / 70.0; return A * exp(-a * a) - A * 0.14 * exp(-b * b); }
+  float a = d / 85.0; return A * (0.7 * exp(-a * a) + 0.3 * exp(-d / 700.0));
+}
+float waterH(vec2 p, int it){ return chopH(p, it) + swellH(p) + tsuH(p); }
 vec3 waterNormal(vec2 p, float e, int it){
   float h = waterH(p, it); float hx = waterH(p - vec2(e, 0.0), it); float hz = waterH(p + vec2(0.0, e), it);
   return normalize(cross(vec3(e, h - hx, 0.0), vec3(0.0, h - hz, -e)));
@@ -2466,7 +2506,7 @@ const U = {
   uTime: {value: 0}, uSun: {value: new THREE.Vector3(0, .15, -1)}, uSunCol: {value: new THREE.Vector3(1, .5, .2)}, uAmb: {value: new THREE.Vector3(.2, .2, .25)},
   uDay: {value: 0}, uDusk: {value: 1}, uStorm: {value: 0}, uFlash: {value: 0}
 };
-const WU = {uWH: {value: WH}, uWL: {value: WL}, uWT: {value: 0}, uSwell: {value: SWA}};
+const WU = {uWH: {value: WH}, uWL: {value: WL}, uWT: {value: 0}, uSwell: {value: SWA}, uTsu: {value: new THREE.Vector4(0, 0, 0, 0)}};
 const IU = {uIsl: {value: POS.map((p, k) => new THREE.Vector4(p[0], p[1], SS[k], AA[k]))}, uIslD: {value: ISL_DIR.map(d => new THREE.Vector2(d[0], d[1]))}, uSink: {value: 0}};
 
 const scene = new THREE.Scene();
@@ -2535,7 +2575,7 @@ void main(){
   float dc = length(w.xz - cameraPosition.xz);
   float far = 1.0 - smoothstep(1500.0, 3600.0, dc) * 0.7;
   float hc = mix(chopH(w.xz, 7), chopH(w.xz, 4), smoothstep(260.0, 800.0, dc)) * far;
-  w.y += hc + swellH(w.xz) * far; vH = hc; vW = w.xyz;
+  w.y += hc + swellH(w.xz) * far + tsuH(w.xz); vH = hc; vW = w.xyz;
   gl_Position = projectionMatrix * viewMatrix * w;
 }`,
   fragmentShader: GL_COMMON + GL_WAVE + GL_ISL + `
@@ -2560,7 +2600,8 @@ void main(){
     vec4 pc = uTexMat * vec4(hp.x, 0.0, hp.z, 1.0);
     vec2 ruv = pc.xy / pc.w + N.xz * 0.045 * (1.0 - fade);
     vec4 rc = texture2D(tRefl, clamp(ruv, 0.001, 0.999));
-    refl = mix(refl, rc.rgb, clamp(rc.a, 0.0, 1.0));
+    /* the mirror image belongs to flat water at sea level: fade it out on the wall of the tsunami */
+    refl = mix(refl, rc.rgb, clamp(rc.a, 0.0, 1.0) * (1.0 - clamp(abs(hp.y) / 6.0 - 0.4, 0.0, 1.0) * step(0.001, uTsu.w)));
   }
   float rs = max(dot(R, S), 0.0);
   vec3 spec = sc * (pow(rs, 1200.0) * 50.0 + pow(rs, 120.0) * 0.7 + pow(rs, 12.0) * 0.04) * (1.0 - uStorm * 0.8);
@@ -2611,6 +2652,14 @@ void main(){
   foam = clamp(foam, 0.0, 1.0) * (1.0 - fade * 0.8);
   vec3 foamCol = sc * max(dot(N, S), 0.0) * 0.75 + amb * 0.8;
   col = mix(col, foamCol, foam * 0.85);
+  if (uTsu.w > 0.0){
+    /* white water on the crest and streaks down the face, visible from far away */
+    float td = tsuD(hp.xz); float tn = vnoise(hp.xz * 0.12 + vec2(uTime * 0.6, 0.0));
+    float crest = exp(-(td - 4.0) * (td - 4.0) / 90.0) * (0.45 + 0.55 * tn);
+    float face = smoothstep(-70.0, -8.0, td) * (1.0 - smoothstep(-8.0, 10.0, td)) * smoothstep(0.45, 0.9, vnoise(vec2(td * 0.08 - uTime * 1.5, atan(hp.z - uTsu.y, hp.x - uTsu.x) * 90.0)));
+    float back = smoothstep(0.0, 40.0, td) * exp(-td / 260.0) * smoothstep(0.5, 0.85, vnoise(hp.xz * 0.05 + uTime * 0.2));
+    col = mix(col, foamCol * 1.1, clamp(crest * 0.85 + face * 0.55 + back * 0.22, 0.0, 0.9) * clamp(uTsu.w / 12.0, 0.0, 1.0));
+  }
   gl_FragColor = vec4(col, 1.0);
 }`
 });
@@ -3917,6 +3966,7 @@ function weather(dt, instant){
   const p = seaParams(lvlS); storm = p.storm;
   WH = p.WH; WL = p.WL; SWA = p.SWA;
   WU.uWH.value = WH; WU.uWL.value = WL; WU.uSwell.value = SWA; OU.uFoam.value = wcfg.fo;
+  WU.uTsu.value.set(TSU.ex, TSU.ez, TSU.r, TSU.on ? TSU.A : 0);
 }
 function landAt(x, z){
   let h = -50;
@@ -5118,10 +5168,10 @@ function ldTick(){
   LD.shown = Math.max(LD.shown, Math.min(f, .25 + el / 14000));
   $('ldBar').style.width = (LD.shown * 100).toFixed(0) + '%';
   LD.ready = n >= all || el > 16000;
-  $('ldS').textContent = LD.ready ? '海面準備好了' : '鋪海面、種椰子樹… ' + n + ' / ' + all;
+  $('ldS').textContent = LD.ready ? '海面準備好了。填上船長名字，按「出航」' : '鋪海面、種椰子樹… ' + n + ' / ' + all;
   /* the test build never waits for a name */
   if (LD.ready && window.__wl && !LD.hold) setTimeout(ldClose, 300);
-  if (LD.ready && !$('ld').classList.contains('rdy')) $('ld').classList.add('rdy');
+  if (LD.ready && !$('ld').classList.contains('rdy')){ $('ld').classList.add('rdy'); if (!window.__wl && !('ontouchstart' in window)) try { $('ldName').focus({preventScroll: true}); } catch (_) {} }
 }
 $('ldName').value = (PG.capName || '').slice(0, 12);
 $('ldForm').addEventListener('submit', e => {
@@ -5311,6 +5361,21 @@ const LB = {db: null, uid: null, ok: false, web: false, rows: [], last: '', t: 0
 /* the public site has no claude.ai database behind it: there the board lives on the 旺來 backend, keyed by a random per-device id */
 const LB_API = 'https://web-production-e1521.up.railway.app/api/site/islands';
 const lbDev = () => { try { let d = localStorage.getItem('wl_dev'); if (!/^[A-Za-z0-9_-]{16,40}$/.test(d || '')){ d = Array.from(crypto.getRandomValues(new Uint8Array(18)), b => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'[b & 63]).join(''); localStorage.setItem('wl_dev', d); } return d; } catch (_) { return ''; } };
+/* the same shape as the claude.ai room, fed by polling: send my boat, get everyone else's back */
+function webRoom(dev){
+  let peersCb = null, connCb = null, prev = {}, latest = null, busy = false, fails = 0;
+  setInterval(() => {
+    if (busy || !latest || document.hidden) return; busy = true;
+    fetch(LB_API + '/sea', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({id: dev, p: latest})}).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(j => {
+      busy = false; fails = 0;
+      const peers = (j.peers || []).slice(0, 500).filter(o => o && o.p && typeof o.p.x === 'number').map(o => { o.p._t = performance.now(); return {peer: 'w' + String(o.k), by: null, isMe: false, presence: o.p}; }), now = {};
+      peers.forEach(p => { now[p.peer] = p; });
+      const joined = peers.filter(p => !prev[p.peer]), left = Object.keys(prev).filter(k => !now[k]).map(k => prev[k]); prev = now;
+      if (connCb) connCb(true); if (peersCb) peersCb({peers, joined, left});
+    }).catch(() => { busy = false; if (++fails > 2 && connCb) connCb(false); });
+  }, 1500);
+  return {onConnection(f){ connCb = f; }, onPeers(f){ peersCb = f; }, presence(p){ latest = p; return Promise.resolve(); }};
+}
 function lbFetch(){
   if (!LB.web) return;
   fetch(LB_API + '/rank', {cache: 'no-store'}).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(j => {
@@ -5341,7 +5406,7 @@ function lbPush(){
     if (!window.claude || typeof window.claude.use !== 'function'){
       /* standalone site */
       const d = lbDev(); if (!d || !/^https?:$/.test(location.protocol)) return;
-      LB.web = true; LB.uid6 = d; LB.uid = d.slice(0, 6); lbFetch(); lbPush(); return;
+      LB.web = true; LB.uid6 = d; LB.uid = d.slice(0, 6); lbFetch(); lbPush(); setTimeout(() => { try { mpAttach(webRoom(d)); } catch (_) {} }, 0); return;
     }
     const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
     if (!db || !user) return;
@@ -5373,6 +5438,136 @@ function openRank(){ logTab = 'rank'; if ($('logPanel').hidden) togglePanel('log
 $('bRank').addEventListener('click', openRank);
 
 if (typeof achCount === 'function') achCount();
+/* ================= photo-scanned rocks, shrubs, ferns and dock props (Poly Haven, CC0) =================
+   Geometry arrives as one JSON file (data only) and is optional: if it fails to load the islands keep their plain look. */
+const SCAN = {ready: false, geo: {}, mat: {}, size: {}, next: 0};
+(() => {
+  const dec = (b, T) => { const bin = atob(b), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new T(u.buffer); };
+  const texes = {}, tex = (f, srgb) => { if (!texes[f]){ const t = TL.load('tex/scan/' + f); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = ANISO; t.flipY = false; if (srgb) t.encoding = THREE.sRGBEncoding; texes[f] = t; } return texes[f]; };
+  fetch('tex/scan/pack.json').then(r => r.ok ? r.json() : Promise.reject(r.status)).then(j => {
+    const mats = {};
+    Object.keys(j.meshes).forEach(n => {
+      const d = j.meshes[n], g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(dec(d.p, Float32Array), 3));
+      g.setAttribute('normal', new THREE.BufferAttribute(dec(d.n, Float32Array), 3));
+      g.setAttribute('uv', new THREE.BufferAttribute(dec(d.uv, Float32Array), 2));
+      g.setIndex(new THREE.BufferAttribute(dec(d.i, d.i32 ? Uint32Array : Uint16Array), 1));
+      g.computeBoundingBox();
+      if (!mats[d.m.k]) mats[d.m.k] = new THREE.MeshStandardMaterial({map: tex(d.m.b, true), normalMap: tex(d.m.n, false), roughnessMap: tex(d.m.r, false), roughness: 1, metalness: 0, side: d.m.ds ? THREE.DoubleSide : THREE.FrontSide});
+      SCAN.geo[n] = g; SCAN.mat[n] = mats[d.m.k]; SCAN.size[n] = g.boundingBox.getSize(new THREE.Vector3());
+    });
+    SCAN.rocks = Object.keys(SCAN.geo).filter(n => /^rock_moss|^boulder/.test(n)); SCAN.shrubs = Object.keys(SCAN.geo).filter(n => /^shrub/.test(n)); SCAN.ferns = Object.keys(SCAN.geo).filter(n => /^fern/.test(n));
+    SCAN.ready = SCAN.rocks.length > 4;
+  }).catch(() => {});
+})();
+/* one instanced mesh per model: list of [x, y, z, rotY, scale, tiltX, tiltZ] in the parent's own coordinates */
+function scanInst(parent, name, list, radius, tint){
+  if (!list.length) return null;
+  const g = SCAN.geo[name].clone(); g.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 6, 0), radius);
+  const m = new THREE.InstancedMesh(g, SCAN.mat[name], list.length), o = new THREE.Object3D(), c = new THREE.Color();
+  list.forEach((p, i) => { o.position.set(p[0], p[1], p[2]); o.rotation.set(p[5] || 0, p[3], p[6] || 0); o.scale.setScalar(p[4]); o.updateMatrix(); m.setMatrixAt(i, o.matrix); const j = .85 + ((i * 37) % 10) * .03; c.setRGB(j * tint[0], j * tint[1], j * tint[2]); m.setColorAt(i, c); });
+  m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
+}
+function scanIsland(isl){
+  const k = isl.i, rnd = mulberry(k * 4513 + 7), b = BERTH[k], th = ITH[k] || ITH[0], cx = POS[k][0], cz = POS[k][1], S = SS[k];
+  const H = (x, z) => islandH(k, cx + x, cz + z, 6), R = isl.maxC + 30;
+  const free = (x, z, pad) => {
+    if (Math.hypot(x - isl.pad.x, z - isl.pad.z) < isl.pad.r + pad) return false;
+    const along = x * b.c + z * b.s, across = -x * b.s + z * b.c;
+    if (along > b.p0 - 10 && Math.abs(across) < 8 + pad) return false;
+    for (const [kx, kz, kr] of isl.keep) if (Math.hypot(x - kx, z - kz) < kr + pad * .5) return false;
+    return true;
+  };
+  /* rock colour follows the island's own stone, so the volcano gets dark basalt and the chalk island pale rock */
+  const rt = [.55 + .45 * Math.min(1.6, th.r[0]), .55 + .45 * Math.min(1.6, th.r[1]), .55 + .45 * Math.min(1.6, th.r[2])].map(v => v * 1.15);
+  const rocks = {}, push = (o, n, v) => { (o[n] = o[n] || []).push(v); };
+  /* 1. a broken ring of boulders along the waterline, in clumps */
+  for (let c = 0; c < 9; c++){
+    const a0 = rnd() * 6.283; if (Math.abs(wrapA(a0 - b.th)) < .5) continue;
+    const n = 2 + Math.floor(rnd() * 4);
+    for (let j = 0; j < n; j++){
+      const a = a0 + (rnd() - .5) * .22, rr = isl.coastAt(a) + (rnd() - .65) * 7, x = Math.cos(a) * rr, z = Math.sin(a) * rr; if (!free(x, z, 2)) continue;
+      const nm = SCAN.rocks[Math.floor(rnd() * SCAN.rocks.length)], s = (j === 0 ? 2.6 : 1.1) + rnd() * 1.9, h = Math.max(-1.2, H(x, z));
+      push(rocks, nm, [x, h - .35 * s, z, rnd() * 6.283, s, (rnd() - .5) * .3, (rnd() - .5) * .3]);
+    }
+  }
+  /* 2. outcrops on the steep ground */
+  for (let t = 0, n = 0; t < 500 && n < 16; t++){
+    const a = rnd() * 6.283, r = Math.sqrt(rnd()) * S * 1.2, x = Math.cos(a) * r, z = Math.sin(a) * r; if (!free(x, z, 3)) continue;
+    const h = H(x, z); if (h < 3) continue;
+    const sl = (Math.abs(H(x + 1.5, z) - H(x - 1.5, z)) + Math.abs(H(x, z + 1.5) - H(x, z - 1.5))) / 3; if (sl < .75) continue;
+    const s = 1.4 + rnd() * 2.2; push(rocks, SCAN.rocks[Math.floor(rnd() * SCAN.rocks.length)], [x, h - .4 * s, z, rnd() * 6.283, s, (rnd() - .5) * .4, (rnd() - .5) * .4]); n++;
+  }
+  Object.keys(rocks).forEach(n => scanInst(isl.land, n, rocks[n], R, rt));
+  /* 3. undergrowth where the island is green */
+  const veg = {}, gt = [Math.min(1.5, .5 + .5 * th.g[0]) * 1.25, Math.min(1.6, .5 + .5 * th.g[1]) * 1.3, Math.min(1.5, .5 + .5 * th.g[2]) * 1.1];
+  const nS = Math.round(S * .55 * th.veg), nF = Math.round(S * .9 * th.veg);
+  for (let t = 0, s = 0, f = 0; t < 2200 && (s < nS || f < nF); t++){
+    const a = rnd() * 6.283, r = Math.sqrt(rnd()) * S * 1.4, x = Math.cos(a) * r, z = Math.sin(a) * r; if (!free(x, z, 1.5)) continue;
+    const h = H(x, z); if (h < 2.2) continue;
+    const sl = (Math.abs(H(x + 1.5, z) - H(x - 1.5, z)) + Math.abs(H(x, z + 1.5) - H(x, z - 1.5))) / 3; if (sl > .7) continue;
+    if (s < nS && rnd() < .4){ push(veg, SCAN.shrubs[Math.floor(rnd() * SCAN.shrubs.length)], [x, h - .15, z, rnd() * 6.283, 1.5 + rnd() * 1.4]); s++; }
+    else if (f < nF){ const c = 1 + Math.floor(rnd() * 3); for (let j = 0; j < c; j++){ const fx = x + (rnd() - .5) * 2.4, fz = z + (rnd() - .5) * 2.4; push(veg, SCAN.ferns[Math.floor(rnd() * SCAN.ferns.length)], [fx, H(fx, fz) - .05, fz, rnd() * 6.283, 2.6 + rnd() * 2.2]); } f++; }
+  }
+  Object.keys(veg).forEach(n => { const m = scanInst(isl.land, n, veg[n], R, gt); if (m){ m.layers.set(1); m.castShadow = false; if (isl.veg) isl.veg.push(m); } });
+  /* 4. cargo on the pier, by the name gate */
+  const pg = new THREE.Group(), r0 = b.p0 + 5; pg.position.set(b.c * r0, 1.61, b.s * r0); pg.rotation.y = -b.th; isl.grp.add(pg);
+  [['wine_barrel_01', 0, 0, 1.05, 1.5], ['wooden_barrels_01_barrel02', 1.25, .15, 1.0, 1.5], ['wine_barrel_01', .6, 0, .25, 1.45, 1.35], ['wooden_crate_02', -1.5, 0, -.95, 1.3], ['wooden_crate_01', 3.2, 0, -1.0, 1.4], ['wooden_crate_01', 3.25, .5, -1.02, 1.25]].forEach(([n, x, y, z, s, lift], i) => {
+    if (!SCAN.geo[n]) return; const m = new THREE.Mesh(SCAN.geo[n], SCAN.mat[n]); m.scale.setScalar(s); m.position.set(x, lift || y, z); m.rotation.y = i * 1.3 + k; m.castShadow = true; m.receiveShadow = true; pg.add(m);
+  });
+  isl.scan = true;
+}
+frameHooks.push(() => {
+  if (!SCAN.ready) return;
+  if (!SCAN.reef && typeof REEF !== 'undefined'){
+    SCAN.reef = true; const list = {};
+    REEF.g.children.slice().forEach(c => { if (c.isMesh && c.material === rockM) REEF.g.remove(c); });
+    for (let j = 0; j < 16; j++){ const a = j * .43 + .2, r = j < 5 ? 4.5 : 10 + (j % 4) * 2.4, s = j < 5 ? 5.5 : 2.4 + (j % 3) * 1.3, n = SCAN.rocks[(j * 5) % SCAN.rocks.length]; (list[n] = list[n] || []).push([Math.cos(a) * r, j < 5 ? -1.2 : -1.6, Math.sin(a) * r, j * 1.7, s, (j % 3 - 1) * .2, (j % 2 - .5) * .3]); }
+    Object.keys(list).forEach(n => scanInst(REEF.g, n, list[n], 40, [1.1, 1.05, 1]));
+  }
+  for (let i = 0; i < N; i++){ const isl = islands[i]; if (isl && isl.built && !isl.scan){ try { scanIsland(isl); } catch (e) { isl.scan = true; } return; } }
+});
+/* ================= hidden event: the earthquake and the ten-storey wave =================
+   Once per save, some time after the boat reaches Lv4. The wave itself lives in tsuH() (a_data.js + the ocean shader):
+   everything that floats rises with it, and the raised sea behind the crest drowns the islands for a while. */
+ACH.push(['quake', '地震了!? 看看遠方', '海面突然一震，遠方的海平線抬了起來'], ['tsuride', '十層樓上的船', '被海嘯捲上浪頂，還撐了過來']);
+Object.assign(ACH_META, {quake: {c: 'sea', r: 3, h: 1}, tsuride: {c: 'sea', r: 3, h: 1}});
+const TS = {st: 0, t: 0, wait: 30 + Math.random() * 40, sail: 0, far: 0, peak: 0, warned: false, hit: false};
+const TS_A = 30, TS_V = 46;
+function tsuStart(){
+  if (TS.st) return false;
+  /* it rises where the player is already looking, a little off to one side, so "look at the horizon" pays off */
+  const cd = camera.getWorldDirection(new THREE.Vector3()), a = Math.atan2(cd.z, cd.x) + (Math.random() - .5) * 1.1;
+  TSU.ex = boat.x + Math.cos(a) * 1750; TSU.ez = boat.z + Math.sin(a) * 1750; TSU.r = 0; TSU.A = 0; TSU.on = true;
+  TS.st = 1; TS.t = 0; TS.peak = 0; TS.warned = false; TS.hit = false; TS.far = Math.hypot(TSU.ex - CENTER[0], TSU.ez - CENTER[1]) + WORLD_R + 500;
+  shake = 1; padRumble(1); snd.thunder(1.2);
+  toast('地震了!? 看看遠方', 9000);
+  PG.tsu = 1; savePG(); unlock('quake');
+  return true;
+}
+frameHooks.push(dt => {
+  if (!TS.st){
+    if (PG.tsu || !started || mode === 'docked' || shipLv() < 3 || !$('ld').hidden || panelOpen()) return;
+    TS.sail += dt; if (TS.sail > TS.wait) tsuStart();
+    return;
+  }
+  TS.t += dt;
+  if (TS.t < 5) shake = Math.max(shake, .55 * (1 - TS.t / 5));          /* the ground (well, the sea) shakes first */
+  TSU.r = Math.max(0, TS.t - 4) * TS_V;
+  TSU.A = TS_A * sstep(4, 12, TS.t) * (1 - sstep(TS.far - 400, TS.far, TSU.r));
+  const dx = boat.x - TSU.ex, dz = boat.z - TSU.ez, bd = Math.hypot(dx, dz) || 1, d = TSU.r - bd;
+  if (!TS.warned && d > -520 && d < 0){ TS.warned = true; snd.thunder(.9); toast('十層樓高的浪來了，船頭對準它！', 6000); }
+  if (Math.abs(d) < 160 && mode !== 'docked'){
+    /* the face of the wave carries the boat with it and slews it round; the height comes for free from waterH */
+    const f = Math.exp(-(d / 60) * (d / 60)), push = TS_V * .42 * f;
+    boat.x += dx / bd * push * dt; boat.z += dz / bd * push * dt; boat.h += Math.sin(TS.t * 1.7) * .5 * f * dt;
+    shake = Math.max(shake, .35 * f); if (f > .5) padRumble(.6);
+    if (f > .6 && !TS.hit){ TS.hit = true; snd.thunder(1.3); }
+  }
+  TS.peak = Math.max(TS.peak, tsuH(boat.x, boat.z));
+  if (TS.hit && d > 260 && !TS.rode){ TS.rode = true; if (TS.peak > TS_A * .6){ unlock('tsuride'); toast('浪過去了。船被抬上 ' + Math.round(TS.peak) + ' 公尺高，島要等水退才浮回來', 8000); } }
+  if (TSU.r > TS.far){ TSU.on = false; TSU.A = 0; TS.st = 0; TS.sail = -1e9; }
+});
 /* ================= shared sea: everyone who has the game open sees each other's boats ================= */
 /* presence only (nothing is stored): position, heading, hull, paint, sail, flag, wake and ship level */
 const MP = {room: null, user: null, list: [], ghosts: new Map(), names: {}, sent: '', sendT: 0, chip: null, conn: false};
@@ -5423,10 +5618,8 @@ function mpLabel(p){
   return {nm, sub: 'Lv' + (lv + 1) + ' ' + SHIP_LV[lv][1] + ' · 印章 ' + clamp(+pr.st || 0, 0, 10)};
 }
 /* connect when the viewer can: the game is complete without it */
-(async () => {
-  const C = window.claude; if (!C || typeof C.use !== 'function') return;
-  let room = null; try { room = await C.use('room'); } catch (_) {} if (!room) return;
-  MP.room = room; try { MP.user = await C.use('user'); } catch (_) {}
+function mpAttach(room){
+  MP.room = room;
   room.onConnection(c => { MP.conn = c; mpChip(); }, () => { MP.room = null; mpClear(); });
   room.onPeers(ch => {
     MP.list = ch.peers;
@@ -5435,6 +5628,12 @@ function mpLabel(p){
     mpNames(); mpChip();
   }, () => { MP.room = null; mpClear(); });
   mpChip();
+}
+(async () => {
+  const C = window.claude; if (!C || typeof C.use !== 'function') return;
+  let room = null; try { room = await C.use('room'); } catch (_) {} if (!room) return;
+  try { MP.user = await C.use('user'); } catch (_) {}
+  mpAttach(room);
 })();
 const vQ = new THREE.Vector3();
 frameHooks.push(dt => {
@@ -5462,7 +5661,11 @@ frameHooks.push(dt => {
     if (g && g.key !== mpLookKey(pr)){ mpDrop(p.peer); g = null; }
     if (!g){ g = mpGhost(p); MP.ghosts.set(p.peer, g); }
     /* glide toward the reported spot; heading the short way round */
-    g.x += (pr.x - g.x) * a; g.z += (pr.z - g.z) * a; g.h += wrapA((+pr.h || 0) - g.h) * a;
+    if (pr._t){
+      /* polled boats report every 1.5 s: run them forward along their heading in between, and glide gently */
+      const el = Math.min(2.5, (performance.now() - pr._t) / 1000), v = pr.m === 'd' ? 0 : (+pr.v || 0), tx = pr.x + Math.sin(+pr.h || 0) * v * el, tz = pr.z - Math.cos(+pr.h || 0) * v * el, aw = 1 - Math.exp(-dt * 2.2);
+      g.x += (tx - g.x) * aw; g.z += (tz - g.z) * aw; g.h += wrapA((+pr.h || 0) - g.h) * aw;
+    } else { g.x += (pr.x - g.x) * a; g.z += (pr.z - g.z) * a; g.h += wrapA((+pr.h || 0) - g.h) * a; }
     if (Math.hypot(pr.x - g.x, pr.z - g.z) > 80){ g.x = pr.x; g.z = pr.z; }
     g.root.position.set(g.x, waterH(g.x, g.z) - .15, g.z); g.root.rotation.set(Math.sin(T * 1.3 + g.x) * .03, -g.h, Math.sin(T * 1.1 + g.z) * .04);
     /* textures load late: re-apply this boat's look once a second until it has its bases */
