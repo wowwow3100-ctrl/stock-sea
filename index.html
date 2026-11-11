@@ -972,6 +972,14 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
 .ld-ext-l b{color:#ffd23f}
 .ld.ext .ld-boat,.ld.ext .ld-sea,.ld.ext .ld-lv{display:none}
 .ld.ext .ld-ext{margin-top:2px}
+/* narrow phones (360 px): the opening screen's grid column must not grow to its widest child */
+.ld{grid-template-columns:minmax(0,1fr);overflow-x:hidden}
+.ld-mid{min-width:0;max-width:100%}
+.ld-mid > *{min-width:0;max-width:100%}
+.ld-lv{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.ld-form .ld-name{min-width:0;flex:1 1 0}
+.ld-form .ld-go{flex:0 0 auto;white-space:nowrap}
+@media (max-width:400px){.ld-form .ld-go{padding:11px 18px}.ld-lv li{padding:6px 8px}}
 </style>
 
 <header class="hero" id="hero">
