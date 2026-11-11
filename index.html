@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="旺來群島：開船靠岸、複習台股生命線的 3D 島嶼網頁遊戲。工具介紹，並非投資建議。"><style>html,body{margin:0;height:100%;background:#1d3a4f}[hidden]{display:none!important}</style></head><body>
-<title>旺來群島</title>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="旺來群島：開船靠岸、複習台股生命線的 3D 島嶼網頁遊戲。工具介紹，並非投資建議。"><style>html,body{margin:0;height:100%;background:#1d3a4f}[hidden]{display:none!important}</style></head><body><title>旺來群島</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -937,6 +936,42 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
   .coach button{font-size:11.5px;padding:3px 8px;white-space:nowrap}
   .mp-chip{top:calc(178px + env(safe-area-inset-top,0px))}
 }
+
+/* ---------- v23: open-in-a-real-browser notice, greetings ---------- */
+.ld-ext{width:100%;box-sizing:border-box;margin-top:10px;padding:12px 14px;border:1.5px solid #ffd23f;border-radius:14px;background:rgba(255,210,63,.12);text-align:left}
+.ld-ext-t{margin:0 0 4px;font:700 15px var(--f-body);color:#ffd23f}
+.ld-ext-d{margin:0;font-size:13px;line-height:1.55;color:var(--cream)}
+.ld-ext-d b{color:#ffd23f}
+.ld-ext-b{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.ld-ext-b button{flex:1 1 130px;padding:9px 10px;border-radius:999px;border:1.5px solid #ffd23f;background:#ffd23f;color:#1a1206;font:700 14px var(--f-body);touch-action:manipulation}
+.ld-ext-b button + button{background:transparent;color:#ffd23f}
+.ld-ext-h{margin:8px 0 0;font-size:12px;color:rgba(255,248,230,.7)}
+.ld-ext-h.on{color:#ffd23f}
+.emo-pop{position:absolute;z-index:9;top:calc(58px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px));width:min(330px,calc(100% - 28px));box-sizing:border-box;padding:10px 12px 12px;border-radius:16px;border:1px solid rgba(255,210,63,.5);background:rgba(5,14,11,.9);backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.emo-h{margin:0 0 8px;font:700 14px var(--f-body);color:#ffd23f;display:flex;justify-content:space-between;align-items:baseline}
+.emo-h span{font-weight:400;font-size:11.5px;color:rgba(255,248,230,.65)}
+.emo-g{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.emo-b{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px 6px;border-radius:12px;border:1px solid rgba(255,248,230,.18);background:rgba(255,248,230,.06);color:var(--cream);font:500 11px var(--f-body);touch-action:manipulation;cursor:pointer}
+.emo-b i{font-style:normal;font-size:24px;line-height:1.1}
+.emo-b:hover{background:rgba(255,210,63,.18);border-color:#ffd23f}
+.emo-b.lock{opacity:.45;cursor:default}
+.emo-b.lock i{filter:grayscale(1)}
+.lab.emo-bub{display:flex;align-items:center;gap:6px;padding:5px 12px 5px 8px;border-radius:999px 999px 999px 4px;background:#fff8e6;color:#1f3520;border:2px solid #ffd23f;font:700 14px var(--f-body);white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
+.lab.emo-bub i{font-style:normal;font-size:24px;line-height:1}
+.lab.emo-bub.up{margin-top:-46px}
+.lab.emo-bub.pop i{animation:emoPop .5s ease-out}
+@keyframes emoPop{0%{transform:scale(.2) rotate(-25deg)}60%{transform:scale(1.35) rotate(8deg)}100%{transform:none}}
+.m-emo{width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,248,230,.35);background:rgba(5,14,11,.7);font-size:24px;line-height:1;touch-action:manipulation}
+.hero.nohud .emo-pop,.hero.nohud .lab.emo-bub{display:none!important}
+@media (max-width:760px){
+  #bEmo{display:none}
+  .emo-pop{top:auto;bottom:calc(98px + env(safe-area-inset-bottom,0px));right:calc(84px + env(safe-area-inset-right,0px));width:min(300px,calc(100% - 100px))}
+}
+@media (prefers-reduced-motion:reduce){.lab.emo-bub.pop i{animation:none}}
+.ld-ext-l{margin:6px 0 6px;padding-left:20px;font-size:13px;line-height:1.55;color:var(--cream)}
+.ld-ext-l b{color:#ffd23f}
+.ld.ext .ld-boat,.ld.ext .ld-sea,.ld.ext .ld-lv{display:none}
+.ld.ext .ld-ext{margin-top:2px}
 </style>
 
 <header class="hero" id="hero">
@@ -956,8 +991,16 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
         <li><b>Lv5 船長號</b><span>8 章 · 穿到外海</span></li>
         <li><b>Lv6 旺來戰艦</b><span>10 章 · 三桅金帆</span></li>
       </ol>
+      <div class="ld-ext" id="ldExt" hidden>
+        <p class="ld-ext-t">開始前：請改用外部瀏覽器開</p>
+        <p class="ld-ext-d">你現在在 <b id="ldExtApp">App</b> 的內建瀏覽器裡。原因有三個：</p>
+        <ol class="ld-ext-l"><li>它上下的工具列會吃掉畫面，手機上按鈕容易<b>超出螢幕</b>、按不到。</li><li>它給網頁的記憶體比較少，3D 海面容易卡頓、變黑或整頁重載。</li><li>關掉之後，印章和排行榜身分可能留不住。</li></ol>
+        <p class="ld-ext-d">用 Chrome 或 Safari 開，畫面完整、船跑得順，紀錄也留得住。</p>
+        <div class="ld-ext-b"><button type="button" id="ldExtGo">用瀏覽器開啟</button><button type="button" id="ldExtCp">複製網址</button></div>
+        <p class="ld-ext-h" id="ldExtH">打不開的話：點右上角「⋯」→「用瀏覽器開啟」。</p>
+      </div>
       <form class="ld-form" id="ldForm" autocomplete="off">
-        <input id="ldName" class="ld-name" maxlength="12" placeholder="船長名字（會上排行榜）" aria-label="船長名字，會出現在排行榜">
+        <input id="ldName" class="ld-name" maxlength="12" placeholder="船長名字（寫在船帆上，也上排行榜）" aria-label="船長名字，會寫在船帆上，也會出現在排行榜">
         <button type="submit" class="ld-go" id="ldGo">出航</button>
       </form>
       <div class="ld-bar"><i id="ldBar"></i></div>
@@ -976,6 +1019,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
     <div class="top-btns">
       <button type="button" class="tb tb-ach" id="bAch" aria-haspopup="dialog"><span class="tb-i">章</span><span class="tb-t">獎章 <b id="achN">0</b></span><span class="tb-k">J</span><i class="tb-dot" id="achDot" hidden></i></button>
       <button type="button" class="tb" id="bRank" aria-haspopup="dialog"><span class="tb-i">榜</span><span class="tb-t">排行榜</span></button>
+      <button type="button" class="tb" id="bEmo" aria-haspopup="dialog"><span class="tb-i">嗨</span><span class="tb-t">招呼</span><span class="tb-k">G</span></button>
       <button type="button" class="tb" id="bLog" aria-haspopup="dialog"><span class="tb-i">冊</span><span class="tb-t">航海日誌</span><span class="tb-k">L</span></button>
       <button type="button" class="tb" id="bSnd" aria-pressed="false"><span class="tb-i" id="sndIcon">靜</span><span class="tb-t">音效</span></button>
       <button type="button" class="tb" id="bSet" aria-haspopup="dialog"><span class="tb-i">設</span><span class="tb-t">設定</span><span class="tb-k">Esc</span></button>
@@ -1051,6 +1095,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
   <div class="mbtns">
     <button type="button" class="m-act" id="actM">靠岸</button>
     <button type="button" class="m-brk" id="brkM" aria-label="煞車">煞車</button>
+    <button type="button" class="m-emo" id="emoM" aria-label="打招呼" aria-haspopup="dialog">👋</button>
   </div>
 
   <div class="panel" id="setPanel" role="dialog" aria-modal="false" aria-labelledby="setH" hidden>
@@ -1598,8 +1643,8 @@ const gs2 = (u, v, cu, cv, w) => Math.exp(-((u - cu) * (u - cu) + (v - cv) * (v 
 function islShape(k, rr, u, v){
   const r2 = rr * rr;
   if (k === 1){ return 66 * Math.exp(-3.4 * r2) - 30 * Math.exp(-r2 / .011) + 6 * Math.exp(-1.2 * r2); }                       /* volcano with a crater */
-  if (k === 2){ return 15 * Math.exp(-1.5 * r2) + 27 * (1 - sstep(.34, .47, rr)); }                                        /* mesa */
-  if (k === 3){ return 24 * Math.exp(-1.3 * r2) + 12 * gs2(u, v, -.3, -.32, .05); }                                       /* low golden savanna */
+  if (k === 2){ const c2 = (u * u - v * v) / (u * u + v * v + 1e-4), re = rr / (.5 + .62 * c2 * c2), b = 34 * Math.exp(-2.6 * re * re); return 19 * b / (b + 9) + 6 * (1 - sstep(.3, .42, rr)); } /* compass rose: four capes */
+  if (k === 3){ const h0 = 26 * Math.exp(-1.3 * r2); return Math.min(h0, 17 + (h0 - 17) * .12) + 26 * gs2(u, v, -.3, .1, .012) + 9 * gs2(u, v, -.12, -.3, .02); } /* gold table with a horn */
   if (k === 4){ return 44 * Math.exp(-2 * r2) * (1 + .6 * clamp(-u * 2.4, -1, 1)) * (1 - .92 * sstep(.36, .46, -u)); }      /* wedge that ends in a cliff */
   if (k === 5){ return 46 * Math.exp(-2 * r2) - 40 * gs2(u, v, .05, -.6, .07); }                                           /* crescent with a bay */
   if (k === 6){ return 7 + 11 * (1 - sstep(.45, .92, rr)) + 5 * Math.exp(-7 * r2); }                                         /* flat white atoll */
@@ -2478,8 +2523,8 @@ float gs2(float u, float v, float cu, float cv, float w){ return exp(-((u - cu) 
 float islShape(int k, float rr, float u, float v){
   float r2 = rr * rr;
   if (k == 1) return 66.0 * exp(-3.4 * r2) - 30.0 * exp(-r2 / 0.011) + 6.0 * exp(-1.2 * r2);
-  if (k == 2) return 15.0 * exp(-1.5 * r2) + 27.0 * (1.0 - smoothstep(0.34, 0.47, rr));
-  if (k == 3) return 24.0 * exp(-1.3 * r2) + 12.0 * gs2(u, v, -0.3, -0.32, 0.05);
+  if (k == 2){ float c2 = (u * u - v * v) / (u * u + v * v + 1e-4); float re = rr / (0.5 + 0.62 * c2 * c2); float b = 34.0 * exp(-2.6 * re * re); return 19.0 * b / (b + 9.0) + 6.0 * (1.0 - smoothstep(0.3, 0.42, rr)); }
+  if (k == 3){ float h0 = 26.0 * exp(-1.3 * r2); return min(h0, 17.0 + (h0 - 17.0) * 0.12) + 26.0 * gs2(u, v, -0.3, 0.1, 0.012) + 9.0 * gs2(u, v, -0.12, -0.3, 0.02); }
   if (k == 4) return 44.0 * exp(-2.0 * r2) * (1.0 + 0.6 * clamp(-u * 2.4, -1.0, 1.0)) * (1.0 - 0.92 * smoothstep(0.36, 0.46, -u));
   if (k == 5) return 46.0 * exp(-2.0 * r2) - 40.0 * gs2(u, v, 0.05, -0.6, 0.07);
   if (k == 6) return 7.0 + 11.0 * (1.0 - smoothstep(0.45, 0.92, rr)) + 5.0 * exp(-7.0 * r2);
@@ -2670,7 +2715,7 @@ function oceanGeo(J, S, R){
   for (let j = 1; j < J; j++){ const a0 = 1 + (j - 1) * S, a1 = 1 + j * S; for (let s = 0; s < S; s++){ const s1 = (s + 1) % S; idx.push(a0 + s, a1 + s1, a1 + s, a0 + s, a0 + s1, a1 + s1); } }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); return g;
 }
-const ocean = new THREE.Mesh(oceanGeo(170, 220, 4200), oceanMat);
+const ocean = new THREE.Mesh(oceanGeo(170, 220, 4200), oceanMat); ocean.renderOrder = 2; /* after every solid thing, so hull lids can mask it */
 ocean.frustumCulled = false; scene.add(ocean);
 
 /* lights */
@@ -2740,8 +2785,8 @@ const islMat = new THREE.MeshStandardMaterial({vertexColors: true, roughness: .9
 const ITH = [
   {g: [1, 1, 1], r: [1, 1, 1], veg: 1, palm: 1},              // 01 旺來群島: tropical home island
   {g: [.3, .3, .33], r: [.26, .25, .28], veg: .25, palm: 0},   // 02 蒙眼航行: black volcanic rock in the fog
-  {g: [1.9, 1.1, .45], r: [1.7, 1.05, .6], veg: .2, palm: .3}, // 03 羅盤校準: sandstone mesa
-  {g: [2.2, 1.45, .35], r: [1.3, 1.05, .7], veg: .9, palm: .5}, // 04 我是大戶: golden savanna
+  {g: [1.2, 1.2, .62], r: [1.5, 1.3, 1], veg: .8, palm: 1}, // 03 羅盤校準: a green compass rose with pale stone capes
+  {g: [2.2, 1.5, .35], r: [1.7, 1.2, .55], veg: 1, palm: .8}, // 04 我是大戶: golden table island with a horn
   {g: [.9, 1.05, .9], r: [2.1, 2.05, 2], veg: .4, palm: .25}, // 05 燈塔氣象台: white chalk cliffs
   {g: [.5, .85, 1.25], r: [.7, .9, 1.3], veg: .7, palm: .4}, // 06 水面潛航: cool blue-grey
   {g: [1.5, 1.45, 1.1], r: [1.5, 1.45, 1.3], veg: .15, palm: 1.6},  // 07 瓶中信聯賽: white-sand atoll
@@ -3277,6 +3322,12 @@ let sailGeo = null, sailBase = null, flagGeo = null, flagBase = null, lanternM =
   const outer = new THREE.Mesh(hg, outerM); boatIn.add(outer);
   const inner = new THREE.Mesh(hg, innerM); inner.scale.set(.96, .93, .9); inner.position.y = .05; boatIn.add(inner);
   const rimM = M(L(.36, .22, .11));
+  /* a dry boat: an invisible lid just under the gunwale writes depth only, so the sea (drawn after it) can never show inside the hull */
+  { const lp = [], li = [], n = rim[0].length;
+    for (let i = 0; i < n; i++){ const p0 = rim[0][i], p1 = rim[1][i]; lp.push(p0.x, p0.y - .05, p0.z * .97, p1.x, p1.y - .05, p1.z * .97); if (i < n - 1){ const k = i * 2; li.push(k, k + 2, k + 1, k + 1, k + 2, k + 3); } }
+    const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3)); lg.setIndex(li);
+    const lidM = new THREE.MeshBasicMaterial({colorWrite: false, side: THREE.DoubleSide}); lidM.userData.mask = true;
+    const lidMesh = new THREE.Mesh(lg, lidM); lidMesh.renderOrder = 1; lidMesh.userData.mask = true; boatIn.add(lidMesh); }
   rim.forEach(r => { const tg = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(r), 48, .035, 6, false); boatIn.add(new THREE.Mesh(tg, rimM)); });
   const wood = M(L(.42, .27, .14)), spar = M(L(.22, .14, .08));
   texTo('hull_d.jpg', true, [outerM, innerM, wood], 'map', m => { m.color.multiplyScalar(1.6); });
@@ -3298,7 +3349,7 @@ let sailGeo = null, sailBase = null, flagGeo = null, flagBase = null, lanternM =
   const flagM = M(L(.95, .66, .12), {side: THREE.DoubleSide}); boatIn.add(new THREE.Mesh(flagGeo, flagM));
   lanternM = new THREE.MeshBasicMaterial({color: L(1, .75, .4)});
   const lantern = new THREE.Mesh(new THREE.SphereGeometry(.07, 12, 8), lanternM); lantern.position.set(-1.85, .45, 0); boatIn.add(lantern);
-  shade(boatIn, true, true);
+  shade(boatIn, true, true); boatIn.traverse(o => { if (o.userData.mask){ o.castShadow = false; o.receiveShadow = false; } });
   /* the dinghy is one of several hulls: keep its parts in their own group and hand its paintable materials to the reward cabinet */
   const g0 = new THREE.Group(); [...boatIn.children].forEach(c => g0.add(c)); boatIn.add(g0);
   boatIn.userData.kinds = {dinghy: {g: g0, hull: [outerM], sails: [sailM], flag: flagM, vc: true}};
@@ -3428,28 +3479,53 @@ function landmark(isl){
     [-1, 1].forEach(s => { const tail = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 6), M(L(.75, .08, .06), {side: THREE.DoubleSide})); tail.position.set(s * 1.2, 8.5, -7); tail.rotation.z = s * .25; g.add(tail); });
     facing(g, b.c, b.s); add(g, P.x, P.z, -2, 12);
   } else if (k === 2){
-    /* 羅盤校準: a compass rose laid on the plateau, four needle obelisks for the four conditions */
-    const g = new THREE.Group();
+    /* 羅盤校準: a brass compass on a stone drum at the heart of the rose-shaped island; four needle obelisks for the four conditions */
+    const g = new THREE.Group(), stoneL = M(L(.33, .29, .23), {roughness: .92});
     const rose = canvasTex(512, 512, (c, W) => {
-      c.fillStyle = '#20302a'; c.beginPath(); c.arc(256, 256, 250, 0, 7); c.fill();
-      c.strokeStyle = '#ffd23f'; c.lineWidth = 8; c.beginPath(); c.arc(256, 256, 236, 0, 7); c.stroke();
-      for (let a = 0; a < 8; a++){ const L2 = a % 2 ? 120 : 220, t = a * Math.PI / 4; c.fillStyle = a % 2 ? '#c9a34a' : '#ffd23f'; c.beginPath(); c.moveTo(256 + Math.sin(t) * L2, 256 - Math.cos(t) * L2); c.lineTo(256 + Math.sin(t + .3) * 34, 256 - Math.cos(t + .3) * 34); c.lineTo(256 + Math.sin(t - .3) * 34, 256 - Math.cos(t - .3) * 34); c.fill(); }
+      c.fillStyle = '#efe6cf'; c.beginPath(); c.arc(256, 256, 252, 0, 7); c.fill();
+      c.strokeStyle = '#1f3520'; c.lineWidth = 10; c.beginPath(); c.arc(256, 256, 238, 0, 7); c.stroke(); c.lineWidth = 3; c.beginPath(); c.arc(256, 256, 214, 0, 7); c.stroke();
+      for (let a = 0; a < 72; a++){ const t = a * Math.PI / 36, r0 = a % 9 ? 226 : 216; c.beginPath(); c.moveTo(256 + Math.sin(t) * r0, 256 - Math.cos(t) * r0); c.lineTo(256 + Math.sin(t) * 236, 256 - Math.cos(t) * 236); c.stroke(); }
+      for (let a = 0; a < 16; a++){ const L2 = a % 4 === 0 ? 205 : a % 2 === 0 ? 140 : 88, t = a * Math.PI / 8, w = a % 4 === 0 ? .2 : .16;
+        [[-1, '#1f3520'], [1, a % 4 === 0 ? '#c9302c' : '#c9a34a']].forEach(([sd, col]) => { c.fillStyle = col; c.beginPath(); c.moveTo(256 + Math.sin(t) * L2, 256 - Math.cos(t) * L2); c.lineTo(256 + Math.sin(t + sd * w) * 36, 256 - Math.cos(t + sd * w) * 36); c.lineTo(256, 256); c.fill(); }); }
     });
-    const disc = new THREE.Mesh(new THREE.CircleGeometry(19, 64), new THREE.MeshStandardMaterial({map: rose, roughness: .8})); disc.rotation.x = -Math.PI / 2; disc.position.y = .35; g.add(disc);
+    const drum = new THREE.Mesh(new THREE.CylinderGeometry(14.5, 15.5, 4, 48), stoneL); drum.position.y = 1; g.add(drum);
+    const step = new THREE.Mesh(new THREE.CylinderGeometry(17, 19, 5, 48), stoneL); step.position.y = -4.2; g.add(step);
+    const disc = new THREE.Mesh(new THREE.CircleGeometry(14, 64), new THREE.MeshStandardMaterial({map: rose, roughness: .75})); disc.rotation.x = -Math.PI / 2; disc.position.y = 3.06; g.add(disc);
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(14.2, .45, 10, 64), LM.gold); rim.rotation.x = Math.PI / 2; rim.position.y = 3.1; g.add(rim);
+    /* the instrument: two gimbal rings and a needle that keeps hunting for north */
+    const ped = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.8, 3.2, 16), LM.gold); ped.position.y = 4.6; g.add(ped);
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(6.2, .42, 12, 56), LM.gold); ring1.position.y = 12.2; g.add(ring1);
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(5.3, .3, 12, 56), LM.gold); ring2.position.y = 12.2; ring2.rotation.y = Math.PI / 2; g.add(ring2);
+    const ndl = new THREE.Group(); ndl.position.y = 12.2; g.add(ndl);
+    const nN = new THREE.Mesh(new THREE.ConeGeometry(.8, 4.6, 4), M(L(.8, .1, .08), {roughness: .5})); nN.rotation.x = Math.PI / 2; nN.position.z = 2.3; ndl.add(nN);
+    const nS = new THREE.Mesh(new THREE.ConeGeometry(.8, 4.6, 4), LM.white); nS.rotation.x = -Math.PI / 2; nS.position.z = -2.3; ndl.add(nS);
+    ndl.add(new THREE.Mesh(new THREE.SphereGeometry(.9, 16, 12), LM.gold));
     ['跌幅', '站回', '題材', '均線'].forEach((t, i) => {
-      const a = i * Math.PI / 2, ob = new THREE.Mesh(new THREE.ConeGeometry(1.3, 11, 4), i % 2 ? LM.gold : LM.white); ob.position.set(Math.sin(a) * 16, 5.5, Math.cos(a) * 16); g.add(ob);
-      const pl = label3(t, 4, 1.6); pl.position.set(Math.sin(a) * 16, 1.8, Math.cos(a) * 16 + (i === 0 ? 1.4 : 0)); pl.rotation.y = a; g.add(pl);
+      const a = i * Math.PI / 2 + Math.PI / 4, ob = new THREE.Mesh(new THREE.CylinderGeometry(.25, 1.5, 12, 4), i % 2 ? LM.gold : LM.white); ob.position.set(Math.sin(a) * 15.2, 5.5, Math.cos(a) * 15.2); ob.rotation.y = a + Math.PI / 4; g.add(ob);
+      const pl = label3(t, 4.6, 1.8); pl.position.set(Math.sin(a) * 17, 2.2, Math.cos(a) * 17); pl.rotation.y = a; g.add(pl);
     });
-    facing(g, b.c, b.s); add(g, P.x, P.z, -.2, 22);
+    facing(g, b.c, b.s); add(g, 0, 0, -1.2, 22);
+    const u0 = isl.upd; isl.upd = (dt, t) => { if (u0) u0(dt, t); ndl.rotation.y = Math.sin(t * .5) * .9 + Math.sin(t * 1.9) * .12; ring2.rotation.x = Math.sin(t * .35) * .25; };
   } else if (k === 3){
-    /* 我是大戶: stacks of gold coins and one giant coin standing up */
-    const g = new THREE.Group(), coin = new THREE.CylinderGeometry(1.7, 1.7, .5, 24);
-    [[-7, 3, 12], [-4, -4, 8], [4, -5, 16], [7, 3, 10], [0, 6, 6]].forEach(([x, z, n]) => { for (let j = 0; j < n; j++){ const c = new THREE.Mesh(coin, LM.gold); c.position.set(x + Math.sin(j * 1.7) * .15, .25 + j * .52, z + Math.cos(j * 1.3) * .15); g.add(c); } });
+    /* 我是大戶: a treasury on the table: an open chest, a pyramid of gold bars, coin stacks, and one giant coin on a plinth */
+    const g = new THREE.Group(), coin = new THREE.CylinderGeometry(1.5, 1.5, .46, 24), stoneL = M(L(.5, .44, .34), {roughness: .9});
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(15, 16.5, 3, 40), stoneL); base.position.y = -1; g.add(base);
+    [[-9.5, 4, 11], [-11.5, -1, 7], [-6.5, 7.5, 5], [9.5, 5, 9], [12, 0, 13], [7, 8, 6], [2.5, 9.5, 4]].forEach(([x, z, n]) => { for (let j = 0; j < n; j++){ const c = new THREE.Mesh(coin, LM.gold); c.position.set(x + Math.sin(j * 1.7) * .18, .75 + j * .48, z + Math.cos(j * 1.3) * .18); c.rotation.y = j; g.add(c); } });
+    /* gold bars, stacked 4-3-2-1 */
+    const bar = new THREE.BoxGeometry(3.2, 1, 1.5);
+    for (let r = 0; r < 4; r++) for (let j = 0; j < 4 - r; j++){ const m = new THREE.Mesh(bar, LM.gold); m.position.set(-6.5, 1 + r * 1.02, -4.5 + (j - (3 - r) / 2) * 1.65); g.add(m); }
+    /* the chest: lid thrown back, heaped with coins */
+    const chest = new THREE.Group(); chest.position.set(7, .5, -4); chest.rotation.y = -.45; g.add(chest);
+    const body = new THREE.Mesh(new THREE.BoxGeometry(6.4, 3.2, 4), LM.wood); body.position.y = 1.6; chest.add(body);
+    [-2.6, 0, 2.6].forEach(x => { const st = new THREE.Mesh(new THREE.BoxGeometry(.5, 3.3, 4.1), LM.gold); st.position.set(x, 1.6, 0); chest.add(st); });
+    const lid = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 6.4, 20, 1, false, 0, Math.PI), LM.wood); lid.rotation.z = Math.PI / 2; lid.rotation.y = 0; lid.position.set(0, 3.9, -2.9); lid.rotation.x = -1.15; chest.add(lid);
+    const heap = new THREE.Mesh(new THREE.SphereGeometry(2.9, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), LM.gold); heap.scale.set(1, .42, .62); heap.position.y = 3.1; chest.add(heap);
     const face = canvasTex(256, 256, c => { c.fillStyle = '#d9a32a'; c.beginPath(); c.arc(128, 128, 126, 0, 7); c.fill(); c.strokeStyle = '#8a5e10'; c.lineWidth = 10; c.beginPath(); c.arc(128, 128, 104, 0, 7); c.stroke(); c.fillStyle = '#6a4508'; c.font = '700 110px ' + FONT_D; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('大戶', 128, 134); });
-    const big = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 1.2, 48), [LM.gold, new THREE.MeshStandardMaterial({map: face, metalness: .6, roughness: .35}), new THREE.MeshStandardMaterial({map: face, metalness: .6, roughness: .35})]);
-    big.rotation.x = Math.PI / 2; big.position.set(0, 7.5, 0); g.add(big);
-    facing(g, b.c, b.s); add(g, P.x, P.z, -.2, 14);
-    const u0 = isl.upd; isl.upd = (dt, t) => { if (u0) u0(dt, t); big.rotation.z = Math.sin(t * .4) * .25; };
+    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 4, 3.4, 8), stoneL); plinth.position.set(0, 2.2, 1); g.add(plinth);
+    const big = new THREE.Mesh(new THREE.CylinderGeometry(6.2, 6.2, 1.1, 48), [LM.gold, new THREE.MeshStandardMaterial({map: face, metalness: .6, roughness: .35}), new THREE.MeshStandardMaterial({map: face, metalness: .6, roughness: .35})]);
+    big.rotation.x = Math.PI / 2; const spin = new THREE.Group(); spin.position.set(0, 10.2, 1); spin.add(big); g.add(spin);
+    const [x, z] = slope(.42); facing(g, b.c, b.s); add(g, x, z, .2, 18);
+    const u0 = isl.upd; isl.upd = (dt, t) => { if (u0) u0(dt, t); spin.rotation.y = t * .5; };
   } else if (k === 4){
     /* 燈塔氣象台: six signal lamps in a row, one for each light of the market's weather */
     const g = new THREE.Group(), cols = [[.2, 1.6, .4], [.2, 1.6, .4], [1.8, 1.3, .2], [1.8, .25, .15], [.2, 1.6, .4], [1.8, 1.3, .2]];
@@ -5156,7 +5232,7 @@ function stampPop(i){
 /* ================= opening screen: what this is, what ranks do, your name; closed when you press 出航 ================= */
 const LD_TIPS = ['海平面就是生命線：島露出水面多少，一眼就看得到。', '每座島：靠岸、讀課程、過挑戰，就能蓋一枚印章。', '右上角「章」是獎章牆，按 J 也打得開。',
   'WASD 或方向鍵開船，靠近碼頭按 E 靠岸。', '按 M 切到鳥瞰，點海面船會自己開過去。', '十座島各有一個地標，猜猜看它在講哪一課？', '同一片海上的其他船，也是正在複習的船長。', '海上的綠色光柱是漂流瓶，開過去撞一下，就撿到一個詞彙。',
-  '金色光柱是金瓶，在風浪帶和外海，船階夠高才拿得到。', '右上角「榜」看排行：印章、成就、瓶子都算分。'];
+  '金色光柱是金瓶，在風浪帶和外海，船階夠高才拿得到。', '右上角「榜」看排行：印章、成就、瓶子都算分。', '按 G 或「嗨」跟別的船打招呼；船階越高，表情越多。', '你取的船長名字會寫在自己的船帆上，別的船也看得到。'];
 const LD = {t0: performance.now(), tip: 0, done: false, shown: 0, ready: false, auto: !!(PG.capName || '').trim()};
 function ldClose(){
   if (LD.done) return; LD.done = true;
@@ -5185,6 +5261,36 @@ $('ldForm').addEventListener('submit', e => {
 /* typing a name must not steer the boat */
 ['keydown', 'keyup', 'keypress'].forEach(t => $('ldName').addEventListener(t, e => e.stopPropagation()));
 setInterval(() => { if (LD.done) return; LD.tip = (LD.tip + 1) % LD_TIPS.length; const t = $('ldTip'); t.classList.remove('in'); void t.offsetWidth; t.textContent = LD_TIPS[LD.tip]; t.classList.add('in'); }, 3200);
+
+/* in-app browsers (Threads, LINE, Facebook, Instagram…) starve a 3D page and may drop its storage: say so before the game starts, and offer the way out.
+   Only on the public site: inside claude.ai there is nowhere else to go. */
+(() => {
+  const ua = navigator.userAgent || '', q = new URLSearchParams(location.search).get('inapp');
+  const app = q || (/Barcelona|Threads/i.test(ua) ? 'Threads' : /Instagram/i.test(ua) ? 'Instagram' : /\bLine\//i.test(ua) ? 'LINE' : /FBAN|FBAV|FB_IAB|Messenger/i.test(ua) ? 'Facebook' : /MicroMessenger/i.test(ua) ? 'WeChat' : '');
+  if (!app || window.claude) return;
+  const url = location.origin + location.pathname, iOS = /iPhone|iPad|iPod/i.test(ua), box = $('ldExt');
+  $('ldExtApp').textContent = app; box.hidden = false;
+  /* first thing on the page, and the decorations step aside so the name box still fits on a phone */
+  { const boatEl = $('ld').querySelector('.ld-boat'); if (boatEl) boatEl.parentNode.insertBefore(box, boatEl); $('ld').classList.add('ext'); }
+  $('ldExtGo').addEventListener('click', () => {
+    try {
+      if (app === 'LINE') location.href = url + '?openExternalBrowser=1';
+      else if (iOS) location.href = 'x-safari-' + url;
+      else location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+    } catch (_) {}
+    $('ldExtH').classList.add('on');
+  });
+  $('ldExtCp').addEventListener('click', async () => {
+    let ok = false; try { await navigator.clipboard.writeText(url); ok = true; } catch (_) { try { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); ok = document.execCommand('copy'); t.remove(); } catch (_) {} }
+    $('ldExtCp').textContent = ok ? '已複製，貼到瀏覽器' : url;
+  });
+})();
+
+/* on the public site the page is ours: size the game to the window that is really visible, so toolbars that come and go (phones, in-app browsers) never push buttons off screen */
+if (!window.claude && !window.__wl){
+  const fit = () => { if (document.fullscreenElement) { hero.style.height = ''; return; } const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight; const v = Math.round(h) + 'px'; if (h > 200 && hero.style.height !== v){ hero.style.height = v; if (typeof resize === 'function') try { resize(); } catch (_) {} } };
+  fit(); window.addEventListener('resize', fit); window.addEventListener('orientationchange', () => setTimeout(fit, 250)); if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+}
 /* ================= drift bottles: one glossary term each, scattered over the open sea ================= */
 if (!Array.isArray(PG.bot)) PG.bot = [];
 const BOT = (() => {
@@ -5272,7 +5378,7 @@ function bWar(){
     /* a square sail hung between two yards, bellied toward the bow */
     const sq = (w, h, belly, mat, zoom) => { const ge = new THREE.PlaneGeometry(w, h, 14, 10), q = ge.attributes.position; if (zoom){ const uv = ge.attributes.uv; for (let j = 0; j < uv.count; j++) uv.setXY(j, (uv.getX(j) - .5) * zoom + .5, (uv.getY(j) - .5) * zoom * h / w + .5); } for (let j = 0; j < q.count; j++){ const u = q.getX(j) / w, v = q.getY(j) / h; q.setZ(j, (1 - 4 * u * u) * (1 - 2.6 * v * v * (v > 0 ? 1 : .55)) * belly); } ge.computeVertexNormals(); const me = new THREE.Mesh(ge, mat); me.rotation.y = Math.PI / 2; me.castShadow = true; return me; };
     [[6.75, 5.6, 6.3, 11.9, 0], [-.75, 6.2, 6.9, 12.2, 1]].forEach(([x, w, h, y, main]) => {
-      const sl = sq(w, h, 1.15, canvasM); sl.position.set(x + .35, y, 0); m.add(sl);
+      const sl = sq(w, h, 1.15, canvasM); sl.position.set(x + .35, y, 0); if (main) sl.userData.nameSail = true; m.add(sl);
       [.41, .29].forEach(dx => { const e = sq(w, h, 1.15, embM, 1.12); e.position.set(x + dx, y, 0); e.castShadow = false; m.add(e); });
     });
     /* long red pennants at the mastheads, the gold ensign at the stern, lit lanterns */
@@ -5568,6 +5674,90 @@ frameHooks.push(dt => {
   if (TS.hit && d > 260 && !TS.rode){ TS.rode = true; if (TS.peak > TS_A * .6){ unlock('tsuride'); toast('浪過去了。船被抬上 ' + Math.round(TS.peak) + ' 公尺高，島要等水退才浮回來', 8000); } }
   if (TSU.r > TS.far){ TSU.on = false; TSU.A = 0; TS.st = 0; TS.sail = -1e9; }
 });
+/* ================= greetings: a wave and a few faces above the boat; more unlock with each ship rank =================
+   Presence only: field e = which emote is up right now (null when none). Everyone nearby sees the bubble over your boat. */
+const EMO = [['👋', '嗨', 0], ['🍍', '旺來', 0], ['😄', '哈哈', 1], ['👍', '讚啦', 1], ['⛵', '一起開', 2], ['🌊', '浪好大', 2],
+  ['😱', '快看遠方', 3], ['🎣', '撿瓶子去', 3], ['🎉', '蓋章了', 4], ['💪', '穩住', 4], ['🫡', '敬禮', 5], ['👑', '旺來號駕到', 5]];
+ACH.push(['hi1', '海上第一聲嗨', '第一次跟這片海打招呼'], ['hiback', '有來有往', '你打了招呼，附近的船也回了一個']);
+Object.assign(ACH_META, {hi1: {c: 'sea', r: 1}, hiback: {c: 'sea', r: 2, h: 1}});
+const EM = {cur: null, t: 0, saidT: -99, pop: null, bub: null, cool: 0};
+function emoBubble(){ const b = document.createElement('div'); b.className = 'lab emo-bub'; b.style.display = 'none'; labsEl.appendChild(b); return b; }
+function emoFill(b, i){ if (b._i === i) return; b._i = i; b.innerHTML = ''; const e = EMO[i]; if (!e) return; const a = document.createElement('i'); a.textContent = e[0]; const s = document.createElement('span'); s.textContent = e[1]; b.append(a, s); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+function emoSay(i){
+  const e = EMO[i]; if (!e || !started) return;
+  if (shipLv() < e[2]){ toast('這個表情要 Lv' + (e[2] + 1) + ' ' + SHIP_LV[e[2]][1] + ' 才有'); return; }
+  if (T - EM.saidT < .8) return;
+  EM.cur = i; EM.t = 4.5; EM.saidT = T; MP.sent = ''; MP.sendT = 9;
+  unlock('hi1'); emoClose();
+}
+function emoRender(){
+  const lv = shipLv(), p = EM.pop; p.innerHTML = '';
+  const h = document.createElement('p'); h.className = 'emo-h'; h.textContent = '打招呼'; const hs = document.createElement('span'); hs.textContent = '船階越高，表情越多'; h.appendChild(hs); p.appendChild(h);
+  const g = document.createElement('div'); g.className = 'emo-g'; p.appendChild(g);
+  EMO.forEach((e, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'emo-b' + (lv < e[2] ? ' lock' : '');
+    const a = document.createElement('i'); a.textContent = e[0]; const s = document.createElement('span'); s.textContent = lv < e[2] ? 'Lv' + (e[2] + 1) + ' 解鎖' : e[1]; b.append(a, s);
+    b.setAttribute('aria-label', e[1] + (lv < e[2] ? '（Lv' + (e[2] + 1) + ' 解鎖）' : ''));
+    b.addEventListener('click', ev => { ev.stopPropagation(); emoSay(i); }); g.appendChild(b);
+  });
+}
+function emoOpen(){ if (!started) return; if (!EM.pop){ EM.pop = document.createElement('div'); EM.pop.className = 'emo-pop'; EM.pop.setAttribute('role', 'dialog'); EM.pop.setAttribute('aria-label', '打招呼'); EM.pop.hidden = true; hero.appendChild(EM.pop); ['pointerdown', 'mousedown', 'touchstart', 'click'].forEach(t => EM.pop.addEventListener(t, e => e.stopPropagation())); } emoRender(); EM.pop.hidden = false; }
+function emoClose(){ if (EM.pop) EM.pop.hidden = true; }
+function emoToggle(){ if (EM.pop && !EM.pop.hidden) emoClose(); else emoOpen(); }
+['bEmo', 'emoM'].forEach(id => { const b = $(id); if (b) b.addEventListener('click', e => { e.stopPropagation(); emoToggle(); }); });
+window.addEventListener('keydown', e => {
+  if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return; const tg = e.target && e.target.tagName; if (tg === 'INPUT' || tg === 'TEXTAREA') return;
+  const k = (e.key || '').toLowerCase();
+  if (k === 'g' && !e.repeat && !panelOpen() && $('ld').hidden) emoToggle();
+  else if (k === 'escape') emoClose();
+  else if (EM.pop && !EM.pop.hidden && k >= '1' && k <= '9'){ emoSay(+k - 1); }
+});
+window.addEventListener('pointerdown', e => { if (e.target && e.target.closest && e.target.closest('#bEmo,#emoM')) return; emoClose(); });
+/* the bubble a boat is showing: mine from EM, another player's from their presence */
+function emoPlace(b, i, x, y, z){ if (i == null || !EMO[i]){ if (b) b.style.display = 'none'; return; } emoFill(b, i); place(b, x, y, z, 520, false); if (b.style.display === 'none') place(b, x, y * .45, z, 520, false); }
+frameHooks.push(dt => {
+  if (EM.t > 0){ EM.t -= dt; if (EM.t <= 0){ EM.cur = null; MP.sent = ''; } }
+  if (EM.cur != null){ if (!EM.bub) EM.bub = emoBubble(); emoPlace(EM.bub, EM.cur, boat.x, boat.y + 8.6 * (1 + .07 * shipLv()), boat.z); }
+  else if (EM.bub) EM.bub.style.display = 'none';
+});
+/* ================= the captain's name on the sail =================
+   A transparent overlay that shares the sail's own geometry (so it billows with it), one mesh per side so the name reads the right way round from both.
+   rect = where the name sits in that sail's UV space [u0, v0, du, dv]. Boats without a usable sail (冰晶艇, the plain Dutch ship) simply have none. */
+const NAME_AT = {
+  dinghy: {rect: [.07, .07, .62, .2], pick: (k, g) => { let t = null; g.traverse(o => { if (o.isMesh && o.geometry === sailGeo && !o.userData.nameTag) t = o; }); return t; }},
+  cat: {rect: [.09, .12, .74, .2], flip: true, pick: (k, g) => { let t = null; g.traverse(o => { if (!t && o.isMesh && k.sails.includes(o.material) && !o.userData.nameTag) t = o; }); return t; }},
+  junk: {rect: [.2, .18, .7, .17], pick: (k, g) => { let t = null; g.traverse(o => { if (o.isMesh && k.sails.includes(o.material) && !o.userData.nameTag) t = o; }); return t; }},
+  war: {rect: [.14, .04, .72, .15], offX: .08, pick: (k, g) => { let t = null; g.traverse(o => { if (o.userData.nameSail) t = o; }); return t; }}
+};
+const DARK_SAIL = {night: 1, black: 1, storm: 1};
+function nameTex(name, light){
+  const c = document.createElement('canvas'); c.width = 512; c.height = 176; const g = c.getContext('2d');
+  let px = 124; const font = s => '900 ' + s + 'px "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
+  g.font = font(px); const w = g.measureText(name).width; if (w > 470) px = Math.max(34, Math.floor(px * 470 / w)); g.font = font(px);
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+  g.lineWidth = Math.max(4, px * .09); g.strokeStyle = light ? 'rgba(10,16,30,.55)' : 'rgba(255,248,230,.5)'; g.strokeText(name, 256, 92);
+  g.fillStyle = light ? 'rgba(255,240,190,.95)' : 'rgba(16,28,40,.96)'; g.fillText(name, 256, 92);
+  const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 4; t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t;
+}
+function sailName(k, kind, name, sailId){
+  const cfg = NAME_AT[kind]; if (!k || !cfg) return;
+  name = (name || '').trim().slice(0, 12); const key = name + '|' + (DARK_SAIL[sailId] ? 1 : 0);
+  const tgt = cfg.pick(k, k.g); if (!tgt){ return; }
+  if (k._nmKey === key && k._nmT === tgt) return;
+  (k._nm || []).forEach(m => { if (m.parent) m.parent.remove(m); m.material.map && m.material.map.dispose(); m.material.dispose(); });
+  k._nm = []; k._nmKey = key; k._nmT = tgt; if (!name) return;
+  const [u0, v0, du, dv] = cfg.rect;
+  [0, 1].forEach(back => {
+    const t = nameTex(name, !!DARK_SAIL[sailId]), mir = !!back !== !!cfg.flip;
+    t.repeat.set((mir ? -1 : 1) / du, 1 / dv); t.offset.set(mir ? 1 + u0 / du : -u0 / du, -v0 / dv);
+    const m = new THREE.MeshStandardMaterial({map: t, transparent: true, depthWrite: false, roughness: .9, side: back ? THREE.BackSide : THREE.FrontSide, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3});
+    const o = new THREE.Mesh(tgt.geometry, m); o.position.copy(tgt.position); o.rotation.copy(tgt.rotation); o.scale.copy(tgt.scale); o.userData.nameTag = true; o.castShadow = false; o.receiveShadow = false; o.renderOrder = 3;
+    if (cfg.offX) o.position.x += back ? -cfg.offX : cfg.offX;
+    tgt.parent.add(o); k._nm.push(o);
+  });
+}
+/* my own boat: looked at once a second, so a new name, a new hull or a late-loading ship all catch up by themselves */
+{ let nt = 9; frameHooks.push(dt => { nt += dt; if (nt < 1) return; nt = 0; const id = wardCur('boat').id, kind = BK[id] ? id : 'dinghy'; sailName(BK[kind], kind, PG.capName, wardCur('sail').id); }); }
 /* ================= shared sea: everyone who has the game open sees each other's boats ================= */
 /* presence only (nothing is stored): position, heading, hull, paint, sail, flag, wake and ship level */
 const MP = {room: null, user: null, list: [], ghosts: new Map(), names: {}, sent: '', sendT: 0, chip: null, conn: false};
@@ -5580,6 +5770,7 @@ function mpHull(kind){
     const map = new Map();
     g.traverse(o => { if (!o.isMesh) return; const m0 = o.material; if (!map.has(m0)){ const m1 = m0.clone(); if (m0.userData.base) m1.userData = {base: m0.userData.base}; map.set(m0, m1); } o.material = map.get(m0); });
     const K = BK.dinghy; k.hull = K.hull.map(m => map.get(m)).filter(Boolean); k.sails = K.sails.map(m => map.get(m)).filter(Boolean); k.flag = map.get(K.flag) || null;
+    { const drop = []; g.traverse(o => { if (o.userData.nameTag) drop.push(o); }); drop.forEach(o => o.parent.remove(o)); }
     return k;
   }
   const k = BUILD[kind](); shade(k.g, true, false); return k;
@@ -5598,7 +5789,7 @@ function mpGhost(peer){
   const lab = document.createElement('div'); lab.className = 'lab peer'; lab.style.display = 'none'; labsEl.appendChild(lab);
   return {root, inner, k, lab, key: mpLookKey(pr), x: +pr.x || 0, z: +pr.z || 0, h: +pr.h || 0, lv, kind, look: [wPick('paint', pr.p), wPick('sail', pr.s), wPick('flag', pr.f)], fixT: 0};
 }
-function mpDrop(id){ const g = MP.ghosts.get(id); if (!g) return; scene.remove(g.root); g.lab.remove(); MP.ghosts.delete(id); }
+function mpDrop(id){ const g = MP.ghosts.get(id); if (!g) return; scene.remove(g.root); g.lab.remove(); if (g.bub) g.bub.remove(); MP.ghosts.delete(id); }
 function mpClear(){ [...MP.ghosts.keys()].forEach(mpDrop); MP.list = []; if (typeof crowdHull !== 'undefined'){ crowdHull.count = 0; crowdSail.count = 0; } mpChip(); }
 function mpOthers(){ return MP.list.filter(p => !(p.isMe && p.sameTab) && p.presence && typeof p.presence.x === 'number'); }
 function mpChip(){
@@ -5645,7 +5836,7 @@ frameHooks.push(dt => {
     MP.sendT = 0;
     const pr = {x: Math.round(boat.x * 10) / 10, z: Math.round(boat.z * 10) / 10, h: Math.round(boat.h * 100) / 100, v: Math.round(boat.v * 10) / 10,
       m: mode === 'docked' ? 'd' : 's', i: mode === 'docked' ? dockIdx : -1, b: wardCur('boat').id, p: wardCur('paint').id, s: wardCur('sail').id, f: wardCur('flag').id, w: wardCur('wake').id,
-      lv: shipLv(), st: PG.stamps.length, n: mpNick() || null};
+      lv: shipLv(), st: PG.stamps.length, n: mpNick() || null, e: EM.cur};
     const sig = JSON.stringify(pr);
     if (sig !== MP.sent){ MP.sent = sig; MP.room.presence(pr).catch(() => {}); }
   }
@@ -5669,8 +5860,14 @@ frameHooks.push(dt => {
     if (Math.hypot(pr.x - g.x, pr.z - g.z) > 80){ g.x = pr.x; g.z = pr.z; }
     g.root.position.set(g.x, waterH(g.x, g.z) - .15, g.z); g.root.rotation.set(Math.sin(T * 1.3 + g.x) * .03, -g.h, Math.sin(T * 1.1 + g.z) * .04);
     /* textures load late: re-apply this boat's look once a second until it has its bases */
-    g.fixT += dt; if (g.fixT > 1){ g.fixT = 0; lookTo(g.k, ...g.look); }
+    g.fixT += dt; if (g.fixT > 1){ g.fixT = 0; lookTo(g.k, ...g.look); g.nmDue = true; }
+    /* their greeting, if one is up; a reply near my own greeting earns the pair of us a medal */
+    { const ei = Number.isInteger(pr.e) && EMO[pr.e] ? pr.e : null;
+      if (ei != null){ if (!g.bub){ g.bub = emoBubble(); g.bub.classList.add('up'); } emoPlace(g.bub, ei, g.x, waterH(g.x, g.z) + 9 * (1 + .07 * g.lv), g.z); if (g.emo !== ei && T - EM.saidT < 12 && Math.hypot(g.x - boat.x, g.z - boat.z) < 400) unlock('hiback'); }
+      else if (g.bub) g.bub.style.display = 'none';
+      g.emo = ei; }
     const L = mpLabel(p);
+    if (g.nmDue){ g.nmDue = false; sailName(g.k, g.kind, L.nm === '船長' || p.isMe ? '' : L.nm, pr.s); }
     place(g.lab, g.x, waterH(g.x, g.z) + 9 * (1 + .07 * g.lv), g.z, 600, false);
     /* name tags never pile up: the nearer boat keeps its tag */
     if (g.lab.style.display !== 'none'){ const bx = [g.lab._x - 70, g.lab._y - 34, g.lab._x + 70, g.lab._y]; if (tagBoxes.some(b => hits(bx, b))) g.lab.style.display = 'none'; else tagBoxes.push(bx); }
@@ -5745,5 +5942,4 @@ function bootGame(hd){
 }
 })();
 </script>
-
 </body></html>
