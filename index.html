@@ -5307,19 +5307,42 @@ function shipHTML(){
 }
 
 /* ---------- 排行榜 ---------- */
-const LB = {db: null, uid: null, ok: false, rows: [], last: '', t: 0, err: ''};
+const LB = {db: null, uid: null, ok: false, web: false, rows: [], last: '', t: 0, err: '', at: 0};
+/* the public site has no claude.ai database behind it: there the board lives on the 旺來 backend, keyed by a random per-device id */
+const LB_API = 'https://web-production-e1521.up.railway.app/api/site/islands';
+const lbDev = () => { try { let d = localStorage.getItem('wl_dev'); if (!/^[A-Za-z0-9_-]{16,40}$/.test(d || '')){ d = Array.from(crypto.getRandomValues(new Uint8Array(18)), b => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'[b & 63]).join(''); localStorage.setItem('wl_dev', d); } return d; } catch (_) { return ''; } };
+function lbFetch(){
+  if (!LB.web) return;
+  fetch(LB_API + '/rank', {cache: 'no-store'}).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(j => {
+    LB.rows = (j.rows || []).slice(0, 50).map(v => ({id: String(v.k || ''), n: String(v.n || '').slice(0, 12), s: +v.s || 0, st: clamp(+v.st || 0, 0, 10), lv: clamp(Math.round(+v.lv || 0), 0, 5), b: +v.b || 0}));
+    LB.err = ''; LB.at = performance.now();
+    if (logTab === 'rank' && !$('logPanel').hidden) renderLog();
+  }).catch(() => { LB.err = 'net'; });
+}
 const lbParts = () => [['印章', PG.stamps.length, 100], ['成就', PG.ach.length, 20], ['漂流瓶', PG.bot.length, 15], ['金瓶', PG.gbot.length, 40], ['鳳梨礁', PG.reef ? 1 : 0, 200]];
 const lbScore = () => lbParts().reduce((a, p) => a + p[1] * p[2], 0);
 function lbPush(){
-  if (!LB.ok) return;
+  if (!LB.ok && !LB.web) return;
   const n = (PG.capName || '').trim().slice(0, 12); if (!n) return;
   const row = {n, s: lbScore(), st: PG.stamps.length, lv: shipLv(), b: PG.bot.length + PG.gbot.length}, key = JSON.stringify(row);
   if (key === LB.last) return;
-  clearTimeout(LB.t); LB.t = setTimeout(() => { LB.last = key; row.t = Date.now(); LB.db.collection('lb').doc(LB.uid).set(row).catch(e => { LB.err = (e && e.code) || 'err'; LB.last = ''; }); }, 3000);
+  clearTimeout(LB.t); LB.t = setTimeout(() => {
+    LB.last = key;
+    if (LB.web){
+      fetch(LB_API + '/score', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({id: LB.uid6, n, st: PG.stamps.length, ach: PG.ach.length, bot: PG.bot.length, gbot: PG.gbot.length, reef: PG.reef ? 1 : 0})})
+        .then(r => { if (!r.ok) throw r.status; lbFetch(); }).catch(() => { LB.err = 'net'; LB.last = ''; });
+      return;
+    }
+    row.t = Date.now(); LB.db.collection('lb').doc(LB.uid).set(row).catch(e => { LB.err = (e && e.code) || 'err'; LB.last = ''; });
+  }, 3000);
 }
 (async () => {
   try {
-    if (!window.claude || typeof window.claude.use !== 'function') return;
+    if (!window.claude || typeof window.claude.use !== 'function'){
+      /* standalone site */
+      const d = lbDev(); if (!d || !/^https?:$/.test(location.protocol)) return;
+      LB.web = true; LB.uid6 = d; LB.uid = d.slice(0, 6); lbFetch(); lbPush(); return;
+    }
     const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
     if (!db || !user) return;
     const id = await user.id(); if (!id) return;
@@ -5336,13 +5359,15 @@ function rankHTML(){
   const me = lbScore();
   let h = '<div class="rk-me"><div><span class="dm-n">' + esc((PG.capName || '').trim() || '還沒取名字') + ' · Lv' + (shipLv() + 1) + ' ' + SHIP_LV[shipLv()][1] + '</span><b>' + me + '</b><span class="dm-n">航海分數</span></div><ul>' + lbParts().map(p => '<li>' + p[0] + ' ' + p[1] + ' × ' + p[2] + '</li>').join('') + '</ul></div>';
   if (!(PG.capName || '').trim()) h += '<p class="dm-n">到「設定」填船長名字，分數才會上榜。</p>';
-  if (!LB.ok) return h + '<p class="dm-n">這個版本沒有連上共用排行榜，只算你自己的分數。登入 claude.ai 開啟的版本才看得到大家的名次。</p>';
+  if (!LB.ok && !LB.web) return h + '<p class="dm-n">這次沒有連上共用排行榜，只算你自己的分數。</p>';
+  if (LB.web && performance.now() - LB.at > 15000) lbFetch();
+  if (LB.web && LB.err && !LB.rows.length) return h + '<p class="dm-n">排行榜暫時連不上，等一下再打開看看。</p>';
   if (!LB.rows.length) return h + '<p class="dm-n">榜上還沒有人，你可以當第一個。</p>';
   h += '<ol class="rk">';
   LB.rows.forEach((r, i) => { h += '<li class="' + (r.id === LB.uid ? 'me' : '') + (i < 3 ? ' top' : '') + '"><span class="rk-i">' + (i + 1) + '</span><b>' + esc(r.n || '無名船長') + '</b><span class="rk-s">Lv' + (r.lv + 1) + ' ' + SHIP_LV[r.lv][1] + ' · 印章 ' + r.st + '</span><span class="rk-p">' + r.s + '</span></li>'; });
   h += '</ol>';
   if (!LB.rows.some(r => r.id === LB.uid) && (PG.capName || '').trim()) h += '<p class="dm-n">你目前 ' + me + ' 分，還沒進前 50。</p>';
-  return h + '<p class="dm-n">前 50 名，分數有變就更新。只能看的訪客不會上榜。</p>';
+  return h + '<p class="dm-n">前 50 名，分數有變就更新。' + (LB.web ? '同一台裝置算一位船長。' : '只能看的訪客不會上榜。') + '</p>';
 }
 function openRank(){ logTab = 'rank'; if ($('logPanel').hidden) togglePanel('logPanel', true); else renderLog(); }
 $('bRank').addEventListener('click', openRank);
