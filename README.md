@@ -6,4 +6,4 @@
 
 工具介紹，並非投資建議。
 
-素材：Poly Haven（岩石、灌木、木桶取自 github.com/0xInsiderhq/wild-fields-1648 的精簡檔）、ambientCG、Khronos、Davis3D，皆為 CC0 公眾領域授權。
+素材：Poly Haven（岩石、灌木、木桶取自 github.com/0xInsiderhq/wild-fields-1648 的精簡檔）、ambientCG、Khronos、Davis3D、Kenney（Cube Pets 動物、Pirate Kit 寶箱，取自 github.com/shorepine/kenney），皆為 CC0 公眾領域授權。
