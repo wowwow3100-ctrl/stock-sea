@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="旺來群島：開船靠岸、複習台股生命線的 3D 島嶼網頁遊戲。工具介紹，並非投資建議。"><style>html,body{margin:0;height:100%;background:#1d3a4f}[hidden]{display:none!important}</style></head><body><title>旺來群島</title>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>旺來群島｜開船靠岸，複習台股生命線</title><meta name="description" content="十座島的 3D 航海小遊戲：開船、靠岸、讀課程卡、過挑戰、蓋印章。工具介紹，並非投資建議。"><meta property="og:type" content="website"><meta property="og:site_name" content="旺來群島"><meta property="og:locale" content="zh_TW"><meta property="og:title" content="旺來群島｜開船靠岸，複習台股生命線"><meta property="og:description" content="十座島的 3D 航海小遊戲：開船、靠岸、讀課程卡、過挑戰、蓋印章。工具介紹，並非投資建議。"><meta property="og:url" content="https://wowwow3100-ctrl.github.io/stock-sea/"><meta property="og:image" content="https://wowwow3100-ctrl.github.io/stock-sea/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="旺來群島：一艘小帆船航向島嶼"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="旺來群島｜開船靠岸，複習台股生命線"><meta name="twitter:description" content="十座島的 3D 航海小遊戲：開船、靠岸、讀課程卡、過挑戰、蓋印章。工具介紹，並非投資建議。"><meta name="twitter:image" content="https://wowwow3100-ctrl.github.io/stock-sea/og.jpg"><link rel="canonical" href="https://wowwow3100-ctrl.github.io/stock-sea/"><style>html,body{margin:0;height:100%;background:#1d3a4f}[hidden]{display:none!important}</style></head><body><title>旺來群島</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -988,6 +988,28 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
 .scr-sz button{min-width:26px;font-weight:700}
 .scr-sz button:disabled{opacity:.3}
 .set-row .auto{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--cream);margin-left:8px;white-space:nowrap}
+
+/* ---------- v25: logbook pages that are still out at sea ---------- */
+.lg-lock{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;margin:6px 0;border-radius:8px;border:1px dashed rgba(255,248,230,.28);background:rgba(255,248,230,.04);font-size:14px;color:rgba(255,248,230,.8)}
+.lg-lock .btn{margin-left:auto}
+
+/* ---------- v25: top-bar buttons are pictures, not words ---------- */
+.tb.tb-ic{position:relative;width:38px;height:38px;padding:0;justify-content:center;gap:0;border-radius:10px;pointer-events:auto}
+.tb-svg{width:22px;height:22px;fill:none;stroke:var(--gold);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tb-svg .f{fill:var(--gold);stroke:none}
+.tb.tb-ic:hover{background:rgba(255,210,63,.2);border-color:var(--gold)}
+.tb.tb-ic[aria-pressed="true"]{background:rgba(255,210,63,.22);border-color:var(--gold)}
+.snd-ic{display:grid;place-items:center}
+#bSnd[aria-pressed="true"] .off,#bSnd[aria-pressed="false"] .on{display:none}
+#bSnd[aria-pressed="false"] .tb-svg{stroke:rgba(255,248,230,.6)}
+.tb-n{position:absolute;right:-5px;bottom:-6px;min-width:16px;padding:0 4px;border-radius:999px;background:#ffd23f;color:#1a1206;font:700 10px/15px var(--f-mono);text-align:center}
+.tb.tb-ic .tb-dot{top:-3px;right:-3px}
+.tb.tb-ic[data-tip]::after{content:attr(data-tip);position:absolute;top:calc(100% + 7px);right:0;padding:4px 9px;border-radius:6px;background:rgba(5,14,11,.92);border:1px solid rgba(255,248,230,.2);color:var(--cream);font:500 12px var(--f-body);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s}
+.tb.tb-ic[data-tip]:hover::after,.tb.tb-ic[data-tip]:focus-visible::after{opacity:1}
+@media (hover:none){.tb.tb-ic[data-tip]::after{display:none}}
+@media (max-width:760px){#bEmo{display:none}.tb.tb-ic{width:34px;height:34px}}
+.ld-fs{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;font-size:13.5px;color:var(--cream)}
+.ld-fs input{width:17px;height:17px;accent-color:#ffd23f}
 </style>
 
 <header class="hero" id="hero">
@@ -1019,6 +1041,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
         <input id="ldName" class="ld-name" maxlength="12" placeholder="船長名字（寫在船帆上，也上排行榜）" aria-label="船長名字，會寫在船帆上，也會出現在排行榜">
         <button type="submit" class="ld-go" id="ldGo">出航</button>
       </form>
+      <label class="ld-fs" id="ldFsRow" hidden><input type="checkbox" id="ldFs" checked>全螢幕遊玩（畫面最完整，按 Esc 可離開）</label>
       <div class="ld-bar"><i id="ldBar"></i></div>
       <p class="ld-s" id="ldS">升帆中…</p>
       <p class="ld-tip" id="ldTip">海平面就是生命線：島露出水面多少，一眼就看得到。</p>
@@ -1033,12 +1056,12 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
     <div class="brand"><b>旺來群島</b><span id="rankLine">台股生命線・航海課</span></div>
     <canvas class="cmp" id="cmp" aria-hidden="true"></canvas>
     <div class="top-btns">
-      <button type="button" class="tb tb-ach" id="bAch" aria-haspopup="dialog"><span class="tb-i">章</span><span class="tb-t">獎章 <b id="achN">0</b></span><span class="tb-k">J</span><i class="tb-dot" id="achDot" hidden></i></button>
-      <button type="button" class="tb" id="bRank" aria-haspopup="dialog"><span class="tb-i">榜</span><span class="tb-t">排行榜</span></button>
-      <button type="button" class="tb" id="bEmo" aria-haspopup="dialog"><span class="tb-i">嗨</span><span class="tb-t">招呼</span><span class="tb-k">G</span></button>
-      <button type="button" class="tb" id="bLog" aria-haspopup="dialog"><span class="tb-i">冊</span><span class="tb-t">航海日誌</span><span class="tb-k">L</span></button>
-      <button type="button" class="tb" id="bSnd" aria-pressed="false"><span class="tb-i" id="sndIcon">靜</span><span class="tb-t">音效</span></button>
-      <button type="button" class="tb" id="bSet" aria-haspopup="dialog"><span class="tb-i">設</span><span class="tb-t">設定</span><span class="tb-k">Esc</span></button>
+      <button type="button" class="tb tb-ic tb-ach" id="bAch" aria-haspopup="dialog" aria-label="獎章" data-tip="獎章（J）"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8l-2 6h-4z"/><circle cx="12" cy="15" r="5.2"/><path d="M12 12.6l.8 1.7 1.8.2-1.3 1.3.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.3 1.8-.2z" class="f"/></svg><b id="achN" class="tb-n">0</b><i class="tb-dot" id="achDot" hidden></i></button>
+      <button type="button" class="tb tb-ic" id="bRank" aria-haspopup="dialog" aria-label="排行榜" data-tip="排行榜"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 5H4v1.5A3 3 0 0 0 7 9.5M17 5h3v1.5a3 3 0 0 1-3 3M12 13v4M8.5 20h7M9.5 17h5"/></svg></button>
+      <button type="button" class="tb tb-ic" id="bEmo" aria-haspopup="dialog" aria-label="打招呼" data-tip="打招呼（G）"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H11l-4.5 3.5v-3.5H4z"/><path d="M9 9.2v.6M15 9.2v.6M9 12.2c1.8 1.5 4.2 1.5 6 0"/></svg></button>
+      <button type="button" class="tb tb-ic" id="bLog" aria-haspopup="dialog" aria-label="航海日誌" data-tip="航海日誌（L）"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h11.5a2 2 0 0 1 2 2V20H7a2 2 0 0 1-2-2z"/><path d="M5 17.5a2 2 0 0 1 2-2h11.5M9 8.5h6M9 11.5h4"/></svg></button>
+      <button type="button" class="tb tb-ic" id="bSnd" aria-pressed="false" aria-label="音效" data-tip="音效開關"><span id="sndIcon" class="snd-ic"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path class="on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.6 7.6 0 0 1 0 11"/><path class="off" d="M15.5 9.5l5 5M20.5 9.5l-5 5"/></svg></span></button>
+      <button type="button" class="tb tb-ic" id="bSet" aria-haspopup="dialog" aria-label="設定" data-tip="設定（Esc）"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6"/></svg></button>
     </div>
   </div>
 
@@ -1297,7 +1320,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
       </article>
 
       <article class="isle" id="i04">
-        <div class="isle-head"><span class="isle-no">04</span><div><h3>我是大戶</h3><p class="isle-sub">角色互換</p></div><span class="isle-sea"><span class="waves"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>開發 M</span></div>
+        <div class="isle-head"><span class="isle-no">04</span><div><h3>大戶手法</h3><p class="isle-sub">角色互換</p></div><span class="isle-sea"><span class="waves"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>開發 M</span></div>
         <p class="isle-line">換你當外資艦隊，想辦法把散戶的小船洗下去，籌碼收齊了再拉。</p>
         <h4>怎麼玩</h4>
         <ol class="steps">
@@ -1445,7 +1468,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
           <tr><td class="nm"><b>01</b>旺來群島</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td>L・8–12 週</td></tr>
           <tr><td class="nm"><b>02</b>蒙眼航行<span class="first">先做</span></td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td>S–M・2–3 週</td></tr>
           <tr><td class="nm"><b>03</b>羅盤校準</td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="2 分"><b>●●</b>●●●</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td>S・1–2 週</td></tr>
-          <tr><td class="nm"><b>04</b>我是大戶</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td>M・3–4 週</td></tr>
+          <tr><td class="nm"><b>04</b>大戶手法</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td>M・3–4 週</td></tr>
           <tr><td class="nm"><b>05</b>燈塔氣象台</td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td>M・約 3 週</td></tr>
           <tr><td class="nm"><b>06</b>水面潛航</td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td>S–M・約 2 週</td></tr>
           <tr><td class="nm"><b>07</b>瓶中信聯賽</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="5 分"><b>●●●●●</b></td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="4 分"><b>●●●●</b>●</td><td class="dots" aria-label="3 分"><b>●●●</b>●●</td><td>M・約 4 週</td></tr>
@@ -1483,7 +1506,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
         <span class="leg-k">第三段</span>
         <h3>蓋主島</h3>
         <div class="leg-isl"><a href="#i01">01 旺來群島</a><a href="#i07">07 瓶中信</a><a href="#i05">05</a><a href="#i06">06</a></div>
-        <p>群島當入口，把 02、03、05、06 變成島上的建築，瓶中信接社群排行。04 我是大戶和 09 二十萬啟航適合當行銷爆點，有空再獨立做。</p>
+        <p>群島當入口，把 02、03、05、06 變成島上的建築，瓶中信接社群排行。04 大戶手法和 09 二十萬啟航適合當行銷爆點，有空再獨立做。</p>
         <span class="time">約 2–3 個月</span>
       </div>
     </div>
@@ -1524,7 +1547,7 @@ const ISL = [
   {n:'01',name:'旺來群島',sub:'天空螢幕・平台本體',line:'整個台股是一片海，一檔股票一座島，海平面就是生命線。開到哪座島，天空就變成那座島的螢幕。',sea:2,size:'L・8–12 週',mark:'arch'},
   {n:'02',name:'蒙眼航行',sub:'歷史回放・判讀練習',line:'遮住股名，只給你訊號日之前的 K 線。你決定下錨還是繞過，霧散了才揭曉。',sea:2,size:'S–M・2–3 週',mark:'fog'},
   {n:'03',name:'羅盤校準',sub:'每天 60 秒',line:'羅盤上有四根指針，各對應一個起漲點條件。四根都對準，船才開得動。',sea:1,size:'S・1–2 週',mark:'compass'},
-  {n:'04',name:'我是大戶',sub:'角色互換',line:'換你當外資艦隊，想辦法把散戶的小船洗下去，籌碼收齊了再拉。',sea:3,size:'M・3–4 週',mark:'reef'},
+  {n:'04',name:'大戶手法',sub:'角色互換',line:'換你當外資艦隊，想辦法把散戶的小船洗下去，籌碼收齊了再拉。',sea:3,size:'M・3–4 週',mark:'reef'},
   {n:'05',name:'燈塔氣象台',sub:'出不出港',line:'每天出海前先看天氣。六盞燈拼成今天的海象，船速自己決定。',sea:3,size:'M・約 3 週',mark:'lighthouse'},
   {n:'06',name:'水面潛航',sub:'水位剖面',line:'把水位測試切成剖面圖，看大家是站在浪頭上，還是泡在水裡等回本。',sea:2,size:'S–M・約 2 週',mark:'periscope'},
   {n:'07',name:'瓶中信聯賽',sub:'社群對帳',line:'每週丟一個瓶中信：寫下 3 檔觀察名單和各自的檢查點，40 天後海流把瓶子送回來對帳。',sea:3,size:'M・約 4 週',mark:'bottle'},
@@ -1692,8 +1715,10 @@ function waveRaw(x, z, t, WL, iters){
 let T = 0, WT = 0, WH = .7, WL = 2, SWA = .2;
 const SWD = [.83, .56], SWK = 2 * Math.PI / 85, SWW = Math.sqrt(9.81 * SWK);
 const GEO_IT = 7;
-const swellH = (x, z) => SWA * (Math.sin((SWD[0] * x + SWD[1] * z) * SWK - SWW * WT) + .35 * Math.sin((.3 * x - .95 * z) * SWK * 1.7 - SWW * 1.3 * WT + 1.3));
-const chopH = (x, z) => (waveRaw(x, z, WT, WL, GEO_IT) - .5) * 2 * WH;
+/* the sea is not the same everywhere: a slow drifting field of calmer and rougher patches (hundreds of metres across), and a third swell train so the sets come and go */
+function seaMod(x, z){ const a = Math.sin(x * .0063 + z * .0031 + WT * .021), b = Math.sin(x * -.0027 + z * .0058 - WT * .017 + 1.7), c = Math.sin(x * .0113 - z * .0092 + WT * .03 + 4.1); return [clamp(1 + .34 * a + .28 * b + .18 * c, .3, 1.75), 1 + .24 * b + .18 * a]; }
+const swellH = (x, z) => SWA * seaMod(x, z)[1] * (Math.sin((SWD[0] * x + SWD[1] * z) * SWK - SWW * WT) + .35 * Math.sin((.3 * x - .95 * z) * SWK * 1.7 - SWW * 1.3 * WT + 1.3) + .3 * Math.sin((-.62 * x + .78 * z) * SWK * .63 - SWW * .8 * WT + 2.4));
+const chopH = (x, z) => (waveRaw(x, z, WT, WL, GEO_IT) - .5) * 2 * WH * seaMod(x, z)[0];
 /* the tsunami: one ring wave spreading from an epicentre. A trough runs ahead of it, the crest is TSU.A high,
    and the sea stays raised behind it for a while, which is what drowns the islands. GLSL twin: tsuH() in GL_WAVE. */
 const TSU = {on: false, ex: 0, ez: 0, r: 0, A: 0};
@@ -2171,7 +2196,7 @@ function qzSession(key){
   if (key[0] === 'i'){ const i = +key.slice(1); return QZ[i] ? {qs: quizOf(i), z: QZ[i]} : null; }
   return DRILL[key] ? {qs: LEARN.quiz, z: DRILL[key]} : null;
 }
-function drillStart(key, n){ DRILL[key] = {list: shuffle(LEARN.quiz.map((_, k) => k)).slice(0, Math.min(n, LEARN.quiz.length)), at: 0, score: 0, pick: null, done: false}; }
+function drillStart(key, n){ const pool = quizPool(); if (pool.length < 5 || (key === 'exam' && PG.visited.length < 10)) return; DRILL[key] = {list: shuffle(pool).slice(0, Math.min(n, pool.length)), at: 0, score: 0, pick: null, done: false}; }
 
 /* 08 每日一島: the speaker's own Threads riddles, as historical replays */
 const RD = {list: null, at: 0, pick: null, hits: 0, done: false};
@@ -2283,6 +2308,11 @@ function showResult(root){
 }
 
 /* ---------- 航海日誌 (logbook) ---------- */
+/* the logbook fills up as you sail: a page appears once you have berthed at its island (words also arrive by drifting bottle) */
+const beenTo = i => PG.visited.indexOf(i) >= 0;
+const lgLock = (i, what) => '<div class="lg-lock"><span>🔒 ' + what + '</span><span class="dm-n">到 ' + ISL[i].n + ' ' + ISL[i].name + ' 靠岸後，才會收進日誌。</span><button type="button" class="btn" data-lgo="' + i + '">開過去</button></div>';
+const quizPool = () => LEARN.quiz.map((q, k) => k).filter(k => beenTo(LEARN.quiz[k].isl));
+const glosHave = k => { const g = LEARN.glossary[k]; return (g.isl != null && beenTo(g.isl)) || (Array.isArray(PG.bot) && PG.bot.indexOf(k) >= 0); };
 const LOG_TABS = [['voy', '航程'], ['rev', '複習'], ['book', '課本'], ['drill', '題庫'], ['glos', '詞彙'], ['check', '檢查表'], ['diary', '對帳'], ['ach', '獎章牆'], ['ward', '獎勵櫃'], ['ship', '船階'], ['rank', '排行榜'], ['room', '船長室'], ['faq', '問答']];
 let logTab = 'voy', glosQ = '';
 const logHooks = {go: null};
@@ -2303,23 +2333,34 @@ function renderLog(){
     });
     if (PG.stamps.length >= 10) h += '<div class="cert"><b>寶藏島主</b><span>十座島的印章都到齊了。也希望你找到屬於你的那座寶藏島。</span></div>';
   } else if (logTab === 'book'){
-    h += '<p class="dm-n">五個航段、十座島的課程卡。在這裡讀也算數；印章還是要開船靠岸、通過挑戰才拿得到。</p><div class="book">';
+    h += '<p class="dm-n">五個航段、十座島的課程卡。到過的島才會收進課本（目前 ' + PG.visited.length + ' / 10 座）；在這裡讀也算數，印章還是要通過挑戰才拿得到。</p><div class="book">';
     LEARN.chapters.forEach((c, ci) => (c.islands || []).forEach(i => {
       const L = lessonsOf(i), r = Math.min(L.length, PG.read[i] || 0);
-      h += '<details data-bk="' + i + '"><summary>第' + CH_NUM[ci] + '站 · ' + ISL[i].n + ' ' + ISL[i].name + '<span>' + r + ' / ' + L.length + '</span></summary>' +
+      if (!beenTo(i)){ h += lgLock(i, '第' + CH_NUM[ci] + '站 · ' + ISL[i].n + ' ' + ISL[i].name + '（' + L.length + ' 張課程卡）'); return; }
+      h += '<details data-bk=""' + i + '"><summary>第' + CH_NUM[ci] + '站 · ' + ISL[i].n + ' ' + ISL[i].name + '<span>' + r + ' / ' + L.length + '</span></summary>' +
         L.map((x, k) => '<article><h4>' + (k + 1) + '. ' + x.title + '</h4><p>' + x.body + '</p>' + (x.points && x.points.length ? '<ul class="lc-p">' + x.points.map(p => '<li>' + p + '</li>').join('') + '</ul>' : '') + (x.fig ? '<div class="lc-fig">' + figHTML(x.fig) + '</div>' : '') + '<span class="dm-n">講座 ' + esc(x.src || '') + '</span></article>').join('') + '</details>';
     }));
     h += '</div>';
   } else if (logTab === 'drill'){
     const D = DRILL.drill, E = DRILL.exam;
-    h += '<p class="dm-n">全部 ' + LEARN.quiz.length + ' 題混在一起出。隨堂測驗每次 10 題；船長考試 20 題，80 分以上、再加上十枚印章，就拿到「船長認證」。</p>';
-    h += '<div class="qz-row"><button type="button" class="btn' + (D ? '' : ' go') + '" data-qr="drill">隨堂測驗 10 題</button><button type="button" class="btn" data-qr="exam">船長考試 20 題</button><button type="button" class="btn" data-rv="bt">回測判讀 10 段</button>' +
+    const pool = quizPool().length, examOK = PG.visited.length >= 10;
+    h += '<p class="dm-n">題庫只出你到過的島：目前 ' + pool + ' / ' + LEARN.quiz.length + ' 題。隨堂測驗每次 10 題；船長考試 20 題，十座島都到過才開考，80 分以上、再加上十枚印章，就拿到「船長認證」。</p>';
+    if (pool < 5) h += '<div class="lg-lock"><span>🔒 題庫還是空的</span><span class="dm-n">先靠岸一兩座島、讀過課程卡，題目才會進來。</span></div>';
+    h += '<div class="qz-row"><button type="button" class="btn' + (D ? '' : ' go') + '" data-qr="drill"' + (pool < 5 ? ' disabled' : '') + '>隨堂測驗 10 題</button>' + (examOK ? '<button type="button" class="btn" data-qr="exam">船長考試 20 題</button>' : '<button type="button" class="btn lock" disabled>🔒 船長考試：十座島都到過才開考（' + PG.visited.length + ' / 10）</button>') + (beenTo(1) ? '<button type="button" class="btn" data-rv="bt">回測判讀 10 段</button>' : '') +
       (PG.stamps.length >= 5 ? '<button type="button" class="btn" data-qr="adv">進階限時 15 題・每題 20 秒</button>' : '<button type="button" class="btn lock" disabled>🔒 進階限時題：集滿 5 枚印章解鎖（' + PG.stamps.length + ' / 5）</button>') + '</div>';
     const key = DRILL._cur;
     if (key && DRILL[key]) h += '<h3 class="pn-sub">' + (key === 'exam' ? '船長考試' : key === 'adv' ? '進階限時挑戰' : '隨堂測驗') + '</h3>' + quizView(LEARN.quiz, DRILL[key], key, Math.ceil(DRILL[key].list.length * (key === 'drill' ? .6 : .8)));
     if (E && E.done && E.score / E.list.length >= .8 && PG.stamps.length >= 10) h += '<div class="cert"><b>船長認證</b><span>十枚印章＋船長考試 ' + E.score + ' / ' + E.list.length + '。工具介紹，並非投資建議。</span></div>';
   } else if (logTab === 'glos'){
     h += '<input class="glos-q" id="glosQ" type="search" placeholder="查詞彙，例如：站回、洗盤、維持率" value="' + esc(glosQ) + '" aria-label="查詞彙"><div id="glosRes" aria-live="polite">' + glosList() + '</div>';
+  } else if (logTab === 'check' && !beenTo(6)){
+    h += lgLock(6, '生命線檢查表、作業與每天 15 分鐘');
+  } else if (logTab === 'diary' && !beenTo(6)){
+    h += lgLock(6, 'Threads 對帳：猜謎、點名、大盤轉折');
+  } else if (logTab === 'faq' && !PG.visited.length){
+    h += '<div class="lg-lock"><span>🔒 問答還沒有內容</span><span class="dm-n">每走完一站，這裡多一行重點；常見問題在 10 課堂艦隊。</span></div>';
+  } else if (logTab === 'bt' && !beenTo(1)){
+    h += lgLock(1, '回測判讀');
   } else if (logTab === 'check'){
     const C = LEARN.checklist, done = C.filter(x => PG.check[x.k]).length;
     h += '<h3 class="pn-sub">生命線檢查表 <span class="dm-n">' + done + ' / ' + C.length + '</span></h3><ul class="chk">' +
@@ -2329,7 +2370,8 @@ function renderLog(){
     if (LEARN.routine.length) h += '<h3 class="pn-sub">每天 15 分鐘</h3><div class="tblx"><table><thead><tr><th>分鐘</th><th>做什麼</th><th>工具</th><th>看什麼</th></tr></thead><tbody>' + LEARN.routine.map(r => '<tr><td class="n">' + esc(r.min) + '</td><td>' + esc(r.title) + '</td><td>' + esc(r.tool) + '</td><td>' + esc(r.what) + '</td></tr>').join('') + '</tbody></table></div>';
   } else if (logTab === 'diary'){
     h += '<p class="dm-n">講座第三章的航海日誌：2024–2026 在 Threads 公開講過的謎題、點名與大盤轉折，事後全部對帳。過去日期的資料示範，工具介紹，並非投資建議。</p>';
-    if (LEARN.riddles.length) h += '<h3 class="pn-sub">猜謎</h3><div class="tblx"><table><thead><tr><th>發文</th><th>謎面</th><th>答案</th><th>40 天最高</th><th>最深</th><th></th></tr></thead><tbody>' + LEARN.riddles.map(r => '<tr><td class="n">' + esc(r.date) + '</td><td>' + esc(r.riddle) + '</td><td>' + esc(r.answer.name) + '</td><td class="n">' + sg(r.mx40) + '</td><td class="n">' + sg(r.mn40) + '</td><td><span class="badge ' + (r.hit ? 'hit' : 'miss') + '">' + (r.hit ? '命中' : '失手') + '</span></td></tr>').join('') + '</tbody></table></div><p class="dm-n">命中＝發文後 40 個交易日內最高漲 20% 以上。講座以發文計：15 篇謎題、' + LEARN.riddles.length + ' 個答案（2024/8/14、2025/1/21 這兩篇各有兩檔），一篇裡有一檔命中就算中：中 9 篇、沒中 6 篇。</p>';
+    if (!beenTo(7)) h += '<h3 class="pn-sub">猜謎</h3>' + lgLock(7, '猜謎的答案（先去島上猜，這裡才對帳）');
+    else if (LEARN.riddles.length) h += '<h3 class="pn-sub">猜謎</h3><div class="tblx"><table><thead><tr><th>發文</th><th>謎面</th><th>答案</th><th>40 天最高</th><th>最深</th><th></th></tr></thead><tbody>' + LEARN.riddles.map(r => '<tr><td class="n">' + esc(r.date) + '</td><td>' + esc(r.riddle) + '</td><td>' + esc(r.answer.name) + '</td><td class="n">' + sg(r.mx40) + '</td><td class="n">' + sg(r.mn40) + '</td><td><span class="badge ' + (r.hit ? 'hit' : 'miss') + '">' + (r.hit ? '命中' : '失手') + '</span></td></tr>').join('') + '</tbody></table></div><p class="dm-n">命中＝發文後 40 個交易日內最高漲 20% 以上。講座以發文計：15 篇謎題、' + LEARN.riddles.length + ' 個答案（2024/8/14、2025/1/21 這兩篇各有兩檔），一篇裡有一檔命中就算中：中 9 篇、沒中 6 篇。</p>';
     if (LEARN.callouts.length) h += '<h3 class="pn-sub">點名</h3><div class="tblx"><table><thead><tr><th>發文</th><th>個股</th><th>當時說</th><th>40 天最高</th><th>最深</th><th></th></tr></thead><tbody>' + LEARN.callouts.map(x => '<tr><td class="n">' + esc(x.date) + '</td><td>' + esc(x.name) + '</td><td>' + esc(x.said) + '</td><td class="n">' + sg(x.mx40) + '</td><td class="n">' + sg(x.mn40) + '</td><td><span class="badge ' + (x.kind === '發動' ? 'hit' : x.kind === '慢熱' ? 'flat' : 'miss') + '">' + esc(x.kind) + '</span></td></tr>').join('') + '</tbody></table></div>';
     if (LEARN.turns.length) h += '<h3 class="pn-sub">大盤轉折</h3><div class="tblx"><table><thead><tr><th>發文</th><th>當時說</th><th>之後</th><th></th></tr></thead><tbody>' + LEARN.turns.map(x => '<tr><td class="n">' + esc(x.date) + '</td><td>' + esc(x.said) + '</td><td>' + esc(x.move) + '</td><td><span class="badge ' + (x.kind === '落空' ? 'miss' : 'hit') + '">' + esc(x.kind) + '</span></td></tr>').join('') + '</tbody></table></div>';
     if (LEARN.quotes.length) h += '<h3 class="pn-sub">原文</h3>' + LEARN.quotes.map(q => '<p class="quote">' + esc(q.text) + '<cite>@wowwow31001 · ' + esc(q.t) + (q.use ? ' · ' + esc(q.use) : '') + '</cite></p>').join('');
@@ -2348,8 +2390,9 @@ function renderLog(){
   } else if (logTab === 'bt'){
     h += '<h3 class="pn-sub">回測判讀 <span class="dm-n">從講座用過的歷史 K 線剪 10 段：看位置、對條件、猜結果</span></h3>' + btHTML();
   } else if (logTab === 'faq'){
-    if (LEARN.summary.length) h += '<h3 class="pn-sub">五站一頁看完</h3><dl class="faq">' + LEARN.summary.map(s => '<div><dt>' + esc(s.station) + '</dt><dd>' + esc(s.line) + '</dd></div>').join('') + '</dl>';
-    h += '<h3 class="pn-sub">常見問題</h3><dl class="faq">' + LEARN.faq.map(f => '<div><dt>' + esc(f.q) + '</dt><dd>' + esc(f.a) + (f.src ? ' <span class="dm-n">（講座 ' + esc(f.src) + '）</span>' : '') + '</dd></div>').join('') + '</dl><p class="dm-n">' + esc(LEARN.disclaimer) + '</p>';
+    if (LEARN.summary.length) h += '<h3 class="pn-sub">五站一頁看完</h3><dl class="faq">' + LEARN.summary.map((s, ci) => { const c = LEARN.chapters[ci], ok = !c || (c.islands || []).some(beenTo); return '<div><dt>' + esc(s.station) + '</dt><dd>' + (ok ? esc(s.line) : '<span class="dm-n">🔒 這一站還沒到過</span>') + '</dd></div>'; }).join('') + '</dl>';
+    if (!beenTo(9)) h += '<h3 class="pn-sub">常見問題</h3>' + lgLock(9, '講座現場的常見問題');
+    else h += '<h3 class="pn-sub">常見問題</h3><dl class="faq">' + LEARN.faq.map(f => '<div><dt>' + esc(f.q) + '</dt><dd>' + esc(f.a) + (f.src ? ' <span class="dm-n">（講座 ' + esc(f.src) + '）</span>' : '') + '</dd></div>').join('') + '</dl><p class="dm-n">' + esc(LEARN.disclaimer) + '</p>';
     h += '<h3 class="pn-sub">資料與素材</h3><p class="dm-n">課程內容整理自《台股生命線講座》v4.9（215 頁）與講者的 Threads 公開發文；K 線為講座使用的歷史資料。3D 材質與帆船模型：Poly Haven、ambientCG、Davis3D，皆為 CC0 公眾領域授權。</p>';
   }
   B.innerHTML = h;
@@ -2358,8 +2401,9 @@ function renderLog(){
 }
 let glosFocus = false;
 function glosList(){
-  const G = LEARN.glossary.filter(g => !glosQ || (g.term + g.def).indexOf(glosQ) >= 0);
-  return '<dl class="glos">' + G.map(g => '<div><dt>' + esc(g.term) + '</dt><dd>' + esc(g.def) + (g.isl != null && ISL[g.isl] ? ' <span class="dm-n">（' + ISL[g.isl].n + ' ' + ISL[g.isl].name + '）</span>' : '') + '</dd></div>').join('') + '</dl>' + (G.length ? '' : '<p class="dm-n">找不到這個詞。</p>');
+  const have = LEARN.glossary.filter((g, k) => glosHave(k)), G = have.filter(g => !glosQ || (g.term + g.def).indexOf(glosQ) >= 0);
+  if (!have.length) return '<div class="lg-lock"><span>🔒 詞彙本還是空的</span><span class="dm-n">每到一座島，那座島的名詞就會收進來；海上的漂流瓶裡也各有一個詞。</span></div>';
+  return '<p class="dm-n">已收錄 ' + have.length + ' / ' + LEARN.glossary.length + ' 個詞。其餘的，到了那座島或撿到漂流瓶才有。</p><dl class="glos">' + G.map(g => '<div><dt>' + esc(g.term) + '</dt><dd>' + esc(g.def) + (g.isl != null && ISL[g.isl] ? ' <span class="dm-n">（' + ISL[g.isl].n + ' ' + ISL[g.isl].name + '）</span>' : '') + '</dd></div>').join('') + '</dl>' + (G.length ? '' : '<p class="dm-n">找不到這個詞。</p>');
 }
 $('logTabs').addEventListener('click', e => { const b = e.target.closest('button[data-lt]'); if (!b) return; logTab = b.dataset.lt; snd.click(); renderLog(); $('logBody').scrollTop = 0; });
 $('logBody').addEventListener('click', e => {
@@ -2524,8 +2568,9 @@ float waveRaw(vec2 p0, int iters){
 }
 const float SWK = 0.073920;
 const float SWW = 0.851559;
-float swellH(vec2 p){ return uSwell * (sin(dot(vec2(0.83, 0.56), p) * SWK - SWW * uWT) + 0.35 * sin(dot(vec2(0.3, -0.95), p) * SWK * 1.7 - SWW * 1.3 * uWT + 1.3)); }
-float chopH(vec2 p, int it){ return (waveRaw(p, it) - 0.5) * 2.0 * uWH; }
+vec2 seaMod(vec2 p){ float a = sin(p.x * 0.0063 + p.y * 0.0031 + uWT * 0.021); float b = sin(p.x * -0.0027 + p.y * 0.0058 - uWT * 0.017 + 1.7); float c = sin(p.x * 0.0113 - p.y * 0.0092 + uWT * 0.03 + 4.1); return vec2(clamp(1.0 + 0.34 * a + 0.28 * b + 0.18 * c, 0.3, 1.75), 1.0 + 0.24 * b + 0.18 * a); }
+float swellH(vec2 p){ return uSwell * seaMod(p).y * (sin(dot(vec2(0.83, 0.56), p) * SWK - SWW * uWT) + 0.35 * sin(dot(vec2(0.3, -0.95), p) * SWK * 1.7 - SWW * 1.3 * uWT + 1.3) + 0.3 * sin(dot(vec2(-0.62, 0.78), p) * SWK * 0.63 - SWW * 0.8 * uWT + 2.4)); }
+float chopH(vec2 p, int it){ return (waveRaw(p, it) - 0.5) * 2.0 * uWH * seaMod(p).x; }
 float tsuD(vec2 p){ return uTsu.z - length(p - uTsu.xy); }
 float tsuH(vec2 p){
   if (uTsu.w <= 0.0) return 0.0;
@@ -2813,7 +2858,7 @@ const ITH = [
   {g: [1, 1, 1], r: [1, 1, 1], veg: 1, palm: 1},              // 01 旺來群島: tropical home island
   {g: [.3, .3, .33], r: [.26, .25, .28], veg: .25, palm: 0},   // 02 蒙眼航行: black volcanic rock in the fog
   {g: [1.2, 1.2, .62], r: [1.5, 1.3, 1], veg: .8, palm: 1}, // 03 羅盤校準: a green compass rose with pale stone capes
-  {g: [2.2, 1.5, .35], r: [1.7, 1.2, .55], veg: 1, palm: .8}, // 04 我是大戶: golden table island with a horn
+  {g: [2.2, 1.5, .35], r: [1.7, 1.2, .55], veg: 1, palm: .8}, // 04 大戶手法: golden table island with a horn
   {g: [.9, 1.05, .9], r: [2.1, 2.05, 2], veg: .4, palm: .25}, // 05 燈塔氣象台: white chalk cliffs
   {g: [.5, .85, 1.25], r: [.7, .9, 1.3], veg: .7, palm: .4}, // 06 水面潛航: cool blue-grey
   {g: [1.5, 1.45, 1.1], r: [1.5, 1.45, 1.3], veg: .15, palm: 1.6},  // 07 瓶中信聯賽: white-sand atoll
@@ -3534,7 +3579,7 @@ function landmark(isl){
     facing(g, b.c, b.s); add(g, 0, 0, -1.2, 22);
     const u0 = isl.upd; isl.upd = (dt, t) => { if (u0) u0(dt, t); ndl.rotation.y = Math.sin(t * .5) * .9 + Math.sin(t * 1.9) * .12; ring2.rotation.x = Math.sin(t * .35) * .25; };
   } else if (k === 3){
-    /* 我是大戶: a treasury on the table: an open chest, a pyramid of gold bars, coin stacks, and one giant coin on a plinth */
+    /* 大戶手法: a treasury on the table: an open chest, a pyramid of gold bars, coin stacks, and one giant coin on a plinth */
     const g = new THREE.Group(), coin = new THREE.CylinderGeometry(1.5, 1.5, .46, 24), stoneL = M(L(.5, .44, .34), {roughness: .9});
     const base = new THREE.Mesh(new THREE.CylinderGeometry(15, 16.5, 3, 40), stoneL); base.position.y = -1; g.add(base);
     [[-9.5, 4, 11], [-11.5, -1, 7], [-6.5, 7.5, 5], [9.5, 5, 9], [12, 0, 13], [7, 8, 6], [2.5, 9.5, 4]].forEach(([x, z, n]) => { for (let j = 0; j < n; j++){ const c = new THREE.Mesh(coin, LM.gold); c.position.set(x + Math.sin(j * 1.7) * .18, .75 + j * .48, z + Math.cos(j * 1.3) * .18); c.rotation.y = j; g.add(c); } });
@@ -3680,7 +3725,7 @@ qBtns.forEach(b => b.addEventListener('click', () => { setQ(+b.dataset.q, true);
 const volR = $('volR');
 volR.value = snd.vol; $('volV').textContent = Math.round(snd.vol * 100) + '%';
 volR.addEventListener('input', () => { snd.setVol(+volR.value); $('volV').textContent = Math.round(+volR.value * 100) + '%'; if (!snd.on && +volR.value > 0){ snd.setOn(true); paintSnd(); } });
-function paintSnd(){ $('bSnd').setAttribute('aria-pressed', snd.on ? 'true' : 'false'); $('sndIcon').textContent = snd.on ? '聲' : '靜'; }
+function paintSnd(){ $('bSnd').setAttribute('aria-pressed', snd.on ? 'true' : 'false'); }
 $('bSnd').addEventListener('click', () => { snd.setOn(!snd.on); paintSnd(); if (snd.on) snd.click(); });
 paintSnd();
 
@@ -4905,14 +4950,14 @@ frameHooks.push(dt => {
 /* ---------- logbook: review map, captain's room ---------- */
 function revHTML(){
   const seen = (PG.evt.seen || []).length;
-  let h = '<p class="dm-n">給上過講座的夥伴：不用開船也能直接複習。開船遇到的突發狀況卡，這裡也能一張一張練。</p><div class="rv">';
+  let h = '<p class="dm-n">到過的島，內容都收在這本日誌裡，隨時能複習。開船遇到的突發狀況卡，這裡也能一張一張練。</p><div class="rv">';
   h += '<button type="button" data-rv="evt"><b>突發狀況練習</b><span>' + EVT.length + ' 張情境卡 · 遇過 ' + seen + ' 張 · 答對 ' + (PG.evt.right || 0) + ' 次</span></button>';
   h += '<button type="button" data-rv="bt"><b>回測判讀</b><span>歷史 K 線剪 10 段：位置、符不符合、結果</span></button>';
-  h += '<button type="button" data-rv="drill"><b>隨堂測驗</b><span>' + LEARN.quiz.length + ' 題混出，每次 10 題</span></button>';
+  h += '<button type="button" data-rv="drill"><b>隨堂測驗</b><span>到過的島 ' + quizPool().length + ' / ' + LEARN.quiz.length + ' 題，每次 10 題</span></button>';
   h += '<button type="button" data-rv="adv"' + (PG.stamps.length >= 5 ? '' : ' class="lock"') + '><b>' + (PG.stamps.length >= 5 ? '' : '🔒 ') + '進階限時題</b><span>' + (PG.stamps.length >= 5 ? '15 題、每題 20 秒' : '集滿 5 枚印章解鎖（' + PG.stamps.length + ' / 5）') + '</span></button>';
   h += '<button type="button" data-rv="book"><b>課本</b><span>課程卡 ' + nRead() + ' / ' + nCards() + '</span></button>';
   h += '<button type="button" data-rv="check"><b>生命線檢查表</b><span>九格，最後一格每檔必填</span></button>';
-  h += '<button type="button" data-rv="glos"><b>詞彙</b><span>' + LEARN.glossary.length + ' 個名詞</span></button>';
+  h += '<button type="button" data-rv="glos"><b>詞彙</b><span>已收錄 ' + LEARN.glossary.filter((g, k) => glosHave(k)).length + ' / ' + LEARN.glossary.length + ' 個名詞</span></button>';
   h += '<button type="button" data-rv="diary"><b>Threads 對帳</b><span>猜謎、點名、大盤轉折全部攤開</span></button>';
   h += '<button type="button" data-rv="room"><b>船長室</b><span>成績單、歷史重播、證書</span></button>';
   h += '</div><p class="dm-n">想再開船：關掉日誌，跟著左上任務走。突發狀況卡在開船時也會隨機出現（設定裡可以關掉）。' + (PG.ward.evtOff ? ' <button type="button" class="btn" data-rv="evton">重新打開航行事件</button>' : ' <button type="button" class="btn" data-rv="evtoff">關掉航行事件</button>') + '</p>';
@@ -5240,7 +5285,7 @@ frameHooks.push(dt => {
 const RCOL = ['#d08a4e', '#7fb6ea', '#b98bf0', '#ffd23f'];
 if (PG.achSeen == null) PG.achSeen = PG.ach.length;
 function achCount(){
-  $('achN').textContent = PG.ach.length + '/' + ACH.length;
+  $('achN').textContent = PG.ach.length; $('bAch').setAttribute('data-tip', '獎章 ' + PG.ach.length + ' / ' + ACH.length + '（J）');
   const fresh = PG.ach.length > PG.achSeen; $('achDot').hidden = !fresh; $('bAch').classList.toggle('fresh', fresh);
 }
 function openMedals(){
@@ -5297,6 +5342,8 @@ $('ldForm').addEventListener('submit', e => {
   if (!v){ $('ldName').focus(); $('ldName').classList.remove('shake'); void $('ldName').offsetWidth; $('ldName').classList.add('shake'); return; }
   PG.capName = v; savePG(); const ni = $('nickIn'); if (ni) ni.value = v;
   if (typeof lbPush === 'function') lbPush();
+  /* the click that sets sail is also the one moment a browser lets a page go fullscreen */
+  { const c = $('ldFs'); if (c && !$('ldFsRow').hidden){ try { localStorage.setItem('wl_fs', c.checked ? '1' : '0'); } catch (_) {} if (c.checked && !document.fullscreenElement) try { hero.requestFullscreen().catch(() => {}); } catch (_) {} } }
   ldClose();
 });
 /* typing a name must not steer the boat */
@@ -5332,6 +5379,9 @@ if (!window.claude && !window.__wl){
   const fit = () => { if (document.fullscreenElement) { hero.style.height = ''; return; } const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight; const v = Math.round(h) + 'px'; if (h > 200 && hero.style.height !== v){ hero.style.height = v; if (typeof resize === 'function') try { resize(); } catch (_) {} } };
   fit(); window.addEventListener('resize', fit); window.addEventListener('orientationchange', () => setTimeout(fit, 250)); if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
 }
+
+/* offer fullscreen before setting sail, where the browser can actually do it */
+if (document.fullscreenEnabled && hero.requestFullscreen){ $('ldFsRow').hidden = false; try { if (localStorage.getItem('wl_fs') === '0') $('ldFs').checked = false; } catch (_) {} }
 /* ================= drift bottles: one glossary term each, scattered over the open sea ================= */
 if (!Array.isArray(PG.bot)) PG.bot = [];
 const BOT = (() => {
