@@ -1707,7 +1707,8 @@ function waveRaw(x, z, t, WL, iters){
   let px = x / WL, pz = z / WL; const tt = t / Math.sqrt(WL);
   let it = 0, freq = 1, tm = 2, w = 1, sv = 0, sw = 0;
   for (let i = 0; i < iters; i++){
-    const dx = Math.sin(it), dz = Math.cos(it), xx = (dx * px + dz * pz) * freq + tt * tm, e = Math.exp(Math.sin(xx) - 1), c = e * Math.cos(xx);
+    /* a wind sea: every train runs roughly downwind (within about 50 degrees of it), never back against the others; that is what stops the surface looking like it boils */
+    const sp = Math.sin(it) * 1.15, ux = -.83 + .56 * sp, uz = -.56 - .83 * sp, ul = 1 / Math.hypot(ux, uz), dx = ux * ul, dz = uz * ul, xx = (dx * px + dz * pz) * freq + tt * tm, e = Math.exp(Math.sin(xx) - 1), c = e * Math.cos(xx);
     px -= dx * c * w * .38; pz -= dz * c * w * .38; sv += e * w; sw += w; w *= .8; freq *= 1.18; tm *= 1.07; it += 1232.399963;
   }
   return sv / sw;
@@ -2558,7 +2559,7 @@ float waveRaw(vec2 p0, int iters){
   float it = 0.0; float freq = 1.0; float tm = 2.0; float w = 1.0; float sv = 0.0; float sw = 0.0;
   for (int i = 0; i < 48; i++){
     if (i >= iters) break;
-    vec2 d = vec2(sin(it), cos(it));
+    float sp = sin(it) * 1.15; vec2 d = normalize(vec2(-0.83 + 0.56 * sp, -0.56 - 0.83 * sp));
     float x = dot(d, p) * freq + t * tm;
     float e = exp(sin(x) - 1.0);
     p -= d * (e * cos(x)) * w * 0.38;
@@ -2756,13 +2757,14 @@ void main(){
   float sf = clamp(uBoat.w / 10.0, 0.0, 1.0);
   if (dot(qb, qb) < 4900.0){
     float hs = sqrt(he) - 1.0;
-    foam = max(foam, (1.0 - smoothstep(0.0, 0.16 + 0.3 * sf, hs)) * (0.35 + 0.65 * vnoise(hp.xz * 4.5 + vec2(uTime * 2.0, 0.0))));
+    foam = max(foam, (1.0 - smoothstep(0.0, 0.1 + 0.12 * sf, hs)) * (0.35 + 0.65 * vnoise(hp.xz * 4.5 + vec2(uTime * 2.0, 0.0))));
     float behind = -qb.x - 1.8;
     if (behind > 0.0 && sf > 0.0){
-      float arm = abs(abs(qb.y) - 0.36 * behind - 0.4) / (1.0 + behind * 0.04);
-      float wake = exp(-arm * arm * 2.0) * exp(-behind * 0.035);
-      float centre = exp(-qb.y * qb.y * 1.2 / (1.0 + behind * 0.1)) * exp(-behind * 0.07);
-      foam = max(foam, (wake * 0.85 + centre * 0.7) * sf * (0.35 + 0.65 * vnoise(hp.xz * 2.7 + vec2(uTime, 0.0))));
+      float arm = abs(abs(qb.y) - 0.2 * behind - 0.35) / (1.0 + behind * 0.03);
+      float wake = exp(-arm * arm * 7.0) * exp(-behind * 0.075);
+      float centre = exp(-qb.y * qb.y * 2.6 / (1.0 + behind * 0.05)) * exp(-behind * 0.13);
+      float brk = smoothstep(0.3, 0.72, vnoise(hp.xz * 1.9 + vec2(uTime * 0.6, 0.0))) * (0.45 + 0.55 * vnoise(hp.xz * 6.0 - vec2(0.0, uTime)));
+      foam = max(foam, (wake * 0.5 + centre * 0.6) * sf * brk);
     }
   }
   vec3 col = mix(water, refl, fres) + spec;
