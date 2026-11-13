@@ -1704,11 +1704,13 @@ function islandH(k, px, pz, oct){
   return h * AA[k];
 }
 function waveRaw(x, z, t, WL, iters){
+  /* no ruler-straight crests: the whole pattern is bent by slow, large-scale meanders before any wave is laid down */
+  { const w1 = Math.sin(z * .041 + 1.3 + t * .11), w2 = Math.sin(x * .033 - .7 - t * .09), w3 = Math.sin((x + z) * .017 + 2.1), w4 = Math.sin((x - z) * .013 + 4); x += w1 * 5 + w3 * 9; z += w2 * 5 + w4 * 9; }
   let px = x / WL, pz = z / WL; const tt = t / Math.sqrt(WL);
   let it = 0, freq = 1, tm = 2, w = 1, sv = 0, sw = 0;
   for (let i = 0; i < iters; i++){
-    /* a wind sea: every train runs roughly downwind (within about 50 degrees of it), never back against the others; that is what stops the surface looking like it boils */
-    const sp = Math.sin(it) * 1.15, ux = -.83 + .56 * sp, uz = -.56 - .83 * sp, ul = 1 / Math.hypot(ux, uz), dx = ux * ul, dz = uz * ul, xx = (dx * px + dz * pz) * freq + tt * tm, e = Math.exp(Math.sin(xx) - 1), c = e * Math.cos(xx);
+    /* a wind sea: every train runs roughly downwind (within about 65 degrees of it), never back against the others; that is what stops the surface looking like it boils */
+    const sp = Math.sin(it) * 2.1, ux = -.83 + .56 * sp, uz = -.56 - .83 * sp, ul = 1 / Math.hypot(ux, uz), dx = ux * ul, dz = uz * ul, xx = (dx * px + dz * pz) * freq + tt * tm, sn = Math.sin(xx), cs = Math.cos(xx), ee = Math.exp(sn - 1), e = ee * .55 + (.5 + .5 * sn) * .45, c = (ee * .55 + .225) * cs; /* rounder crests: a peaky profile draws a bright line along every wave */
     px -= dx * c * w * .38; pz -= dz * c * w * .38; sv += e * w; sw += w; w *= .8; freq *= 1.18; tm *= 1.07; it += 1232.399963;
   }
   return sv / sw;
@@ -1717,7 +1719,7 @@ let T = 0, WT = 0, WH = .7, WL = 2, SWA = .2;
 const SWD = [.83, .56], SWK = 2 * Math.PI / 85, SWW = Math.sqrt(9.81 * SWK);
 const GEO_IT = 7;
 /* the sea is not the same everywhere: a slow drifting field of calmer and rougher patches (hundreds of metres across), and a third swell train so the sets come and go */
-function seaMod(x, z){ const a = Math.sin(x * .0063 + z * .0031 + WT * .021), b = Math.sin(x * -.0027 + z * .0058 - WT * .017 + 1.7), c = Math.sin(x * .0113 - z * .0092 + WT * .03 + 4.1); return [clamp(1 + .34 * a + .28 * b + .18 * c, .3, 1.75), 1 + .24 * b + .18 * a]; }
+function seaMod(x, z){ const a = Math.sin(x * .0063 + z * .0031 + WT * .021), b = Math.sin(x * -.0027 + z * .0058 - WT * .017 + 1.7), c = Math.sin(x * .0113 - z * .0092 + WT * .03 + 4.1); const d = Math.sin(x * .031 + z * .019 + WT * .05 + .5), e = Math.sin(x * -.022 + z * .037 - WT * .04 + 2.9); return [clamp((1 + .34 * a + .28 * b + .18 * c) * (1 + .24 * d + .2 * e), .25, 1.9), 1 + .24 * b + .18 * a]; }
 const swellH = (x, z) => SWA * seaMod(x, z)[1] * (Math.sin((SWD[0] * x + SWD[1] * z) * SWK - SWW * WT) + .35 * Math.sin((.3 * x - .95 * z) * SWK * 1.7 - SWW * 1.3 * WT + 1.3) + .3 * Math.sin((-.62 * x + .78 * z) * SWK * .63 - SWW * .8 * WT + 2.4));
 const chopH = (x, z) => (waveRaw(x, z, WT, WL, GEO_IT) - .5) * 2 * WH * seaMod(x, z)[0];
 /* the tsunami: one ring wave spreading from an epicentre. A trough runs ahead of it, the crest is TSU.A high,
@@ -2555,21 +2557,22 @@ vec3 skyCol(vec3 rd, bool disk){
 const GL_WAVE = `
 uniform float uWH; uniform float uWL; uniform float uWT; uniform float uSwell; uniform vec4 uTsu;
 float waveRaw(vec2 p0, int iters){
+  p0 += vec2(sin(p0.y * 0.041 + 1.3 + uWT * 0.11) * 5.0 + sin((p0.x + p0.y) * 0.017 + 2.1) * 9.0, sin(p0.x * 0.033 - 0.7 - uWT * 0.09) * 5.0 + sin((p0.x - p0.y) * 0.013 + 4.0) * 9.0);
   vec2 p = p0 / uWL; float t = uWT / sqrt(uWL);
   float it = 0.0; float freq = 1.0; float tm = 2.0; float w = 1.0; float sv = 0.0; float sw = 0.0;
   for (int i = 0; i < 48; i++){
     if (i >= iters) break;
-    float sp = sin(it) * 1.15; vec2 d = normalize(vec2(-0.83 + 0.56 * sp, -0.56 - 0.83 * sp));
+    float sp = sin(it) * 2.1; vec2 d = normalize(vec2(-0.83 + 0.56 * sp, -0.56 - 0.83 * sp));
     float x = dot(d, p) * freq + t * tm;
-    float e = exp(sin(x) - 1.0);
-    p -= d * (e * cos(x)) * w * 0.38;
+    float sn = sin(x); float ee = exp(sn - 1.0); float e = ee * 0.55 + (0.5 + 0.5 * sn) * 0.45;
+    p -= d * ((ee * 0.55 + 0.225) * cos(x)) * w * 0.38;
     sv += e * w; sw += w; w *= 0.8; freq *= 1.18; tm *= 1.07; it += 1232.399963;
   }
   return sv / sw;
 }
 const float SWK = 0.073920;
 const float SWW = 0.851559;
-vec2 seaMod(vec2 p){ float a = sin(p.x * 0.0063 + p.y * 0.0031 + uWT * 0.021); float b = sin(p.x * -0.0027 + p.y * 0.0058 - uWT * 0.017 + 1.7); float c = sin(p.x * 0.0113 - p.y * 0.0092 + uWT * 0.03 + 4.1); return vec2(clamp(1.0 + 0.34 * a + 0.28 * b + 0.18 * c, 0.3, 1.75), 1.0 + 0.24 * b + 0.18 * a); }
+vec2 seaMod(vec2 p){ float a = sin(p.x * 0.0063 + p.y * 0.0031 + uWT * 0.021); float b = sin(p.x * -0.0027 + p.y * 0.0058 - uWT * 0.017 + 1.7); float c = sin(p.x * 0.0113 - p.y * 0.0092 + uWT * 0.03 + 4.1); float d = sin(p.x * 0.031 + p.y * 0.019 + uWT * 0.05 + 0.5); float e = sin(p.x * -0.022 + p.y * 0.037 - uWT * 0.04 + 2.9); return vec2(clamp((1.0 + 0.34 * a + 0.28 * b + 0.18 * c) * (1.0 + 0.24 * d + 0.2 * e), 0.25, 1.9), 1.0 + 0.24 * b + 0.18 * a); }
 float swellH(vec2 p){ return uSwell * seaMod(p).y * (sin(dot(vec2(0.83, 0.56), p) * SWK - SWW * uWT) + 0.35 * sin(dot(vec2(0.3, -0.95), p) * SWK * 1.7 - SWW * 1.3 * uWT + 1.3) + 0.3 * sin(dot(vec2(-0.62, 0.78), p) * SWK * 0.63 - SWW * 0.8 * uWT + 2.4)); }
 float chopH(vec2 p, int it){ return (waveRaw(p, it) - 0.5) * 2.0 * uWH * seaMod(p).x; }
 float tsuD(vec2 p){ return uTsu.z - length(p - uTsu.xy); }
@@ -2763,7 +2766,7 @@ void main(){
       float arm = abs(abs(qb.y) - 0.2 * behind - 0.35) / (1.0 + behind * 0.03);
       float wake = exp(-arm * arm * 7.0) * exp(-behind * 0.075);
       float centre = exp(-qb.y * qb.y * 2.6 / (1.0 + behind * 0.05)) * exp(-behind * 0.13);
-      float brk = smoothstep(0.3, 0.72, vnoise(hp.xz * 1.9 + vec2(uTime * 0.6, 0.0))) * (0.45 + 0.55 * vnoise(hp.xz * 6.0 - vec2(0.0, uTime)));
+      float brk = smoothstep(0.3, 0.66, vnoise(hp.xz * 0.8 + vec2(uTime * 0.5, 0.0)) * 0.55 + vnoise(hp.xz * 2.1 - vec2(0.0, uTime * 0.7)) * 0.3 + vnoise(hp.xz * 5.3 + vec2(uTime, 3.0)) * 0.15);
       foam = max(foam, (wake * 0.5 + centre * 0.6) * sf * brk);
     }
   }
@@ -3832,11 +3835,21 @@ function actionNow(){
   if (Math.abs(boat.v) > 1.2) return {k: 'none', t: '航行中'};
   return {k: 'go', i: gi, t: '前往'};
 }
+/* pressed 靠岸 right by the pier: tie up from where you are (the mooring lines pull the boat in), instead of sailing a loop to hit the approach ring.
+   Only when there is clear water all the way to the berth. */
+const QUICK_DOCK = 75;
+function quickDock(i){
+  if (mode !== 'free' && mode !== 'nav') return false;
+  const b = BERTH[i], dx = b.x - boat.x, dz = b.z - boat.z, d = Math.hypot(dx, dz); if (d > QUICK_DOCK) return false;
+  for (let t = 0; t < 1; t += Math.min(.2, 4 / Math.max(d, 1))) if (landAt(boat.x + dx * t, boat.z + dz * t) > -.6) return false;
+  boat.v = Math.min(Math.abs(boat.v), 4) * Math.sign(boat.v || 1); completeDock(i); return true;
+}
 let lastAct = -1e9;
 function doAction(){
   const now = performance.now(); if (now - lastAct < 450) return; lastAct = now;
   active = true; const a = actionNow();
   if (a.k === 'undock') startUndock();
+  else if (a.k === 'dock' && quickDock(a.i)){ /* close enough: straight in */ }
   else if (a.k === 'dock' || a.k === 'go') goIsland(a.i);
   else if (a.k === 'stop'){ cancelNav(); stopReq = true; toast('取消自動航行，船慢慢停下'); }
   else if (a.t === '航行中') toast(pad.last ? '船還在跑：先按 B 停船，再按 A 開往下一座島' : '船還在跑：先按空白鍵停船，再按 E 開往下一座島', 2000);
