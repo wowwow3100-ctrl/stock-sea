@@ -1019,6 +1019,13 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
 .ld-go:disabled{opacity:.5;cursor:not-allowed}
 .trial-chip{pointer-events:none;align-self:center;padding:3px 9px;border-radius:999px;background:rgba(5,14,11,.7);border:1px solid rgba(255,210,63,.5);color:#ffd23f;font:700 12px var(--f-mono);white-space:nowrap;font-variant-numeric:tabular-nums}
 @media (max-width:760px){.trial-chip{font-size:10.5px;padding:2px 6px}}
+
+/* v34: members-only tsunami button in the sea panel */
+.sp-tsu{display:flex;align-items:baseline;justify-content:center;gap:8px;width:100%;margin:2px 0 8px;padding:9px 10px;border-radius:8px;border:1px solid rgba(255,196,92,.65);background:rgba(255,176,64,.14);color:var(--cream);font-size:14px;font-weight:700}
+.sp-tsu[hidden]{display:none}
+.sp-tsu small{font-size:11px;font-weight:400;opacity:.8}
+.sp-tsu:hover{background:rgba(255,176,64,.26)}
+.sp-tsu:disabled{opacity:.45}
 </style>
 
 <header class="hero" id="hero">
@@ -1114,6 +1121,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
         <button type="button" data-sea="3">大浪<small>2.8 m</small></button>
         <button type="button" data-sea="4">颱風<small>4.5 m</small></button>
       </div>
+      <button type="button" class="sp-tsu" id="tsuBtn" hidden>海嘯<small>學員限定：十層樓高的浪，船頭對準它</small></button>
       <div class="wv-row"><label for="wvH">浪高</label><input type="range" id="wvH" min="0.2" max="2.5" step="0.05"><output id="wvHv" for="wvH"></output></div>
       <details class="wv" id="wv">
         <summary>進階：波長、湧浪、浪速、白浪</summary>
@@ -5837,15 +5845,17 @@ ACH.push(['quake', '地震了!? 看看遠方', '海面突然一震，遠方的�
 Object.assign(ACH_META, {quake: {c: 'sea', r: 3, h: 1}, tsuride: {c: 'sea', r: 3, h: 1}});
 const TS = {st: 0, t: 0, wait: 30 + Math.random() * 40, sail: 0, far: 0, peak: 0, warned: false, hit: false};
 const TS_A = 30, TS_V = 46;
-function tsuStart(){
+function tsuStart(manual){
   if (TS.st) return false;
+  TS.rode = false;
   /* it rises where the player is already looking, a little off to one side, so "look at the horizon" pays off */
   const cd = camera.getWorldDirection(new THREE.Vector3()), a = Math.atan2(cd.z, cd.x) + (Math.random() - .5) * 1.1;
   TSU.ex = boat.x + Math.cos(a) * 1750; TSU.ez = boat.z + Math.sin(a) * 1750; TSU.r = 0; TSU.A = 0; TSU.on = true;
   TS.st = 1; TS.t = 0; TS.peak = 0; TS.warned = false; TS.hit = false; TS.far = Math.hypot(TSU.ex - CENTER[0], TSU.ez - CENTER[1]) + WORLD_R + 500;
   shake = 1; padRumble(1); snd.thunder(1.2);
   toast('地震了!? 看看遠方', 9000);
-  PG.tsu = 1; savePG(); unlock('quake');
+  if (!manual){ PG.tsu = 1; savePG(); }   /* a wave called from the members' button does not use up the surprise one */
+  unlock('quake');
   return true;
 }
 frameHooks.push(dt => {
@@ -5871,6 +5881,18 @@ frameHooks.push(dt => {
   if (TS.hit && d > 260 && !TS.rode){ TS.rode = true; if (TS.peak > TS_A * .6){ unlock('tsuride'); toast('浪過去了。船被抬上 ' + Math.round(TS.peak) + ' 公尺高，島要等水退才浮回來', 8000); } }
   if (TSU.r > TS.far){ TSU.on = false; TSU.A = 0; TS.st = 0; TS.sail = -1e9; }
 });
+/* v34: the members' site can call the wave from the sea panel */
+{ const tb = $('tsuBtn');
+  if (tb && (SITE === 'vip' || SITE === 'dev')){
+    tb.hidden = false;
+    tb.addEventListener('click', () => {
+      if (TS.st){ toast('這一波還沒過去，等海面平了再叫'); return; }
+      if (mode === 'docked'){ toast('先離港出海，海嘯要在海上看'); return; }
+      seaCtl.classList.remove('open'); seaBtn.setAttribute('aria-expanded', 'false'); tsuStart(true);
+    });
+    frameHooks.push(() => { const d = !!TS.st; if (tb.disabled !== d) tb.disabled = d; });
+  }
+}
 /* ================= greetings: a wave and a few faces above the boat; more unlock with each ship rank =================
    Presence only: field e = which emote is up right now (null when none). Everyone nearby sees the bubble over your boat. */
 const EMO = [['👋', '嗨', 0], ['🍍', '旺來', 0], ['😄', '哈哈', 1], ['👍', '讚啦', 1], ['⛵', '一起開', 2], ['🌊', '浪好大', 2],
