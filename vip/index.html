@@ -5090,8 +5090,13 @@ frameHooks.push(() => {
   if (scrMode === 'sail'){
     /* a small billboard standing on the island it describes */
     const w = scr.offsetWidth, h = scr.offsetHeight;
-    if (p){
-      const x = clamp(p[0], w / 2 + 16, W - w / 2 - 16), y = clamp(p[1] - 46, h + 64, H - 210);
+    /* the nameplate stands on its island only while that island is really in view and the spot is free;
+       off the edge of the screen, or where the task bar and tutorial live, it parks under the top-right buttons instead of piling onto them */
+    let free = !!p && p[0] > 0 && p[0] < W && p[1] < H;
+    const x = p ? clamp(p[0], w / 2 + 16, W - w / 2 - 16) : 0, y = p ? clamp(p[1] - 46, h + 64, H - 210) : 0;
+    if (free){ const hr = hero.getBoundingClientRect(), box = [x - w / 2 - 8, y - h - 8, x + w / 2 + 8, y + 8];
+      for (const id of ['quest', 'coach', 'mapBox', 'seaCtl', 'toast']){ const e = $(id); if (!e || e.hidden) continue; const r = e.getBoundingClientRect(); if (r.width > 2 && box[0] < r.right - hr.left && box[2] > r.left - hr.left && box[1] < r.bottom - hr.top && box[3] > r.top - hr.top){ free = false; break; } } }
+    if (free){
       scr.style.setProperty('--sx', x.toFixed(1) + 'px'); scr.style.setProperty('--sy', y.toFixed(1) + 'px'); scr.classList.remove('pin');
       const bx = x, by = y, tx = p[0], ty = p[1];
       beamEl.style.clipPath = 'polygon(' + (bx - 2) + 'px ' + by + 'px,' + (bx + 2) + 'px ' + by + 'px,' + (tx + 1) + 'px ' + ty + 'px,' + (tx - 1) + 'px ' + ty + 'px)';
