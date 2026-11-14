@@ -1121,7 +1121,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
         <button type="button" data-sea="3">大浪<small>2.8 m</small></button>
         <button type="button" data-sea="4">颱風<small>4.5 m</small></button>
       </div>
-      <button type="button" class="sp-tsu" id="tsuBtn" hidden>海嘯<small>學員限定：十層樓高的浪，船頭對準它</small></button>
+      <button type="button" class="sp-tsu" id="tsuBtn" hidden>海嘯<small>學員限定：三十層樓高的浪，船頭對準它</small></button>
       <div class="wv-row"><label for="wvH">浪高</label><input type="range" id="wvH" min="0.2" max="2.5" step="0.05"><output id="wvHv" for="wvH"></output></div>
       <details class="wv" id="wv">
         <summary>進階：波長、湧浪、浪速、白浪</summary>
@@ -1749,8 +1749,8 @@ const TSU = {on: false, ex: 0, ez: 0, r: 0, A: 0};
 function tsuH(x, z){
   if (!TSU.on) return 0;
   const d = TSU.r - Math.hypot(x - TSU.ex, z - TSU.ez), A = TSU.A;
-  if (d < 0){ const a = d / 34, b = (d + 150) / 70; return A * Math.exp(-a * a) - A * .14 * Math.exp(-b * b); }
-  const a = d / 85; return A * (.7 * Math.exp(-a * a) + .3 * Math.exp(-d / 700));
+  if (d < 0){ const a = d / 75, b = (d + 330) / 154; return A * Math.exp(-a * a) - A * .14 * Math.exp(-b * b); }
+  const a = d / 187; return A * (.7 * Math.exp(-a * a) + .3 * Math.exp(-d / 700));
 }
 const waterH = (x, z) => chopH(x, z) + swellH(x, z) + tsuH(x, z);
 /* wave settings the viewer can tune; remembered in this browser only */
@@ -2608,8 +2608,8 @@ float tsuD(vec2 p){ return uTsu.z - length(p - uTsu.xy); }
 float tsuH(vec2 p){
   if (uTsu.w <= 0.0) return 0.0;
   float d = tsuD(p); float A = uTsu.w;
-  if (d < 0.0){ float a = d / 34.0; float b = (d + 150.0) / 70.0; return A * exp(-a * a) - A * 0.14 * exp(-b * b); }
-  float a = d / 85.0; return A * (0.7 * exp(-a * a) + 0.3 * exp(-d / 700.0));
+  if (d < 0.0){ float a = d / 75.0; float b = (d + 330.0) / 154.0; return A * exp(-a * a) - A * 0.14 * exp(-b * b); }
+  float a = d / 187.0; return A * (0.7 * exp(-a * a) + 0.3 * exp(-d / 700.0));
 }
 float waterH(vec2 p, int it){ return chopH(p, it) + swellH(p) + tsuH(p); }
 vec3 waterNormal(vec2 p, float e, int it){
@@ -4353,7 +4353,10 @@ function updCam(dt, nowS){
   bbView(tmpV, tmpL);
   if (snapCam){ camPos.copy(tmpV); camLook.copy(tmpL); snapCam = false; }
   else { camPos.lerp(tmpV, 1 - Math.exp(-dt * 3.4)); camLook.lerp(tmpL, 1 - Math.exp(-dt * 6)); }
-  const minY = Math.max(waterH(camPos.x, camPos.z) + 1.8, landAt(camPos.x, camPos.z) + 3); if (camPos.y < minY) camPos.y = minY;
+  let minY = Math.max(waterH(camPos.x, camPos.z) + 1.8, landAt(camPos.x, camPos.z) + 3);
+  /* on the face of the big wave the water between the camera and the boat can stand higher than both: lift the camera over it */
+  if (TSU.on && TSU.A > 4) for (let k = 1; k < 6; k++){ const t = k / 6, wx = camLook.x + (camPos.x - camLook.x) * t, wz = camLook.z + (camPos.z - camLook.z) * t; minY = Math.max(minY, (waterH(wx, wz) + 1.5 - (1 - t) * camLook.y) / t); }
+  if (camPos.y < minY) camPos.y = minY;
   camera.position.copy(camPos);
   if (shake > .01){ camera.position.x += (Math.random() - .5) * shake * .6; camera.position.y += (Math.random() - .5) * shake * .4; shake *= Math.exp(-dt * 7); }
   camera.lookAt(camLook);
@@ -5841,10 +5844,10 @@ frameHooks.push(() => {
 /* ================= hidden event: the earthquake and the ten-storey wave =================
    Once per save, some time after the boat reaches Lv4. The wave itself lives in tsuH() (a_data.js + the ocean shader):
    everything that floats rises with it, and the raised sea behind the crest drowns the islands for a while. */
-ACH.push(['quake', '地震了!? 看看遠方', '海面突然一震，遠方的海平線抬了起來'], ['tsuride', '十層樓上的船', '被海嘯捲上浪頂，還撐了過來']);
+ACH.push(['quake', '地震了!? 看看遠方', '海面突然一震，遠方的海平線抬了起來'], ['tsuride', '三十層樓上的船', '被海嘯捲上浪頂，還撐了過來']);
 Object.assign(ACH_META, {quake: {c: 'sea', r: 3, h: 1}, tsuride: {c: 'sea', r: 3, h: 1}});
 const TS = {st: 0, t: 0, wait: 30 + Math.random() * 40, sail: 0, far: 0, peak: 0, warned: false, hit: false};
-const TS_A = 30, TS_V = 46;
+const TS_A = 90, TS_V = 46;
 function tsuStart(manual){
   if (TS.st) return false;
   TS.rode = false;
@@ -5869,16 +5872,16 @@ frameHooks.push(dt => {
   TSU.r = Math.max(0, TS.t - 4) * TS_V;
   TSU.A = TS_A * sstep(4, 12, TS.t) * (1 - sstep(TS.far - 400, TS.far, TSU.r));
   const dx = boat.x - TSU.ex, dz = boat.z - TSU.ez, bd = Math.hypot(dx, dz) || 1, d = TSU.r - bd;
-  if (!TS.warned && d > -520 && d < 0){ TS.warned = true; snd.thunder(.9); toast('十層樓高的浪來了，船頭對準它！', 6000); }
-  if (Math.abs(d) < 160 && mode !== 'docked'){
+  if (!TS.warned && d > -900 && d < 0){ TS.warned = true; snd.thunder(.9); toast('三十層樓高的浪來了，船頭對準它！', 6000); }
+  if (Math.abs(d) < 350 && mode !== 'docked'){
     /* the face of the wave carries the boat with it and slews it round; the height comes for free from waterH */
-    const f = Math.exp(-(d / 60) * (d / 60)), push = TS_V * .42 * f;
+    const f = Math.exp(-(d / 130) * (d / 130)), push = TS_V * .42 * f;
     boat.x += dx / bd * push * dt; boat.z += dz / bd * push * dt; boat.h += Math.sin(TS.t * 1.7) * .5 * f * dt;
     shake = Math.max(shake, .35 * f); if (f > .5) padRumble(.6);
     if (f > .6 && !TS.hit){ TS.hit = true; snd.thunder(1.3); }
   }
   TS.peak = Math.max(TS.peak, tsuH(boat.x, boat.z));
-  if (TS.hit && d > 260 && !TS.rode){ TS.rode = true; if (TS.peak > TS_A * .6){ unlock('tsuride'); toast('浪過去了。船被抬上 ' + Math.round(TS.peak) + ' 公尺高，島要等水退才浮回來', 8000); } }
+  if (TS.hit && d > 520 && !TS.rode){ TS.rode = true; if (TS.peak > TS_A * .6){ unlock('tsuride'); toast('浪過去了。船被抬上 ' + Math.round(TS.peak) + ' 公尺高，島要等水退才浮回來', 8000); } }
   if (TSU.r > TS.far){ TSU.on = false; TSU.A = 0; TS.st = 0; TS.sail = -1e9; }
 });
 /* v34: the members' site can call the wave from the sea panel */
