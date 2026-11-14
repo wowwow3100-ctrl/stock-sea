@@ -5462,11 +5462,12 @@ function botMapDots(ctx, f, d){
 if (!Array.isArray(PG.gbot)) PG.gbot = [];
 
 /* ---------- the last rank: the Poly Haven Dutch three-master (CC0, full PBR textures), dressed as the flagship ---------- */
+const LMgold = () => (typeof LM !== 'undefined' && LM.gold) ? LM.gold : M(L(.95, .66, .12), {metalness: .7, roughness: .35});
 function bWar(){
   const k = {g: new THREE.Group(), hull: [], sails: [], flag: null, flagMesh: null};
   const flagM = M(L(.95, .66, .12), {side: THREE.DoubleSide}); k.flag = flagM;
   loadGLTF('tex/ship/dutch_ship.json').then(gl => {
-    const m = gl.scene; m.scale.setScalar(.235); m.rotation.y = Math.PI; m.position.set(.4, -.1, 0);
+    const m = gl.scene; m.scale.setScalar(.275); m.rotation.y = Math.PI; m.position.set(.5, -.12, 0);
     m.traverse(o => { if (!o.isMesh) return; o.castShadow = true; o.receiveShadow = true; const mt = o.material; if (!mt) return; if (/hull/i.test(mt.name)) k.hull.push(mt); if (/sail/i.test(mt.name)) mt.color.setRGB(1.65, 1.2, .62); });
     /* everything below is in the model's own metres: bow at +x, masts at x = 6.65 (fore) and -0.9 (main) */
     const canvasM = new THREE.MeshStandardMaterial({color: L(1, .86, .5), side: THREE.DoubleSide, roughness: .86});
@@ -5494,8 +5495,23 @@ function bWar(){
     const staff = new THREE.Mesh(new THREE.CylinderGeometry(.05, .06, 4.2, 6), M(L(.2, .13, .07))); staff.position.set(-10.35, 6.9, 0); m.add(staff);
     const glow = new THREE.MeshBasicMaterial({color: L(2.6, 1.8, .6)});
     [[-10.25, 5.3, 1.3], [-10.25, 5.3, -1.3]].forEach(([x, y, z]) => { const ln = new THREE.Mesh(new THREE.SphereGeometry(.24, 12, 10), glow); ln.position.set(x, y, z); m.add(ln); });
+    /* a war galley's trim: a bronze ram, a bank of oars each side that really row, shields hung along the rail */
+    const bronze = M(L(.62, .36, .12), {metalness: .75, roughness: .35}), oarM = M(L(.42, .28, .14), {roughness: .8}), redM = M(L(.62, .07, .05), {roughness: .6});
+    const ram = new THREE.Mesh(new THREE.ConeGeometry(.62, 3.6, 10), bronze); ram.rotation.z = -Math.PI / 2; ram.position.set(12.9, .55, 0); m.add(ram);
+    const ramB = new THREE.Mesh(new THREE.CylinderGeometry(.75, .62, .5, 10), bronze); ramB.rotation.z = -Math.PI / 2; ramB.position.set(11.0, .55, 0); m.add(ramB);
+    const shaft = new THREE.CylinderGeometry(.07, .055, 6.2, 6); shaft.rotateX(Math.PI / 2); shaft.translate(0, 0, 3.1);
+    const blade = new THREE.BoxGeometry(.05, .5, 1.3); blade.translate(0, 0, 5.75);
+    const shield = new THREE.CylinderGeometry(.5, .5, .1, 16); shield.rotateX(Math.PI / 2);
+    k.oars = [];
+    [1, -1].forEach(s => { for (let j = 0; j < 11; j++){ const x = -6.4 + j * 1.3, pv = new THREE.Object3D(); pv.position.set(x, 2.5, s * 2.35); pv.rotation.order = 'YXZ'; pv.scale.z = s;
+        const a = new THREE.Mesh(shaft, oarM), b = new THREE.Mesh(blade, redM); a.castShadow = true; pv.add(a, b); m.add(pv); k.oars.push({pv, s, ph: j * .22});
+        const sh = new THREE.Mesh(shield, j % 2 ? LMgold() : redM); sh.position.set(x + .65, 4.25, s * 2.68); m.add(sh); const boss = new THREE.Mesh(new THREE.SphereGeometry(.16, 8, 6), bronze); boss.position.set(x + .65, 4.25, s * 2.76); m.add(boss); } });
     k.g.add(m); applyLook();
   }).catch(() => {});
+  /* the oars keep time: a slow stroke at rest, faster under way */
+  { let ph = 0; frameHooks.push(dt => { if (!k.oars || !k.g.parent) return; let par = k.g, vis = true; while (par){ if (!par.visible) vis = false; par = par.parent; } if (!vis) return;
+      const mine = BK.war === k, rate = mine ? 1.1 + Math.min(Math.abs(boat.v), 15) / 15 * 2.4 : 2.2; ph += dt * rate;
+      for (const o of k.oars){ const a = ph + o.ph; o.pv.rotation.y = o.s * .4 * Math.cos(a); o.pv.rotation.x = o.s * (.36 + .17 * Math.sin(a)); } }); }
   return k;
 }
 
