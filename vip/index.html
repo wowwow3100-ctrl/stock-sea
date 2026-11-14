@@ -4860,7 +4860,7 @@ let lookDirty = 1, lookT = 0;
 /* textures stream in after the first paint: re-apply until every material has its base */
 frameHooks.push(dt => {
   lookT += dt; if (lookT < 1) return; lookT = 0;
-  const k = BK[wardCur('boat').id]; if (!k) return;
+  const k = BK[wardCur('boat').id]; if (!k){ applyLook(); return; }   /* a hull chosen by a level-up or by an old save is not built yet: build it */
   const P = wardCur('paint');
   const stale = k.hull.some(m => P.f ? !isPaint(m.map) : isPaint(m.map)) || k.sails.some(m => !m.userData.base && m.map);
   if (stale || lookDirty) applyLook();
@@ -5540,8 +5540,8 @@ function bWar(){
     [[-10.25, 5.3, 1.3], [-10.25, 5.3, -1.3]].forEach(([x, y, z]) => { const ln = new THREE.Mesh(new THREE.SphereGeometry(.24, 12, 10), glow); ln.position.set(x, y, z); m.add(ln); });
     /* a war galley's trim: a bronze ram, a bank of oars each side that really row, shields hung along the rail */
     const bronze = M(L(.62, .36, .12), {metalness: .75, roughness: .35}), oarM = M(L(.42, .28, .14), {roughness: .8}), redM = M(L(.62, .07, .05), {roughness: .6});
-    const ram = new THREE.Mesh(new THREE.ConeGeometry(.62, 3.6, 10), bronze); ram.rotation.z = -Math.PI / 2; ram.position.set(12.9, .55, 0); m.add(ram);
-    const ramB = new THREE.Mesh(new THREE.CylinderGeometry(.75, .62, .5, 10), bronze); ramB.rotation.z = -Math.PI / 2; ramB.position.set(11.0, .55, 0); m.add(ramB);
+    const ram = new THREE.Mesh(new THREE.ConeGeometry(.62, 3.6, 10), bronze); ram.rotation.z = -Math.PI / 2; ram.position.set(11.0, .55, 0); m.add(ram);
+    const ramB = new THREE.Mesh(new THREE.CylinderGeometry(.75, .62, .5, 10), bronze); ramB.rotation.z = -Math.PI / 2; ramB.position.set(9.1, .55, 0); m.add(ramB);
     const shaft = new THREE.CylinderGeometry(.07, .055, 6.2, 6); shaft.rotateX(Math.PI / 2); shaft.translate(0, 0, 3.1);
     const blade = new THREE.BoxGeometry(.05, .5, 1.3); blade.translate(0, 0, 5.75);
     const shield = new THREE.CylinderGeometry(.5, .5, .1, 16); shield.rotateX(Math.PI / 2);
