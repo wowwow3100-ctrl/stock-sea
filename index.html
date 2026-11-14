@@ -1010,6 +1010,15 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
 @media (max-width:760px){#bEmo{display:none}.tb.tb-ic{width:34px;height:34px}}
 .ld-fs{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;font-size:13.5px;color:var(--cream)}
 .ld-fs input{width:17px;height:17px;accent-color:#ffd23f}
+
+/* ---------- v29: public trial countdown, members' page badge ---------- */
+.ld-trial{width:100%;box-sizing:border-box;margin-top:10px;padding:9px 12px;border-radius:12px;background:rgba(12,24,20,.88);border:1.5px solid #ffd23f;color:var(--cream);font:500 14px var(--f-body);display:flex;gap:8px;align-items:baseline;justify-content:center;flex-wrap:wrap;text-align:center}
+.ld-trial b{font:700 22px var(--f-mono);color:#ffd23f;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.ld-trial.over{border-color:rgba(255,248,230,.4)}
+.ld-trial.vip{border-color:rgba(255,248,230,.35);color:#ffd23f;font-weight:700}
+.ld-go:disabled{opacity:.5;cursor:not-allowed}
+.trial-chip{pointer-events:none;align-self:center;padding:3px 9px;border-radius:999px;background:rgba(5,14,11,.7);border:1px solid rgba(255,210,63,.5);color:#ffd23f;font:700 12px var(--f-mono);white-space:nowrap;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.trial-chip{font-size:10.5px;padding:2px 6px}}
 </style>
 
 <header class="hero" id="hero">
@@ -1037,6 +1046,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
         <div class="ld-ext-b"><button type="button" id="ldExtGo">用瀏覽器開啟</button><button type="button" id="ldExtCp">複製網址</button></div>
         <p class="ld-ext-h" id="ldExtH">打不開的話：點右上角「⋯」→「用瀏覽器開啟」。</p>
       </div>
+      <div class="ld-trial" id="ldTrial" hidden></div>
       <form class="ld-form" id="ldForm" autocomplete="off">
         <input id="ldName" class="ld-name" maxlength="12" placeholder="船長名字（寫在船帆上，也上排行榜）" aria-label="船長名字，會寫在船帆上，也會出現在排行榜">
         <button type="submit" class="ld-go" id="ldGo">出航</button>
@@ -1056,6 +1066,7 @@ footer{border-top:1px solid var(--hair);padding-top:20px;font-size:13px;color:va
     <div class="brand"><b>旺來群島</b><span id="rankLine">台股生命線・航海課</span></div>
     <canvas class="cmp" id="cmp" aria-hidden="true"></canvas>
     <div class="top-btns">
+      <span class="trial-chip" id="trialChip" hidden></span>
       <button type="button" class="tb tb-ic tb-ach" id="bAch" aria-haspopup="dialog" aria-label="獎章" data-tip="獎章（J）"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8l-2 6h-4z"/><circle cx="12" cy="15" r="5.2"/><path d="M12 12.6l.8 1.7 1.8.2-1.3 1.3.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.3 1.8-.2z" class="f"/></svg><b id="achN" class="tb-n">0</b><i class="tb-dot" id="achDot" hidden></i></button>
       <button type="button" class="tb tb-ic" id="bRank" aria-haspopup="dialog" aria-label="排行榜" data-tip="排行榜"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 5H4v1.5A3 3 0 0 0 7 9.5M17 5h3v1.5a3 3 0 0 1-3 3M12 13v4M8.5 20h7M9.5 17h5"/></svg></button>
       <button type="button" class="tb tb-ic" id="bEmo" aria-haspopup="dialog" aria-label="打招呼" data-tip="打招呼（G）"><svg class="tb-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H11l-4.5 3.5v-3.5H4z"/><path d="M9 9.2v.6M15 9.2v.6M9 12.2c1.8 1.5 4.2 1.5 6 0"/></svg></button>
@@ -1710,7 +1721,9 @@ function waveRaw(x, z, t, WL, iters){
   let it = 0, freq = 1, tm = 2, w = 1, sv = 0, sw = 0;
   for (let i = 0; i < iters; i++){
     /* a wind sea: every train runs roughly downwind (within about 65 degrees of it), never back against the others; that is what stops the surface looking like it boils */
-    const sp = Math.sin(it) * 2.1, ux = -.83 + .56 * sp, uz = -.56 - .83 * sp, ul = 1 / Math.hypot(ux, uz), dx = ux * ul, dz = uz * ul, xx = (dx * px + dz * pz) * freq + tt * tm, sn = Math.sin(xx), cs = Math.cos(xx), ee = Math.exp(sn - 1), e = ee * .55 + (.5 + .5 * sn) * .45, c = (ee * .55 + .225) * cs; /* rounder crests: a peaky profile draws a bright line along every wave */
+    const sp = Math.sin(it) * (2.1 + .15 * i), ux = -.83 + .56 * sp, uz = -.56 - .83 * sp, ul = 1 / Math.hypot(ux, uz), dx = ux * ul, dz = uz * ul, xx = (dx * px + dz * pz) * freq + tt * tm, sn = Math.sin(xx), cs = Math.cos(xx), ee = Math.exp(sn - 1),
+      /* short-crested: each train fades in and out along its own crest, so no wave runs on as a line; the shorter the wave, the more it scatters off the wind */
+      env = .5 + .5 * Math.sin((-dz * px + dx * pz) * freq * .31 + it * .7 + tt * .3), e = .47 + (ee * .55 + (.5 + .5 * sn) * .45 - .47) * env, c = (ee * .55 + .225) * cs * env; /* rounder crests: a peaky profile draws a bright line along every wave */
     px -= dx * c * w * .38; pz -= dz * c * w * .38; sv += e * w; sw += w; w *= .8; freq *= 1.18; tm *= 1.07; it += 1232.399963;
   }
   return sv / sw;
@@ -2055,7 +2068,14 @@ const ROUTE = [0, 2, 1, 4, 5, 7, 8, 9, 3, 6];
 const RANKS = [[0, '見習水手'], [2, '水手'], [4, '舵手'], [6, '大副'], [8, '船長'], [10, '寶藏島主']];
 
 /* ---------- progress: kept in this browser only ---------- */
-const PG_KEY = 'wl-progress-v1';
+/* which door the player came in by: the public trial (open for one day), the members' page (always open), claude.ai, or a local dev page.
+   Each keeps its own save and its own scoreboard, so the trial starts everyone from zero. */
+const SITE = window.claude ? 'ai' : /^(localhost|127\.|\[::1\]|$)/.test(location.hostname) ? (/[?&]site=(trial|vip)\b/.exec(location.search) || [0, 'dev'])[1] : /\/vip(\/|$)/.test(location.pathname) ? 'vip' : 'trial';
+const BOARD = SITE === 'trial' ? 'trial' : SITE === 'vip' ? 'vip' : '';
+const PG_KEY = SITE === 'trial' ? 'wl-progress-trial1' : SITE === 'vip' ? 'wl-progress-vip1' : 'wl-progress-v1';
+const TRIAL = {open: 1794628800000, close: 1794715200000, off: 0};   /* 2026-11-14 12:00 to 11-15 12:00, Taipei */
+const trialNow = () => Date.now() + TRIAL.off;
+const trialState = () => SITE !== 'trial' ? 'free' : trialNow() < TRIAL.open ? 'soon' : trialNow() > TRIAL.close ? 'over' : 'on';
 const PG = {v: 1, visited: [], read: {}, quiz: {}, stamps: [], ach: [], tut: 0, kx: 0, rdHit: 0, rdSeen: 0, clSeen: 0, check: {}, exam: 0, achT: {}, ward: {}, evt: {}, streak: 0, bstreak: 0, rpBest: 0, adv: 0, capName: '', seenW: [], bt: 0};
 (() => { try { const s = JSON.parse(localStorage.getItem(PG_KEY) || 'null'); if (s && typeof s === 'object') Object.keys(PG).forEach(k => { if (s[k] != null && typeof s[k] === typeof PG[k] && Array.isArray(s[k]) === Array.isArray(PG[k])) PG[k] = s[k]; }); } catch (_) {} })();
 let pgT = null;
@@ -2562,10 +2582,11 @@ float waveRaw(vec2 p0, int iters){
   float it = 0.0; float freq = 1.0; float tm = 2.0; float w = 1.0; float sv = 0.0; float sw = 0.0;
   for (int i = 0; i < 48; i++){
     if (i >= iters) break;
-    float sp = sin(it) * 2.1; vec2 d = normalize(vec2(-0.83 + 0.56 * sp, -0.56 - 0.83 * sp));
+    float sp = sin(it) * (2.1 + 0.15 * float(i)); vec2 d = normalize(vec2(-0.83 + 0.56 * sp, -0.56 - 0.83 * sp));
     float x = dot(d, p) * freq + t * tm;
-    float sn = sin(x); float ee = exp(sn - 1.0); float e = ee * 0.55 + (0.5 + 0.5 * sn) * 0.45;
-    p -= d * ((ee * 0.55 + 0.225) * cos(x)) * w * 0.38;
+    float env = 0.5 + 0.5 * sin(dot(vec2(-d.y, d.x), p) * freq * 0.31 + it * 0.7 + t * 0.3);
+    float sn = sin(x); float ee = exp(sn - 1.0); float e = 0.47 + (ee * 0.55 + (0.5 + 0.5 * sn) * 0.45 - 0.47) * env;
+    p -= d * ((ee * 0.55 + 0.225) * cos(x) * env) * w * 0.38;
     sv += e * w; sw += w; w *= 0.8; freq *= 1.18; tm *= 1.07; it += 1232.399963;
   }
   return sv / sw;
@@ -5353,6 +5374,7 @@ function ldTick(){
 $('ldName').value = (PG.capName || '').slice(0, 12);
 $('ldForm').addEventListener('submit', e => {
   e.preventDefault();
+  if (trialState() === 'soon' || trialState() === 'over'){ trialPaint(); return; }
   const v = $('ldName').value.trim().slice(0, 12);
   if (!v){ $('ldName').focus(); $('ldName').classList.remove('shake'); void $('ldName').offsetWidth; $('ldName').classList.add('shake'); return; }
   PG.capName = v; savePG(); const ni = $('nickIn'); if (ni) ni.value = v;
@@ -5397,6 +5419,21 @@ if (!window.claude && !window.__wl){
 
 /* offer fullscreen before setting sail, where the browser can actually do it */
 if (document.fullscreenEnabled && hero.requestFullscreen){ $('ldFsRow').hidden = false; try { if (localStorage.getItem('wl_fs') === '0') $('ldFs').checked = false; } catch (_) {} }
+
+/* the public trial: a countdown on the opening screen, the door shut before it opens and after it closes; the members' page just says so */
+function trialPaint(){
+  const box = $('ldTrial'), st = trialState(); if (!box) return;
+  if (st === 'free'){ if (SITE === 'vip'){ box.hidden = false; box.className = 'ld-trial vip'; box.textContent = '學員版 · 自由探索，不限時間'; } return; }
+  const pad = n => String(n).padStart(2, '0'), left = Math.max(0, Math.floor(((st === 'soon' ? TRIAL.open : TRIAL.close) - trialNow()) / 1000)), hms = pad(Math.floor(left / 3600)) + ':' + pad(Math.floor(left / 60) % 60) + ':' + pad(left % 60);
+  box.hidden = false; box.className = 'ld-trial ' + st;
+  box.innerHTML = st === 'soon' ? '<span>公開試玩 今天中午 12:00 開放</span><b>' + hms + '</b><span>後開始</span>' : st === 'on' ? '<span>公開試玩中 · 到週日中午 12:00</span><b>' + hms + '</b><span>後結束</span>' : '<span>公開試玩已經結束，謝謝你來玩 🍍</span>';
+  $('ldGo').disabled = st !== 'on'; $('ldGo').textContent = st === 'soon' ? '還沒開放' : st === 'over' ? '已結束' : '出航';
+  const chip = $('trialChip'); if (chip){ chip.hidden = st !== 'on'; if (st === 'on') chip.textContent = '試玩剩 ' + hms; }
+  /* time is up while someone is still sailing: bring the opening screen back, closed */
+  if (st === 'over' && LD.done){ LD.done = false; const el = $('ld'); el.hidden = false; el.classList.remove('out'); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (_) {} }
+  if (st === 'on' && left === 600 && LD.done && typeof toast === 'function') toast('公開試玩還剩 10 分鐘', 4000);
+}
+trialPaint(); if (SITE === 'trial') setInterval(trialPaint, 1000);
 /* ================= drift bottles: one glossary term each, scattered over the open sea ================= */
 if (!Array.isArray(PG.bot)) PG.bot = [];
 const BOT = (() => {
@@ -5606,7 +5643,8 @@ function webRoom(dev){
 }
 function lbFetch(){
   if (!LB.web) return;
-  fetch(LB_API + '/rank', {cache: 'no-store'}).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(j => {
+  fetch(LB_API + '/rank?b=' + BOARD, {cache: 'no-store'}).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(j => {
+    if (j.now > 1e9) TRIAL.off = j.now * 1000 - Date.now(); /* trust the server's clock, not the phone's */
     LB.rows = (j.rows || []).slice(0, 50).map(v => ({id: String(v.k || ''), n: String(v.n || '').slice(0, 12), s: +v.s || 0, st: clamp(+v.st || 0, 0, 10), lv: clamp(Math.round(+v.lv || 0), 0, 5), b: +v.b || 0}));
     LB.err = ''; LB.at = performance.now();
     if (logTab === 'rank' && !$('logPanel').hidden) renderLog();
@@ -5622,7 +5660,7 @@ function lbPush(){
   clearTimeout(LB.t); LB.t = setTimeout(() => {
     LB.last = key;
     if (LB.web){
-      fetch(LB_API + '/score', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({id: LB.uid6, n, st: PG.stamps.length, ach: PG.ach.length, bot: PG.bot.length, gbot: PG.gbot.length, reef: PG.reef ? 1 : 0})})
+      fetch(LB_API + '/score', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({id: LB.uid6, n, st: PG.stamps.length, ach: PG.ach.length, bot: PG.bot.length, gbot: PG.gbot.length, reef: PG.reef ? 1 : 0, b: BOARD})})
         .then(r => { if (!r.ok) throw r.status; lbFetch(); }).catch(() => { LB.err = 'net'; LB.last = ''; });
       return;
     }
