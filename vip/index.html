@@ -3673,7 +3673,7 @@ function landmark(isl){
   }
 }
 /* ================= state & controls ================= */
-const QUAL = [{pr: 1, J: 110, S: 150, it: 16, refl: false, sh: 0}, {pr: 1.5, J: 170, S: 220, it: 28, refl: true, sh: 1024}, {pr: 2, J: 230, S: 290, it: 40, refl: true, sh: 2048}];
+const QUAL = [{pr: 1, J: 110, S: 150, it: 14, refl: false, sh: 0}, {pr: 1.5, J: 170, S: 220, it: 23, refl: true, sh: 1024}, {pr: 2, J: 230, S: 290, it: 32, refl: true, sh: 2048}];
 let qIdx = 1;
 const boat = {x: 0, z: 0, h: 0, v: 0, y: 0, pitch: 0, roll: 0, rud: 0, px: 0, pz: 0, thr: 0, anchor: false};
 const VREV = 4.5, VNAV = 13, DOCK_RANGE = 160;
@@ -4353,7 +4353,8 @@ function updCam(dt, nowS){
   if (Math.abs(camera.fov - fov) > .05){ camera.fov += (fov - camera.fov) * (1 - Math.exp(-dt * 3)); camera.updateProjectionMatrix(); applyOffset(true, true); }
   camera.updateMatrixWorld();
   sky.position.copy(camPos);
-  ocean.position.set(Math.round(camPos.x / 4) * 4, 0, Math.round(camPos.z / 4) * 4);
+  /* the sea mesh glides with the camera. Stepping it 4 m at a time made the whole surface twitch at every step once the boat was moving */
+  ocean.position.set(camPos.x, 0, camPos.z);
 }
 const sunDir = new THREE.Vector3();
 function env(dt){
@@ -4489,7 +4490,7 @@ function declutter(){
   });
 }
 function labels(){
-  islands.forEach((isl, i) => { if (isl) place(labs[i], POS[i][0] + isl.pad.x, isl.labelY, POS[i][1] + isl.pad.z, 2400, isl.occ || (mode === 'docked' && i === dockIdx && W < 760)); });
+  islands.forEach((isl, i) => { if (isl) place(labs[i], POS[i][0] + isl.pad.x, isl.labelY, POS[i][1] + isl.pad.z, 2400, isl.occ || (mode === 'docked' && i === dockIdx && W < 760) || (W >= 760 && scrMode === 'sail' && scrIsl === i && !scr.hidden && hero.classList.contains('skyscr'))); /* the nameplate already names that island: two tags on top of each other read as a pile-up */ });
   declutter();
   const a = islands[0];
   if (a && phaseTag){ tagPhase.textContent = phaseTag; place(tagPhase, POS[0][0] + a.pad.x, phaseTag === '兩週內站回' ? a.top + 34 : 14, POS[0][1] + a.pad.z, 1300); place(tagLevel, POS[0][0] + a.meanC * 1.15, 4, POS[0][1] + a.meanC * .2, 1300); }
@@ -4584,7 +4585,7 @@ let last = performance.now(), running = false, raf = 0, heroVisible = true, boot
 function frame(now){
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   step(dt, now / 1000); render();
-  if (!perf.done){ perf.acc += dt; perf.n++; if (performance.now() - perf.t0 > 4000){ perf.done = true; const fps = perf.n / perf.acc; if (fps < 26 && qIdx > 0){ setQ(qIdx - 1, true); perf.reset(); toast('這台裝置比較吃力，畫質自動降到「' + ['省電', '標準', '高'][qIdx] + '」'); } } }
+  if (!perf.done){ perf.acc += dt; perf.n++; if (performance.now() - perf.t0 > 4000){ perf.done = true; const fps = perf.n / perf.acc; if (fps < 34 && qIdx > 0){ setQ(qIdx - 1, true); perf.reset(); toast('這台裝置比較吃力，畫質自動降到「' + ['省電', '標準', '高'][qIdx] + '」'); } } }
   if (running) raf = requestAnimationFrame(frame);
 }
 function start(){ if (running || document.hidden || !heroVisible) return; running = true; last = performance.now(); raf = requestAnimationFrame(frame); }
@@ -5321,7 +5322,7 @@ frameHooks.push(dt => {
 const RCOL = ['#d08a4e', '#7fb6ea', '#b98bf0', '#ffd23f'];
 if (PG.achSeen == null) PG.achSeen = PG.ach.length;
 function achCount(){
-  $('achN').textContent = PG.ach.length; $('bAch').setAttribute('data-tip', '獎章 ' + PG.ach.length + ' / ' + ACH.length + '（J）');
+  $('achN').textContent = PG.ach.length; $('achN').hidden = !PG.ach.length; $('bAch').setAttribute('data-tip', '獎章 ' + PG.ach.length + ' / ' + ACH.length + '（J）');
   const fresh = PG.ach.length > PG.achSeen; $('achDot').hidden = !fresh; $('bAch').classList.toggle('fresh', fresh);
 }
 function openMedals(){
